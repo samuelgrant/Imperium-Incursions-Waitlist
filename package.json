@@ -1,0 +1,41 @@
+{
+  "name": "imperium-incursions-waitlist",
+  "version": "1.0.0",
+  "description": "Fleet management tool for the Imperium Incursions Squad. Developed using .NET Core 2.2 & making use of the Goonswarm SSO (GICE) and Eve Swagger APIs.",
+  "main": "index.js",
+  "scripts": {
+    "test": "npm -v",
+    "build": "webpack --progress --profile",
+    "watch": "webpack --progress --profile --watch",
+    "production": "webpack --progress --profile --mode production"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/samuelgrant/Imperium-Incursions-Waitlist.git"
+  },
+  "keywords": [
+    "eveonline",
+    "incursions"
+  ],
+  "author": "Samuel Grant",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/samuelgrant/Imperium-Incursions-Waitlist/issues"
+  },
+  "homepage": "https://github.com/samuelgrant/Imperium-Incursions-Waitlist#readme",
+  "devDependencies": {
+    "clean-webpack-plugin": "^1.0.1",
+    "css-loader": "^2.1.0",
+    "cssnano": "^4.1.10",
+    "mini-css-extract-plugin": "^0.5.0",
+    "node-sass": "^4.11.0",
+    "postcss-loader": "^3.0.0",
+    "sass-loader": "^7.1.0",
+    "style-loader": "^0.23.1",
+    "webpack": "^4.29.5",
+    "webpack-cli": "^3.2.3"
+  },
+  "dependencies": {
+    "lodash": "^4.17.11"
+  }
+}
