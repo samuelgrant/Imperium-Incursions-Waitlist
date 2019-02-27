@@ -1,6 +1,8 @@
 ﻿const path = require('path');
 const MiniCssExtractPlugin = require("mini-css-extract-plugin");
 const CleanWebpackPlugin = require('clean-webpack-plugin');
+var WebpackNotifierPlugin = require("webpack-notifier");
+var BrowserSyncPlugin = require("browser-sync-webpack-plugin");
 
 const bundleFileName = 'bundle';
 const dirName = 'wwwroot/dist';
@@ -34,14 +36,25 @@ module.exports = (env, argv) => {
                             },
                             'sass-loader'
                         ]
-                }
+                },
+                {
+                    test: /\.js$/,
+                    exclude: /node_modules/,
+                    use: {
+                        loader: "babel-loader"
+                    }
+                },
             ]
         },
+        devtool: "inline-source-map",
         plugins: [
             new CleanWebpackPlugin(dirName, {}),
             new MiniCssExtractPlugin({
                 filename: bundleFileName + '.css'
-            })
-        ]
+            }),
+            new WebpackNotifierPlugin(),
+            new BrowserSyncPlugin()
+        ],
+        stats: "errors-only"
     };
 };
