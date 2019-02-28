@@ -3,12 +3,12 @@ mono: none
 sudo: required
 dist: xenial
 dotnet: 2.2.104
-solution: 'Imperium Incursion Waitlist.sln'
+solution: Imperium Incursion Waitlist.sln
 
 matrox:
     include:
         - nuget restore 'Imperium Incursion Waitlist.sln'
         - nuget install xunit.runners -Version 1.9.2 -OutputDirectory testrunner
     script:
-        - msbuild /p:Configuration=Release 'Imperium Incursion Waitlist.sln'
+        - msbuild /p:Configuration=Release Imperium Incursion Waitlist.sln
         - mono ./testrunner/xunit.runners.1.9.2/tools/xunit.console.clr4.exe ./Tests/bin/Release/MyProject.Tests.dll
