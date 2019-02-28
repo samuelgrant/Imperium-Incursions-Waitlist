@@ -10,7 +10,7 @@ const dirName = 'wwwroot/dist';
 module.exports = (env, argv) => {
     return {
         mode: argv.mode === "production" ? "production" : "development",
-        entry: ['./src/index.js', './src/sass/index.scss'],
+        entry: ['./Src/index.js', './src/sass/index.scss'],
         output: {
             filename: bundleFileName + '.js',
             path: path.resolve(__dirname, dirName)
