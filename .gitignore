@@ -1,0 +1,9 @@
+# Build
+obj/
+bin/
+
+# npm
+node_modules/
+
+# Development 
+.vs/
