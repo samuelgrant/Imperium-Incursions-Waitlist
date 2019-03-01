@@ -1,8 +1,5 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.IO;
-using System.Linq;
-using System.Threading.Tasks;
 
 namespace Imperium_Incursions_Waitlist
 {
@@ -22,13 +19,8 @@ namespace Imperium_Incursions_Waitlist
 
         /// <summary>
         /// Designates informational messages that highlight the progress of the application at coarse-grained level.
-        /// Logging only occurs log level is set = Debug || Info
         /// </summary>
-        public static void Info(string message)
-        {
-            if (true)
-                LogOutput(Type.Info, message);
-        }
+        public static void Info(string message) => LogOutput(Type.Info, message);
 
         /// <summary>
         /// Designates potentially harmful situations,

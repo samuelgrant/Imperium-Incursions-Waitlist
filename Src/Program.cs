@@ -14,7 +14,6 @@ namespace Imperium_Incursions_Waitlist
     {
         public static void Main(string[] args)
         {
-            Log.Error("Test Log");
             CreateWebHostBuilder(args).Build().Run();
         }
 
