@@ -2,6 +2,9 @@
 obj/
 bin/
 
+# Logs
+Logs/
+
 # npm
 node_modules/
 
