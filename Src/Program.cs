@@ -14,6 +14,9 @@ namespace Imperium_Incursions_Waitlist
     {
         public static void Main(string[] args)
         {
+            // Remove old log files at 00:00 UTC
+            Task.IntervalInDays(00, 00, 1, () => { Log.PurgeOldLogs(); });
+
             CreateWebHostBuilder(args).Build().Run();
         }
 
