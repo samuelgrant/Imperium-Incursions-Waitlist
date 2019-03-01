@@ -7,13 +7,14 @@ namespace Imperium_Incursions_Waitlist
 
     public static class Log
     {
+        
         /// <summary>
         /// Log a low level debug event. 
         /// Logging only occurs if log level = Debug
         /// </summary>
         public static void Debug(string message)
         {
-            if (true)
+            if (Environment.GetEnvironmentVariable("ASPNETCORE_ENVIRONMENT") == "Development")
                 LogOutput(Type.Debug, message);
         }
 
@@ -33,8 +34,6 @@ namespace Imperium_Incursions_Waitlist
         /// Logging always occurs.
         /// </summary>
         public static void Error(string message) => LogOutput(Type.Error, message);
-
-
 
         /// <summary>
         /// Writes a log message to the console. 
@@ -82,7 +81,7 @@ namespace Imperium_Incursions_Waitlist
         /// <param name="m">Message to append to file.</param>
         private static void LogToFile(Type t, string m)
         {
-            string todaysFile = String.Format("{0}_log.txt", DateTime.UtcNow.ToString("dd MMM"));
+            string todaysFile = String.Format("{0}.log", DateTime.UtcNow.ToString("dd_MMM_yyyy"));
 
             // Create the logs directory
             if (!Directory.Exists("./Logs"))
