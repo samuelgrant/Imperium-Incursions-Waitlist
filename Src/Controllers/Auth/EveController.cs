@@ -47,13 +47,13 @@ namespace Imperium_Incursions_Waitlist.Controllers
         /// Handles the GICE SSO callback.
         /// </summary>
         [ActionName("callback")]
-        public string Callback(string code, string state)
+        public IActionResult Callback(string code, string state)
         {
             // Verify a code and state query parameter was returned.
             if (code == null || state == null)
             {
                 Log.Error(string.Format("GiceController@Callback - Callback Error one or more query paramaters were missing\nState: {0}\nCode: {1}", state, code));
-                return "Error: Authentication failed. Go back to try again!";
+                return StatusCode(452);
             }
 
             // Verify the state to protect against CSRF attacks.
@@ -61,7 +61,7 @@ namespace Imperium_Incursions_Waitlist.Controllers
             {
                 Log.Warn("GiceController@Callback - State query paramater does not match session value, aborting!");
                 HttpContext.Session.Remove("state");
-                return "State miss match. Go back to try again!";
+                return StatusCode(452);
             }
 
             // Clear the state session
@@ -94,7 +94,8 @@ namespace Imperium_Incursions_Waitlist.Controllers
             var account = new JwtSecurityToken(jwtEncodedString: access_token).Payload;
 
 
-            return "Hi " + account["name"].ToString() + " your character ID is " + account["sub"].ToString().Split(':')[2];
+            //return "Hi " + account["name"].ToString() + " your character ID is " + account["sub"].ToString().Split(':')[2];
+            return null;
         }
     }
 }
