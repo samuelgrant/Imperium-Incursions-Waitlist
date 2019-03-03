@@ -8,6 +8,7 @@ namespace Imperium_Incursions_Waitlist.Services
 {
     public static class Util
     {
+        static readonly char[] padding = { '=' };
 
         /// <summary>
         /// Generates a random string.
@@ -31,5 +32,18 @@ namespace Imperium_Incursions_Waitlist.Services
 
             return builder.ToString().ToLower();
         }
+
+        /// <summary>
+        /// Encodes a string to Base64 format.
+        /// </summary>
+        /// <param name="_string"></param>
+        /// <returns>_string in base64 format</returns>
+        public static string Base64Encode(string _string){
+            var bytes = System.Text.Encoding.GetEncoding("ISO-8859-1").GetBytes(_string);
+
+            return System.Convert.ToBase64String(bytes);
+        }
+
+        
     }
 }

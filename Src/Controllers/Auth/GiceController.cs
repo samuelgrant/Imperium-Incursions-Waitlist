@@ -1,22 +1,23 @@
-﻿using Microsoft.AspNetCore.Http;
-using Microsoft.AspNetCore.Mvc;
-using Imperium_Incursions_Waitlist.Services;
-using System.Collections.Specialized;
+﻿using DotNetEnv;
 using System.Net;
 using System.Text;
-using Newtonsoft.Json;
+using System.Collections.Specialized;
 using System.IdentityModel.Tokens.Jwt;
-using DotNetEnv;
+using System.Threading.Tasks;
+
+using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Mvc;
+
+using Imperium_Incursions_Waitlist.Services;
+
+using Newtonsoft.Json;
+using Microsoft.AspNetCore.Authorization;
 
 namespace Imperium_Incursions_Waitlist.Controllers
 {
     public class GiceController : Controller
     {
-        public IActionResult Index()
-        {
-            return View();
-        }
-
         /// <summary>
         /// Initiates GICE SSO workflow
         /// </summary>
@@ -29,7 +30,7 @@ namespace Imperium_Incursions_Waitlist.Controllers
 
 
             //Callback
-            string redirectUri = Url.Action("Callback", "Gice", null, "https").ToLower();
+            string redirectUri = Url.Action("callback", "gice", null , protocol: "https").ToLower();
 
 
             //Create a state and save to session
@@ -49,7 +50,8 @@ namespace Imperium_Incursions_Waitlist.Controllers
         /// <summary>
         /// Handles the GICE SSO callback.
         /// </summary>
-        public string Callback(string code, string state)
+        [ActionName("callback")]
+        public string Callback (string code, string state)
         {
             // Verify a code and state query parameter was returned.
             if (code == null || state == null)
@@ -80,16 +82,18 @@ namespace Imperium_Incursions_Waitlist.Controllers
             postData["client_secret"] = Env.GetString("gice_clientSecret");
 
             var response = client.UploadValues("https://esi.goonfleet.com/oauth/token", postData);
+            // Convert a JSON String into a usable object
             var data = Encoding.Default.GetString(response);
             var model = JsonConvert.DeserializeObject<dynamic>(data);
             string acess_token = model["access_token"].Value;
 
             //Decode the JWT Token.
             var account = new JwtSecurityToken(jwtEncodedString: acess_token).Payload;
-
+                       
             return "Hi " + account["name"] + ". Your goonfleet ID is " + account["sub"] + ".";
         }
 
+        [Authorize]
         public string Logout()
         {
             // Revoke the token
