@@ -7,13 +7,13 @@ using System.Threading.Tasks;
 
 namespace Imperium_Incursions_Waitlist.Data
 {
-    public class AppDataContext : DbContext
+    public class WaitlistDataContext : DbContext
     {
         public DbSet<Account> Accounts { get; set; }
         public DbSet<Ban> Bans { get; set; }
         public DbSet<Pilot> Pilots { get; set; }
 
-        public AppDataContext(DbContextOptions<AppDataContext> options) : base(options)
+        public WaitlistDataContext(DbContextOptions<WaitlistDataContext> options) : base(options)
         {
             Database.EnsureCreated();
         }
