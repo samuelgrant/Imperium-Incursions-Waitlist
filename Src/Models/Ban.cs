@@ -15,14 +15,5 @@ namespace Imperium_Incursions_Waitlist.Models
         public DateTime Expires_At { get; set; }
         public int Updated_By_Admin_Id { get; set; }
         public DateTime Updated_At { get; set; }
-
-        /// <summary>
-        /// Return true if the ban has a value in the 'Expires_At' field,
-        /// and this value is in the past.
-        /// </summary>
-        public bool BanExpired()
-        {
-            throw new NotImplementedException();
-        }
     }
 }
