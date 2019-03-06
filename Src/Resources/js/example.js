@@ -5,6 +5,7 @@ const App = () => (
     <>
         <h1>React in ASP.NET MVC!</h1>
         <div>Hello React World</div>
+        <i className="fas fa-user" />
     </>
 );
 
