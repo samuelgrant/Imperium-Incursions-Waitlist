@@ -4,4 +4,11 @@
 /* React */
 import './js/React/example';
 
-/* Libraries */
+/* JavaScript Core */
+import './js/Libraries/jquery.min';
+import './js/Libraries/popper.min';
+import './js/Bootstrap/index';
+
+
+/* Theme */
+import './js/app.min';
