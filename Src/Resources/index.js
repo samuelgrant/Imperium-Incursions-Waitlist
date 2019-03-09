@@ -1,3 +1,7 @@
 ﻿import _ from 'lodash';
 
-import './js/example';
+
+/* React */
+import './js/React/example';
+
+/* Libraries */
