@@ -2,14 +2,19 @@
 @import 'variables.scss';
 
 /* Font Awesome 5 */
-@import 'fontAwesome/fontawesome.scss';
-@import 'fontAwesome/light.scss';
-@import 'fontAwesome/regular.scss';
-@import 'fontAwesome/solid.scss';
-@import 'fontAwesome/brands.scss';
+@import 'FontAwesome/fontawesome.scss';
+@import 'FontAwesome/light.scss';
+@import 'FontAwesome/regular.scss';
+@import 'FontAwesome/solid.scss';
+@import 'FontAwesome/brands.scss';
 
 
 /* Import Bootstrap Theme */
+@import 'animate.scss';
+@import 'jquery.scrollbar.scss';
+@import 'fullcalendar.scss';
+
+@import 'Bootstrap/bootstrap-reboot.scss';
 
 /* Custom Styles*/
 body {
