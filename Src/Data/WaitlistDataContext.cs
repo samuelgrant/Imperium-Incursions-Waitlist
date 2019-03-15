@@ -15,12 +15,31 @@ namespace Imperium_Incursions_Waitlist.Data
 
         public WaitlistDataContext(DbContextOptions<WaitlistDataContext> options) : base(options)
         {
-            Database.EnsureCreated();
+            // Not needed as we are using migrations(?)
+            //Database.EnsureCreated();
         }
 
-        protected override void OnModelCreating(ModelBuilder builder)
+        protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
-            base.OnModelCreating(builder);
+            //base.OnModelCreating(modelBuilder);
+
+            modelBuilder.Entity<Ban>()
+                        .HasOne<Account>("BannedAccount")
+                        .WithMany("AccountBans")
+                        .HasForeignKey("BannedAccountId")
+                        .OnDelete(DeleteBehavior.Cascade);
+
+            modelBuilder.Entity<Ban>()
+                        .HasOne<Account>("UpdatingAdmin")
+                        .WithMany("UpdatedBans")
+                        .HasForeignKey("UpdatedByAdminId")
+                        .OnDelete(DeleteBehavior.Restrict);
+
+            modelBuilder.Entity<Ban>()
+                        .HasOne<Account>("CreatorAdmin")
+                        .WithMany("CreatedBans")
+                        .HasForeignKey("AdminId")
+                        .OnDelete(DeleteBehavior.Restrict);
         }
     }
 }

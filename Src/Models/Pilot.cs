@@ -2,17 +2,37 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
 
 namespace Imperium_Incursions_Waitlist.Models
 {
     public class Pilot
     {
         public int Id { get; set; }
-        public int Account_Id { get; set; }
+
+        // EF Core recognizes this as FK automatically
+        public int AccountId { get; set; }
+
+        [Required]
         public string Name { get; set; }
-        public int Corp_Id { get; set; }
-        public string ESI_Token { get; set; }
-        public DateTime Registered_At { get; set; }
-        public DateTime Updated_At { get; set; }
+
+        [Display(Name = "Corp ID")]
+        public int CorpId { get; set; } // - does this need to be nullable?
+
+        [Display(Name = "ESI Token")]
+        public string ESIToken { get; set; }
+
+        [DataType(DataType.Date)]
+        [DisplayFormat(DataFormatString = "{0:dd-MM-yyyy}")]
+        public DateTime RegisteredAt { get; set; }
+
+        [DataType(DataType.Date)]
+        [DisplayFormat(DataFormatString = "{0:dd-MM-yyyy}")]
+        public DateTime? UpdatedAt { get; set; }
+
+        // Navigation properties
+        
+        public Account Account { get; set; }
     }
 }
