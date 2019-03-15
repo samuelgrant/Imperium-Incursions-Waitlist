@@ -19,15 +19,15 @@ namespace Imperium_Incursions_Waitlist.Models
 
         public string Reason { get; set; }
 
-        [DataType(DataType.Date)]
+        [Display(Name = "Issued At"), DataType(DataType.Date)]
         [DisplayFormat(DataFormatString = "{0:dd-MM-yyyy}")]
         public DateTime IssuedAt { get; set; }
 
-        [DataType(DataType.Date)]
+        [Display(Name = "Expires At"), DataType(DataType.Date)]
         [DisplayFormat(DataFormatString = "{0:dd-MM-yyyy}")]
         public DateTime? ExpiresAt { get; set; }        
 
-        [DataType(DataType.Date)]
+        [Display(Name = "Updated At"), DataType(DataType.Date)]
         [DisplayFormat(DataFormatString = "{0:dd-MM-yyyy}")]
         public DateTime? UpdatedAt { get; set; }
 

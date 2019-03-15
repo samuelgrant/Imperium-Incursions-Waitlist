@@ -23,11 +23,11 @@ namespace Imperium_Incursions_Waitlist.Models
         [Display(Name = "ESI Token")]
         public string ESIToken { get; set; }
 
-        [DataType(DataType.Date)]
+        [Display(Name = "Registered At"), DataType(DataType.Date)]
         [DisplayFormat(DataFormatString = "{0:dd-MM-yyyy}")]
         public DateTime RegisteredAt { get; set; }
 
-        [DataType(DataType.Date)]
+        [Display(Name = "Updated At"), DataType(DataType.Date)]
         [DisplayFormat(DataFormatString = "{0:dd-MM-yyyy}")]
         public DateTime? UpdatedAt { get; set; }
 
