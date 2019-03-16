@@ -21,9 +21,7 @@ namespace Imperium_Incursions_Waitlist.Migrations
 
             modelBuilder.Entity("Imperium_Incursions_Waitlist.Models.Account", b =>
                 {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
+                    b.Property<int>("Id");
 
                     b.Property<DateTime?>("LastLogin");
 
@@ -74,9 +72,7 @@ namespace Imperium_Incursions_Waitlist.Migrations
 
             modelBuilder.Entity("Imperium_Incursions_Waitlist.Models.Pilot", b =>
                 {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
+                    b.Property<int>("Id");
 
                     b.Property<int>("AccountId");
 

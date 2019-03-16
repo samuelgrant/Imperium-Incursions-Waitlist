@@ -9,6 +9,7 @@ namespace Imperium_Incursions_Waitlist.Models
 {
     public class Account
     {
+        [DatabaseGenerated(DatabaseGeneratedOption.None)]
         public int Id { get; set; }
 
         [Required]

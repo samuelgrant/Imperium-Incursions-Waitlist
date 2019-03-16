@@ -9,6 +9,7 @@ namespace Imperium_Incursions_Waitlist.Models
 {
     public class Pilot
     {
+        [DatabaseGenerated(DatabaseGeneratedOption.None)]
         public int Id { get; set; }
 
         // EF Core recognizes this as FK automatically

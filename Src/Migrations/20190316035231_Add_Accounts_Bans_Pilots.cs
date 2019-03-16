@@ -4,7 +4,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 
 namespace Imperium_Incursions_Waitlist.Migrations
 {
-    public partial class Accounts_Bans_Pilots : Migration
+    public partial class Add_Accounts_Bans_Pilots : Migration
     {
         protected override void Up(MigrationBuilder migrationBuilder)
         {
@@ -12,8 +12,7 @@ namespace Imperium_Incursions_Waitlist.Migrations
                 name: "Accounts",
                 columns: table => new
                 {
-                    Id = table.Column<int>(nullable: false)
-                        .Annotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn),
+                    Id = table.Column<int>(nullable: false),
                     Name = table.Column<string>(nullable: false),
                     Token = table.Column<string>(nullable: true),
                     RegisteredAt = table.Column<DateTime>(nullable: false),
@@ -66,8 +65,7 @@ namespace Imperium_Incursions_Waitlist.Migrations
                 name: "Pilots",
                 columns: table => new
                 {
-                    Id = table.Column<int>(nullable: false)
-                        .Annotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn),
+                    Id = table.Column<int>(nullable: false),
                     AccountId = table.Column<int>(nullable: false),
                     Name = table.Column<string>(nullable: false),
                     CorpId = table.Column<int>(nullable: false),
