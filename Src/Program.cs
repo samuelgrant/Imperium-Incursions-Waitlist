@@ -21,21 +21,24 @@ namespace Imperium_Incursions_Waitlist
 
             var host = CreateWebHostBuilder(args).Build();
 
-            // Run seeder
-            using(var scope = host.Services.CreateScope())
+            // Run seeder if application in development mode
+            if(Environment.GetEnvironmentVariable("ASPNETCORE_ENVIRONMENT") == "Development")
             {
-                var services = scope.ServiceProvider;
-                try
+                using (var scope = host.Services.CreateScope())
                 {
-                    var context = services.GetRequiredService<WaitlistDataContext>();
-                    DBInitializer.Initialize(context);
-                    Log.Debug("Accounts table seeded.");
+                    var services = scope.ServiceProvider;
+                    try
+                    {
+                        var context = services.GetRequiredService<WaitlistDataContext>();
+                        DBInitializer.Initialize(context);
+                        Log.Debug("Accounts table seeded.");
+                    }
+                    catch (Exception ex)
+                    {
+                        Log.Debug("Error seeding Accounts table. Error: " + ex.Message);
+                    }
                 }
-                catch(Exception ex)
-                {
-                    Log.Debug("Error seeding Accounts table. Error: " + ex.Message);
-                }
-            }
+            }           
 
             host.Run();
         }
