@@ -18,6 +18,12 @@ namespace Imperium_Incursions_Waitlist.Controllers
 {
     public class GiceController : Controller
     {
+        private Data.WaitlistDataContext Db;
+
+
+        public GiceController(Data.WaitlistDataContext db) => Db = db;
+        
+
         /// <summary>
         /// Initiates GICE SSO workflow
         /// </summary>
@@ -91,7 +97,10 @@ namespace Imperium_Incursions_Waitlist.Controllers
             var account = new JwtSecurityToken(jwtEncodedString: acess_token).Payload;
 
             //return "Hi " + account["name"] + ". Your goonfleet ID is " + account["sub"] + ".";
-            return null;
+            ViewBag.account_name = account["name"];
+            ViewBag.gsf_id = account["sub"];
+
+            return View(viewName: "~/Views/Auth/Gice.cshtml", model: ViewBag);
         }
 
         [Authorize]
