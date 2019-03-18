@@ -13,7 +13,8 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Authentication;
 using System;
-
+using System.Security.Claims;
+using System.Collections.Generic;
 
 namespace Imperium_Incursions_Waitlist.Controllers
 {
@@ -26,7 +27,7 @@ namespace Imperium_Incursions_Waitlist.Controllers
             _Db = db;
             _RequestorIP = clientAccessor.HttpContext.Connection.RemoteIpAddress;
         }
-        
+
 
         /// <summary>
         /// Initiates GICE SSO workflow
@@ -40,13 +41,13 @@ namespace Imperium_Incursions_Waitlist.Controllers
 
 
             //Callback
-            string redirectUri = Url.Action("callback", "gice", null , protocol: "https").ToLower();
+            string redirectUri = Url.Action("callback", "gice", null, protocol: "https").ToLower();
 
 
             //Create a state and save to session
             string newState = Util.RandomString(6);
             HttpContext.Session.SetString("state", newState);
-            
+
             // Request Authentication from GICE.
             return Redirect(string.Format(
                 "https://esi.goonfleet.com/oauth/authorize?client_id={0}&redirect_uri={1}&response_type={2}&state={3}",
@@ -61,7 +62,7 @@ namespace Imperium_Incursions_Waitlist.Controllers
         /// Handles the GICE SSO callback.
         /// </summary>
         [ActionName("callback")]
-        public async Task<IActionResult> CallbackAsync (string code, string state)
+        public async Task<IActionResult> CallbackAsync(string code, string state)
         {
             // Verify a code and state query parameter was returned.
             if (code == null || state == null)
@@ -113,7 +114,7 @@ namespace Imperium_Incursions_Waitlist.Controllers
             }
             else
             {
-                waitlist_account = new Account
+                Account new_waitlist_account = new Account()
                 {
                     Id = int.Parse(account["sub"].ToString()),
                     Name = account["name"].ToString(),
@@ -122,19 +123,27 @@ namespace Imperium_Incursions_Waitlist.Controllers
                     LastLoginIP = _RequestorIP.MapToIPv4().ToString()
                 };
 
+
                 _Db.Add(new_waitlist_account);
                 await _Db.SaveChangesAsync();
             }
 
+            if (await LoginUserUsingId(waitlist_account.Id))
+            {
+                ViewBag.account_name = account["name"];
+                ViewBag.gsf_id = account["sub"];
 
-            ViewBag.account_name = account["name"];
-            ViewBag.gsf_id = account["sub"];
+                return View(viewName: "~/Views/Auth/Gice.cshtml", model: ViewBag);
+            }
+
+            ViewBag.account_name = "no user";
+            ViewBag.gsf_id = 0;
 
             return View(viewName: "~/Views/Auth/Gice.cshtml", model: ViewBag);
         }
 
         [Authorize]
-        public async Task<string> LogoutAsync()
+        public async Task<string> Logout()
         {
 
             Log.Info(string.Format("GiceController@Callback - Logged out user: {0}", User.Identity.Name));
@@ -146,6 +155,70 @@ namespace Imperium_Incursions_Waitlist.Controllers
             //return Redirect("https://esi.goonfleet.com/oauth/revoke");
 
             return "Logout";
+        }
+
+        // DO NOT KEEP THIS METHOD IN PRODUCTION!!!!!!!!!!!!!!!
+        public async Task<IActionResult> LoginWithId(int id)
+        {
+            if (Environment.GetEnvironmentVariable("ASPNETCORE_ENVIRONMENT") == "Development" && await LoginUserUsingId(id))
+            {
+                return View(viewName: "~/Views/Auth/Gice.cshtml");
+            }
+
+            ViewBag.account_name = "no user";
+            ViewBag.gsf_id = 0;
+
+            return View(viewName: "~/Views/Auth/Gice.cshtml", model: ViewBag);
+        }
+
+        /// <summary>
+        /// Logs a user in using a specific ID
+        /// </summary>
+        /// <param name="id">Account ID - GICE API returns this as the "sub"</param>
+        /// <returns>True for a successful login, false for a failure</returns>
+        private async Task<bool> LoginUserUsingId(int id = -1)
+        {
+            // If a user ID was not supplied, fail the login process.
+            if (id == -1) return false;
+
+            // Look up the database for the account.
+            // If no account is found fale login and return.
+            var account = _Db.Accounts.FindAsync(id).Result;
+            if (account == null) return false;
+
+            var claims = new List<Claim>
+            {
+                new Claim("id", account.Id.ToString()),
+                new Claim("name", account.Name)
+            };
+
+            var claimsIdentity = new ClaimsIdentity(
+                claims, CookieAuthenticationDefaults.AuthenticationScheme);
+
+            var authProperties = new AuthenticationProperties
+            {
+                // Refreshing the authentication session should be allowed.
+                AllowRefresh = true,
+
+                // The time at which the authentication ticket expires. A 
+                // value set here overrides the ExpireTimeSpan option of 
+                // CookieAuthenticationOptions set with AddCookie.
+                ExpiresUtc = DateTimeOffset.UtcNow.AddHours(2),
+
+                // Whether the authentication session is persisted across 
+                // multiple requests. When used with cookies, controls
+                // whether the cookie's lifetime is absolute (matching the
+                // lifetime of the authentication ticket) or session-based.
+                IsPersistent = true,
+            };
+
+            await HttpContext.SignInAsync(
+                CookieAuthenticationDefaults.AuthenticationScheme,
+                new ClaimsPrincipal(claimsIdentity),
+                authProperties
+            );
+
+            return true;
         }
     }
 }
