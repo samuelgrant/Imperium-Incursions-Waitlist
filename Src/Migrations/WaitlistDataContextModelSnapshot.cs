@@ -32,8 +32,6 @@ namespace Imperium_Incursions_Waitlist.Migrations
 
                     b.Property<DateTime>("RegisteredAt");
 
-                    b.Property<string>("Token");
-
                     b.HasKey("Id");
 
                     b.ToTable("Accounts");

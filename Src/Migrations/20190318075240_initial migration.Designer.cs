@@ -10,8 +10,8 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace Imperium_Incursions_Waitlist.Migrations
 {
     [DbContext(typeof(WaitlistDataContext))]
-    [Migration("20190316035231_Add_Accounts_Bans_Pilots")]
-    partial class Add_Accounts_Bans_Pilots
+    [Migration("20190318075240_initial migration")]
+    partial class initialmigration
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
@@ -33,8 +33,6 @@ namespace Imperium_Incursions_Waitlist.Migrations
                         .IsRequired();
 
                     b.Property<DateTime>("RegisteredAt");
-
-                    b.Property<string>("Token");
 
                     b.HasKey("Id");
 

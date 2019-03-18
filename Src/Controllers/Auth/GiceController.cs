@@ -4,24 +4,28 @@ using System.Text;
 using System.Collections.Specialized;
 using System.IdentityModel.Tokens.Jwt;
 using System.Threading.Tasks;
-
-using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
-
 using Imperium_Incursions_Waitlist.Services;
-
+using Imperium_Incursions_Waitlist.Models;
 using Newtonsoft.Json;
 using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Authentication.Cookies;
+using Microsoft.AspNetCore.Authentication;
+using System;
+
 
 namespace Imperium_Incursions_Waitlist.Controllers
 {
     public class GiceController : Controller
     {
-        private Data.WaitlistDataContext Db;
+        private Data.WaitlistDataContext _Db;
+        private IPAddress _RequestorIP;
 
-
-        public GiceController(Data.WaitlistDataContext db) => Db = db;
+        public GiceController(Data.WaitlistDataContext db, IHttpContextAccessor clientAccessor) {
+            _Db = db;
+            _RequestorIP = clientAccessor.HttpContext.Connection.RemoteIpAddress;
+        }
         
 
         /// <summary>
@@ -57,7 +61,7 @@ namespace Imperium_Incursions_Waitlist.Controllers
         /// Handles the GICE SSO callback.
         /// </summary>
         [ActionName("callback")]
-        public IActionResult Callback (string code, string state)
+        public async Task<IActionResult> CallbackAsync (string code, string state)
         {
             // Verify a code and state query parameter was returned.
             if (code == null || state == null)
@@ -95,8 +99,34 @@ namespace Imperium_Incursions_Waitlist.Controllers
 
             //Decode the JWT Token.
             var account = new JwtSecurityToken(jwtEncodedString: acess_token).Payload;
+            int gice_id = int.Parse(account["sub"].ToString());
 
-            //return "Hi " + account["name"] + ". Your goonfleet ID is " + account["sub"] + ".";
+            var waitlist_account = await _Db.Accounts.FindAsync(gice_id);
+            if (waitlist_account != null)
+            {
+                waitlist_account.Name = account["name"].ToString();
+                waitlist_account.LastLogin = DateTime.UtcNow;
+                waitlist_account.LastLoginIP = _RequestorIP.MapToIPv4().ToString();
+
+                _Db.Update(waitlist_account);
+                await _Db.SaveChangesAsync();
+            }
+            else
+            {
+                waitlist_account = new Account
+                {
+                    Id = int.Parse(account["sub"].ToString()),
+                    Name = account["name"].ToString(),
+                    RegisteredAt = DateTime.UtcNow,
+                    LastLogin = DateTime.UtcNow,
+                    LastLoginIP = _RequestorIP.MapToIPv4().ToString()
+                };
+
+                _Db.Add(new_waitlist_account);
+                await _Db.SaveChangesAsync();
+            }
+
+
             ViewBag.account_name = account["name"];
             ViewBag.gsf_id = account["sub"];
 
@@ -104,11 +134,18 @@ namespace Imperium_Incursions_Waitlist.Controllers
         }
 
         [Authorize]
-        public string Logout()
+        public async Task<string> LogoutAsync()
         {
-            // Revoke the token
-            // Logout 
-            return "This will log a user out of our app and revoke GICE";
+
+            Log.Info(string.Format("GiceController@Callback - Logged out user: {0}", User.Identity.Name));
+
+            // Log the user out from our Application.
+            await HttpContext.SignOutAsync(CookieAuthenticationDefaults.AuthenticationScheme);
+
+            // Redirect to goonswarm for GICE logout.
+            //return Redirect("https://esi.goonfleet.com/oauth/revoke");
+
+            return "Logout";
         }
     }
 }

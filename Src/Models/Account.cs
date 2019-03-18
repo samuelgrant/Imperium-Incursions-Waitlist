@@ -15,8 +15,6 @@ namespace Imperium_Incursions_Waitlist.Models
         [Required]
         public string Name { get; set; }
 
-        public string Token { get; set; }
-
         [Display(Name ="Registered At"), DataType(DataType.Date)]
         [DisplayFormat(DataFormatString = "{0:dd-MM-yyyy}")]
         public DateTime RegisteredAt { get; set; }
