@@ -100,11 +100,13 @@ namespace Imperium_Incursions_Waitlist.Controllers
 
             //Decode the JWT Token.
             var account = new JwtSecurityToken(jwtEncodedString: acess_token).Payload;
-            int gice_id = int.Parse(account["sub"].ToString());
 
+            // Do we have an account for this GSF User?
+            int gice_id = int.Parse(account["sub"].ToString());
             var waitlist_account = await _Db.Accounts.FindAsync(gice_id);
             if (waitlist_account != null)
             {
+                // Update and save user account
                 waitlist_account.Name = account["name"].ToString();
                 waitlist_account.LastLogin = DateTime.UtcNow;
                 waitlist_account.LastLoginIP = _RequestorIP.MapToIPv4().ToString();
@@ -114,6 +116,7 @@ namespace Imperium_Incursions_Waitlist.Controllers
             }
             else
             {
+                // Use doesn't exist, create an account.
                 Account new_waitlist_account = new Account()
                 {
                     Id = int.Parse(account["sub"].ToString()),
@@ -128,6 +131,10 @@ namespace Imperium_Incursions_Waitlist.Controllers
                 await _Db.SaveChangesAsync();
             }
 
+            // Attempt to log the user in
+            // For testing purposes redirect to view
+            // With different information for login or failed login
+            // TODO: Return redirect to index
             if (await LoginUserUsingId(waitlist_account.Id))
             {
                 ViewBag.account_name = account["name"];
