@@ -18,7 +18,7 @@ namespace Imperium_Incursions_Waitlist.Controllers
         /// Initiates Eve SSO workflow
         /// </summary>
         public ActionResult Go()
-        {           
+        {
             Env.Load();
 
             //Get Client ID
