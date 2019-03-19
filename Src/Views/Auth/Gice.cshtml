@@ -7,12 +7,16 @@
 @using Microsoft.AspNetCore.Http
 @inject IHttpContextAccessor HttpContextAccessor
 
+@{
+    var User = HttpContextAccessor.HttpContext.User;
+}
+
 <h1>Gice</h1>
 
 @if (ViewBag.account_name == null)
 {
-    <p>Greetings @HttpContextAccessor.HttpContext.User.FindFirst("name").Value,</p>
-    <p>Your Goonfleet ID is @HttpContextAccessor.HttpContext.User.FindFirst("id").Value.</p>
+    <p>Greetings @User.FindFirst("name").Value,</p>
+    <p>Your Goonfleet ID is @User.FindFirst("id").Value.</p>
 
 }
 else
