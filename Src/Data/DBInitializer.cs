@@ -23,8 +23,7 @@ namespace Imperium_Incursions_Waitlist.Data
             {
                 new Account {Id = 1, Name = "SamJ", RegisteredAt = DateTime.Now},
                 new Account {Id = 2, Name = "MitchQ", RegisteredAt = DateTime.Now},
-                new Account {Id = 3, Name = "SamG", RegisteredAt = DateTime.Now},
-                new Account {Id = 4, Name = "DanteG", RegisteredAt = DateTime.Now}
+                new Account {Id = 3, Name = "DanteG", RegisteredAt = DateTime.Now}
             };
 
             foreach(Account account in accounts)            
