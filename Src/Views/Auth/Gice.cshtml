@@ -11,8 +11,9 @@
 
 @if (ViewBag.account_name == null)
 {
-    <p>Greetings @User.FindFirst("name").Value,</p>
-    <p>Your Goonfleet ID is @User.FindFirst("id").Value.</p>
+    <p>Greetings @HttpContextAccessor.HttpContext.User.FindFirst("name").Value,</p>
+    <p>Your Goonfleet ID is @HttpContextAccessor.HttpContext.User.FindFirst("id").Value.</p>
+
 }
 else
 {
