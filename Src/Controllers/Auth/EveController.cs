@@ -1,9 +1,5 @@
-﻿using System;
-using System.Collections.Specialized;
-using System.Configuration;
-using System.IdentityModel.Tokens.Jwt;
+﻿using System.IdentityModel.Tokens.Jwt;
 using System.Net;
-using System.Text;
 using DotNetEnv;
 using Imperium_Incursions_Waitlist.Services;
 using Microsoft.AspNetCore.Http;
@@ -18,7 +14,7 @@ namespace Imperium_Incursions_Waitlist.Controllers
         /// Initiates Eve SSO workflow
         /// </summary>
         public ActionResult Go()
-        {           
+        {
             Env.Load();
 
             //Get Client ID

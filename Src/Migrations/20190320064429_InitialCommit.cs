@@ -4,7 +4,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 
 namespace Imperium_Incursions_Waitlist.Migrations
 {
-    public partial class Add_Accounts_Bans_Pilots : Migration
+    public partial class InitialCommit : Migration
     {
         protected override void Up(MigrationBuilder migrationBuilder)
         {
@@ -14,7 +14,6 @@ namespace Imperium_Incursions_Waitlist.Migrations
                 {
                     Id = table.Column<int>(nullable: false),
                     Name = table.Column<string>(nullable: false),
-                    Token = table.Column<string>(nullable: true),
                     RegisteredAt = table.Column<DateTime>(nullable: false),
                     LastLogin = table.Column<DateTime>(nullable: true),
                     LastLoginIP = table.Column<string>(nullable: true)
