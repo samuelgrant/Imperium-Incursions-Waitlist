@@ -134,18 +134,10 @@ namespace Imperium_Incursions_Waitlist.Controllers
             // For testing purposes redirect to view
             // With different information for login or failed login
             // TODO: Return redirect to index
-            if(await LoginUserUsingId(waitlist_account.Id))
-            {
-                ViewBag.account_name = account["name"];
-                ViewBag.gsf_id = account["sub"];
+            await LoginUserUsingId(waitlist_account.Id);
 
-                return View(viewName: "~/Views/Auth/Gice.cshtml", model: ViewBag);
-            }
-
-            ViewBag.account_name = "no user";
-            ViewBag.gsf_id = 0;
-
-            return View(viewName: "~/Views/Auth/Gice.cshtml", model: ViewBag);
+            return Redirect("~/");
+            
         }
 
         [Authorize]
@@ -160,6 +152,17 @@ namespace Imperium_Incursions_Waitlist.Controllers
             //return Redirect("https://esi.goonfleet.com/oauth/revoke");
 
             return "You were logged out!";
+        }
+
+        // DO NOT KEEP THIS METHOD IN PRODUCTION!!!!!!!!!!!!!!!	
+        public async Task<IActionResult> LoginWithId(int id)
+        {
+            if (Environment.GetEnvironmentVariable("ASPNETCORE_ENVIRONMENT") == "Development")
+            {
+                await LoginUserUsingId(id);
+            } 
+
+            return Redirect("~/");
         }
 
         /// <summary>
