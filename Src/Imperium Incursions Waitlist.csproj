@@ -22,7 +22,6 @@
 
 
   <ItemGroup>
-    <Folder Include="Migrations\" />
     <Folder Include="wwwroot\dist\" />
     <Folder Include="Models\" />
   </ItemGroup>

@@ -162,20 +162,6 @@ namespace Imperium_Incursions_Waitlist.Controllers
             return "You were logged out!";
         }
 
-        // DO NOT KEEP THIS METHOD IN PRODUCTION!!!!!!!!!!!!!!!
-        public async Task<IActionResult> LoginWithId(int id)
-        {
-            if (Environment.GetEnvironmentVariable("ASPNETCORE_ENVIRONMENT") == "Development" && await LoginUserUsingId(id))
-            {
-                return View(viewName: "~/Views/Auth/Gice.cshtml");
-            }
-
-            ViewBag.account_name = "no user";
-            ViewBag.gsf_id = 0;
-
-            return View(viewName: "~/Views/Auth/Gice.cshtml", model: ViewBag);
-        }
-
         /// <summary>
         /// Logs a user in using a specific ID
         /// </summary>

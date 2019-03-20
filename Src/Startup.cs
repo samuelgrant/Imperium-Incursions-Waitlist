@@ -76,7 +76,7 @@ namespace Imperium_Incursions_Waitlist
             {
                 routes.MapRoute(
                     name: "auth",
-                    template: "/auth/{controller}/{action=Go}/{id?}");
+                    template: "/auth/{controller}/{action=Go}");
                 routes.MapRoute(
                     name: "default",
                     template: "{controller=Home}/{action=Index}/{id?}");

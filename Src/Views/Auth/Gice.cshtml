@@ -8,13 +8,8 @@
 
 <h1>Gice</h1>
 
-@if (ViewBag.account_name == null)
+@if (User.Identity.IsAuthenticated)
 {
     <p>Greetings @User.FindFirst("name").Value,</p>
     <p>Your Goonfleet ID is @User.FindFirst("id").Value.</p>
-}
-else
-{
-    <p>Greetings @ViewBag.account_name,</p>
-    <p>Your Goonfleet ID is @ViewBag.gsf_id</p>
 }
