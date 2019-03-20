@@ -188,7 +188,7 @@ namespace Imperium_Incursions_Waitlist.Controllers
 
             // Look up the database for the account.
             // If no account is found fail the login and return.
-            var account = _Db.Accounts.FindAsync(id).Result;
+            var account = await _Db.Accounts.FindAsync(id);
             if (account == null) return false;
 
             var claims = new List<Claim>
