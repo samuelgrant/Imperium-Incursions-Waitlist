@@ -1,9 +1,5 @@
-﻿using System;
-using System.Collections.Specialized;
-using System.Configuration;
-using System.IdentityModel.Tokens.Jwt;
+﻿using System.IdentityModel.Tokens.Jwt;
 using System.Net;
-using System.Text;
 using DotNetEnv;
 using Imperium_Incursions_Waitlist.Services;
 using Microsoft.AspNetCore.Http;
