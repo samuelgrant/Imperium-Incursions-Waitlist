@@ -11,6 +11,14 @@ namespace Imperium_Incursions_Waitlist.Controllers
     public class EveController : Controller
     {
         /// <summary>
+        /// Returns the Pilot Select View
+        /// </summary>
+        public IActionResult Index()
+        {
+            return View(viewName: "~/Views/PilotSelect.cshtml");
+        }
+
+        /// <summary>
         /// Initiates Eve SSO workflow
         /// </summary>
         public ActionResult Go()

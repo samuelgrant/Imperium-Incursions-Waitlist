@@ -11,6 +11,8 @@ const App = () => (
         <i className="fas fa-user" />
         &nbsp; | &nbsp;
         <a href="/auth/eve">Start Eve SSO</a>
+        &nbsp; | &nbsp;
+        <a href="/pilot-select">Pilot Select</a>
     </div>
 );
 
