@@ -6,6 +6,11 @@
     <RootNamespace>Imperium_Incursions_Waitlist</RootNamespace>
   </PropertyGroup>
 
+  <ItemGroup>
+    <Content Include="Resources\js\Libraries\Theme\app.js" />
+    <Content Include="Resources\js\Libraries\Theme\vendors.js" />
+  </ItemGroup>
+
 
   <ItemGroup>
     <PackageReference Include="DotNetEnv" Version="1.2.0" />
