@@ -18,6 +18,7 @@ using Microsoft.AspNetCore.Authentication.Cookies;
 
 namespace Imperium_Incursions_Waitlist.Controllers
 {
+    [Authorize]
     public class GiceController : Controller
     {
         private Data.WaitlistDataContext _Db;
@@ -32,6 +33,7 @@ namespace Imperium_Incursions_Waitlist.Controllers
         /// <summary>
         /// Initiates GICE SSO workflow
         /// </summary>
+        [AllowAnonymous]
         public ActionResult Go()
         {
             Env.Load();
@@ -61,6 +63,7 @@ namespace Imperium_Incursions_Waitlist.Controllers
         /// <summary>
         /// Handles the GICE SSO callback.
         /// </summary>
+        [AllowAnonymous]
         [ActionName("callback")]
         public async Task<IActionResult> Callback(string code, string state)
         {
@@ -155,6 +158,7 @@ namespace Imperium_Incursions_Waitlist.Controllers
         }
 
         // DO NOT KEEP THIS METHOD IN PRODUCTION!!!!!!!!!!!!!!!	
+        [AllowAnonymous]
         public async Task<IActionResult> LoginWithId(int id)
         {
             if (Environment.GetEnvironmentVariable("ASPNETCORE_ENVIRONMENT") == "Development")

@@ -16,4 +16,5 @@ const App = () => (
     </div>
 );
 
-render(<App />, document.getElementById('app'));
+if(document.getElementById('app'))
+    render(<App />, document.getElementById('app'));

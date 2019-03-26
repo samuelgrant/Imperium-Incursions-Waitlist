@@ -2,12 +2,14 @@
 using System.Net;
 using DotNetEnv;
 using Imperium_Incursions_Waitlist.Services;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Newtonsoft.Json;
 
 namespace Imperium_Incursions_Waitlist.Controllers
 {
+    [Authorize]
     public class EveController : Controller
     {
         /// <summary>
