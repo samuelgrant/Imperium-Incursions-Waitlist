@@ -67,7 +67,7 @@ namespace Imperium_Incursions_Waitlist.Migrations
                     Id = table.Column<int>(nullable: false),
                     AccountId = table.Column<int>(nullable: false),
                     Name = table.Column<string>(nullable: false),
-                    CorpId = table.Column<int>(nullable: false),
+                    CorporationId = table.Column<long>(nullable: false),
                     ESIToken = table.Column<string>(nullable: true),
                     RegisteredAt = table.Column<DateTime>(nullable: false),
                     UpdatedAt = table.Column<DateTime>(nullable: true)

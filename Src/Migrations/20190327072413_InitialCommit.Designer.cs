@@ -10,7 +10,7 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace Imperium_Incursions_Waitlist.Migrations
 {
     [DbContext(typeof(WaitlistDataContext))]
-    [Migration("20190320064429_InitialCommit")]
+    [Migration("20190327072413_InitialCommit")]
     partial class InitialCommit
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -76,7 +76,7 @@ namespace Imperium_Incursions_Waitlist.Migrations
 
                     b.Property<int>("AccountId");
 
-                    b.Property<int>("CorpId");
+                    b.Property<long>("CorporationId");
 
                     b.Property<string>("ESIToken");
 

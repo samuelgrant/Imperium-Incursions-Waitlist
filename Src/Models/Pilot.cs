@@ -18,8 +18,8 @@ namespace Imperium_Incursions_Waitlist.Models
         [Required]
         public string Name { get; set; }
 
-        [Display(Name = "Corp ID")]
-        public int CorpId { get; set; } // - does this need to be nullable?
+        [Display(Name = "Corporation ID")]
+        public long CorporationId { get; set; }
 
         [Display(Name = "ESI Token")]
         public string ESIToken { get; set; }
@@ -33,7 +33,15 @@ namespace Imperium_Incursions_Waitlist.Models
         public DateTime? UpdatedAt { get; set; }
 
         // Navigation properties
-        
         public Account Account { get; set; }
+
+
+        /// <summary>
+        /// Checks to see if the account is linked
+        /// </summary>
+        public bool IsLinked()
+        {
+            return (AccountId.ToString() != null) ? true : false;
+        }
     }
 }

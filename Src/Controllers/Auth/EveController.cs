@@ -1,6 +1,8 @@
-﻿using System.IdentityModel.Tokens.Jwt;
+﻿using System;
+using System.IdentityModel.Tokens.Jwt;
 using System.Net;
 using DotNetEnv;
+using Imperium_Incursions_Waitlist.Models;
 using Imperium_Incursions_Waitlist.Services;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
@@ -12,6 +14,11 @@ namespace Imperium_Incursions_Waitlist.Controllers
     [Authorize]
     public class EveController : Controller
     {
+        private Data.WaitlistDataContext _Db;
+
+        public EveController(Data.WaitlistDataContext db) => _Db = db;
+        
+
         /// <summary>
         /// Returns the Pilot Select View
         /// </summary>
@@ -53,7 +60,7 @@ namespace Imperium_Incursions_Waitlist.Controllers
         /// Handles the GICE SSO callback.
         /// </summary>
         [ActionName("callback")]
-        public IActionResult Callback(string code, string state)
+        public async System.Threading.Tasks.Task<IActionResult> Callback(string code, string state)
         {
             // Verify a code and state query parameter was returned.
             if (code == null || state == null)
@@ -99,9 +106,51 @@ namespace Imperium_Incursions_Waitlist.Controllers
             // Get vars from the access token
             var account = new JwtSecurityToken(jwtEncodedString: access_token).Payload;
 
+            // Do we have a record of this pilot?
+            string character_id = account["sub"].ToString().Split(':')[2];
+            var x = await EsiWrapper.GetPilot(int.Parse(character_id));
+            long corporation_id = x.CorporationId;
 
-            //return "Hi " + account["name"].ToString() + " your character ID is " + account["sub"].ToString().Split(':')[2];
-            return null;
+            var pilot = await _Db.Pilots.FindAsync(int.Parse(character_id));
+            if(pilot == null)
+            {
+                // User doesn't exist, create a new account
+                pilot = new Pilot()
+                {
+                    Id = int.Parse(character_id),
+                    AccountId = int.Parse(User.FindFirst("id").Value),
+                    Name = account["name"].ToString(),
+                    CorporationId = corporation_id,
+                    ESIToken = refresh_token,
+                    UpdatedAt = DateTime.UtcNow,
+                    RegisteredAt = DateTime.UtcNow,
+                };
+
+                _Db.Add(pilot);
+                await _Db.SaveChangesAsync();
+                
+
+                //TODO: alert user that it worked
+                return Redirect("/pilot-select");
+            }
+            else if (!pilot.IsLinked() || pilot.AccountId == int.Parse(User.FindFirst("id").Value))
+            {
+                await EsiWrapper.GetPilot(pilot.Id);
+                pilot.AccountId = int.Parse(User.FindFirst("id").Value);
+                pilot.Name = account["name"].ToString();
+                pilot.CorporationId = corporation_id;
+                pilot.ESIToken = refresh_token;
+                pilot.UpdatedAt = DateTime.UtcNow;
+
+                _Db.Update(pilot);
+                await _Db.SaveChangesAsync();
+
+                //TODO: alert user that it worked
+                return Redirect("/pilot-select");
+            }
+
+            //TODO: alert user that it failed
+            return Redirect("/pilot-select");
         }
     }
 }

@@ -74,7 +74,7 @@ namespace Imperium_Incursions_Waitlist.Migrations
 
                     b.Property<int>("AccountId");
 
-                    b.Property<int>("CorpId");
+                    b.Property<long>("CorporationId");
 
                     b.Property<string>("ESIToken");
 
