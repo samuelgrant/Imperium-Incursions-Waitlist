@@ -4,6 +4,7 @@ using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Internal;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
@@ -70,7 +71,9 @@ namespace Imperium_Incursions_Waitlist
             // For authorisation and Authentication
             app.UseCookiePolicy();
             app.UseSession();
+            app.UseEndpointRouting();
             app.UseAuthentication();
+            app.UsePreferredPilotMiddleware();
 
             app.UseMvc(routes =>
             {
