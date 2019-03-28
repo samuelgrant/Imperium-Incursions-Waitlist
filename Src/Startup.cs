@@ -87,8 +87,8 @@ namespace Imperium_Incursions_Waitlist
                 );
                 routes.MapRoute(
                     name: "pilotSelect",
-                    template: "/pilot-select",
-                    defaults: new {controller = "Eve", action = "Index"}
+                    template: "/pilot-select/{action=Index}/{id?}",
+                    defaults: new {controller = "PilotSelect"}
                 );
             });
         }

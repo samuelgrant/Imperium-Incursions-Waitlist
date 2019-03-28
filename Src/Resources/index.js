@@ -10,6 +10,7 @@ import './js/Bootstrap/index';
 
 /* React */
 import './js/React/example';
+import './js/React/PilotSelect';
 
 /* Theme */
 import './js/app.min';

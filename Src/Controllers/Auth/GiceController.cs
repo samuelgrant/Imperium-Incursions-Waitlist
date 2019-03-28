@@ -151,6 +151,9 @@ namespace Imperium_Incursions_Waitlist.Controllers
             // Log the user out of our application
             await HttpContext.SignOutAsync();
 
+            // Delete special cookies
+            Response.Cookies.Delete("prefPilot");
+
             // Redirect to goonswarm for GICE logout.
             //return Redirect("https://esi.goonfleet.com/oauth/revoke");
 

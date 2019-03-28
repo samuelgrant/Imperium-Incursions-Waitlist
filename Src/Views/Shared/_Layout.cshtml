@@ -8,6 +8,8 @@
     <meta name="keywords" content="Eve Online, Imperium Incursions Squad, Incursions, Waitlist">
     <meta name="description" content="The Waitlist for the Imperium Incursion Squad. Login to the waitlist to join our fleets.">
     <meta name="author" content="Samuel Grant, samuel_the_terrible, Caitlin Viliana">
+    <meta name="csrf-token" content="">
+
     <!-- Stop Google from automatically detecting the page language -->
     <meta name="google" content="notranslate">
 
@@ -19,49 +21,51 @@
     <link rel="shortcut icon" href="~/favicon.ico" />
     <meta name="theme-color" content="#d67500" />
 </head>
-    <body data-sa-theme="1" style="background-image: url('/images/main.jpg');">
-        <main class="main">
-            <!-- Page loading animation -->
-            <div class="page-loader">
-                <div class="page-loader__spinner">
-                    <svg viewBox="25 25 50 50">
-                        <circle cx="50" cy="50" r="20" fill="none" stroke-width="2" stroke-miterlimit="10" />
-                    </svg>
-                </div>
+<body data-sa-theme="1" style="background-image: url('/images/main.jpg');">
+    <main class="main">
+        <!-- Page loading animation -->
+        <div class="page-loader">
+            <div class="page-loader__spinner">
+                <svg viewBox="25 25 50 50">
+                    <circle cx="50" cy="50" r="20" fill="none" stroke-width="2" stroke-miterlimit="10" />
+                </svg>
             </div>
-            <!-- Page loading animation -->          
+        </div>
+        <!-- Page loading animation -->
 
-            @{ await Html.RenderPartialAsync("_Nav.cshtml");}
+        @{ await Html.RenderPartialAsync("_Nav.cshtml"); }
 
-            <!-- Main Page -->
-            <section class="content content--full">
-                <div class="content__inner">
+        <!-- Main Page -->
+        <section class="content content--full">
+            <div class="content__inner">
 
-                    <!-- Body Content -->
-                    <div class="row quick-stats">
-                        @RenderBody()
-                    </div>
-                    <!-- End Body Content -->
-                    
-                    <!-- Footer -->
-                    <footer class="footer hidden-xs-down">
-                        <p>Imperium Incursions &copy; 2019. All rights reserved.</p>
-                        <ul class="nav footer__nav">
-                            <a class="nav-link" href="https://goonfleet.com/index.php/topic/258379-incursion-squad-rules-policies/" target="_blank">Squad Rules</a>
-                            <a class="nav-link" href="https://goonfleet.com/index.php/topic/261158-incursion-squad-fittings/" target="_blank">Squad Fittings</a>
-                            <a class="nav-link" href="https://goonfleet.com/index.php/topic/259285-new-pilot-guide/" target="_blank">New Pliot Guide</a>
-                            <a class="nav-link" href="">Legal Disclaimer</a>
-                            <a class="nav-link" href="">FC Team</a>
-                        </ul>
-                    </footer>
-                    <!-- End Footer -->
+                <!-- Body Content -->
+                <div class="quick-stats">
+                    @RenderBody()
                 </div>
-            </section>
-            <!-- End Main Page -->
-        </main>
+                <!-- End Body Content -->
+                <!-- Footer -->
+                <footer class="footer hidden-xs-down">
+                    <p>Imperium Incursions &copy; 2019. All rights reserved.</p>
+                    <ul class="nav footer__nav">
+                        <a class="nav-link" href="https://goonfleet.com/index.php/topic/258379-incursion-squad-rules-policies/" target="_blank">Squad Rules</a>
+                        <a class="nav-link" href="https://goonfleet.com/index.php/topic/261158-incursion-squad-fittings/" target="_blank">Squad Fittings</a>
+                        <a class="nav-link" href="https://goonfleet.com/index.php/topic/259285-new-pilot-guide/" target="_blank">New Pliot Guide</a>
+                        <a class="nav-link" href="">Legal Disclaimer</a>
+                        <a class="nav-link" href="">FC Team</a>
+                    </ul>
+                </footer>
+                <!-- End Footer -->
+            </div>
+        </section>
+        <!-- End Main Page -->
+    </main>
 
-        <!-- Site Javascript & React -->
-        <script src="https://code.jquery.com/jquery-3.3.1.min.js" integrity="sha256-FgpCb/KJQlLNfOu91ta32o/NMZxltwRo8QtmkMRdAu8=" crossorigin="anonymous"></script>
-        <script src="~/dist/bundle.js"></script>
-    </body>
+    <!-- Site Javascript & React -->
+    <script src="https://code.jquery.com/jquery-3.3.1.min.js" integrity="sha256-FgpCb/KJQlLNfOu91ta32o/NMZxltwRo8QtmkMRdAu8=" crossorigin="anonymous"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/jquery.scrollbar/0.2.11/jquery.scrollbar.css" />
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery.scrollbar/0.2.11/jquery.scrollbar.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/jquery-scroll-lock@3.1.3/jquery-scrollLock.min.js"></script>
+    <script src="~/dist/bundle.js"></script>
+</body>
 </html>

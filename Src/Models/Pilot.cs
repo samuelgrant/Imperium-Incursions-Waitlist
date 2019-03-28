@@ -4,6 +4,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
+using Newtonsoft.Json;
 
 namespace Imperium_Incursions_Waitlist.Models
 {
@@ -22,7 +23,16 @@ namespace Imperium_Incursions_Waitlist.Models
         public long CorporationId { get; set; }
 
         [Display(Name = "ESI Token")]
+        [JsonIgnore]
         public string ESIToken { get; set; }
+
+        [NotMapped]
+        public bool ESIValid
+        {
+            get {
+                return (ESIToken != null) ? true : false ;
+            }
+        }
 
         [Display(Name = "Registered At"), DataType(DataType.Date)]
         [DisplayFormat(DataFormatString = "{0:dd-MM-yyyy}")]
