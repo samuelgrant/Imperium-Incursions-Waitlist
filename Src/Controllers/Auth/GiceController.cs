@@ -139,8 +139,7 @@ namespace Imperium_Incursions_Waitlist.Controllers
             // TODO: Return redirect to index
             await LoginUserUsingId(waitlist_account.Id);
 
-            return Redirect("~/");
-            
+            return Redirect("~/pilot-select");            
         }
 
         [Authorize]

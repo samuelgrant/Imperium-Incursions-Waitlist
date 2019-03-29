@@ -16,18 +16,22 @@ public class PreferredPilotMiddleware
     {
         string requestController = context.GetRouteData().Values["controller"].ToString();
 
-        
         // The following controllers bypass this middleware as they need to be able to work in order to allow a pilot to be selected
-        // 1) PilotSelectController, 2) EveController, 3) GiceController, as well as 4) Unauthenticated users
+        // 1) PilotSelectController, 2) EveController, 3) GiceController, as well as 4) Unauthenticated users.
         if (context.User.FindFirst("id") == null || requestController == "PilotSelect" || requestController == "Eve" || requestController == "Gice")
+        {
             await _next.Invoke(context);
-
+        }
         // If a preferred pilot is not selected 
         // redirect to the SelectPilot.cshtml view.
-        if (context.Request.Cookies["prefPilot"] == null)
+        else if (context.Request.Cookies["prefPilot"] == null)
+        {
             context.Response.Redirect("/pilot-select");
-
-        await _next.Invoke(context);
+        }
+        else
+        {
+            await _next.Invoke(context);
+        }
     }
 }
 
