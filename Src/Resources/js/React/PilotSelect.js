@@ -22,11 +22,10 @@ export default class PilotSelect extends Component {
             url: '/pilot-select/pilots',
             //headers: { 'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content') }
         }).done((pilots) => {
-            this.setState({ pilots: pilots, ready: true });
+            this.setState({ pilots: pilots });
         }).fail((err) => {
             console.error(`React/PilotSelect {PilotSelect@getData} - Error getting your main pilots`, err);
         })
-        
     }
 
     getPilots() {
@@ -76,10 +75,7 @@ export class LoginCard extends Component {
     }
 
     isEsiVaild() {
-        if (!!this.props.pilot && this.props.pilot.esiValid)
-            return true;
-
-        return false;
+        return (!!this.props.pilot && this.props.pilot.esiValid) ? true : false;
     }
 
     setMainPilot(character_id) {
@@ -91,8 +87,6 @@ export class LoginCard extends Component {
                     location.href = '/';
                 }
             }
-        }).done((data) => {
-            console.log("S")
         }).fail((err) => {
             console.error(`React/PilotSelect {LoginCard@setMainPilot} - Error setting your main pilot`, err);
         });

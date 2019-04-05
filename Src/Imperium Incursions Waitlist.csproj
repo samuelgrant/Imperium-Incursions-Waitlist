@@ -28,6 +28,7 @@
 
 
   <ItemGroup>
+    <Folder Include="Logs\" />
     <Folder Include="Migrations\" />
     <Folder Include="wwwroot\dist\" />
     <Folder Include="Models\" />

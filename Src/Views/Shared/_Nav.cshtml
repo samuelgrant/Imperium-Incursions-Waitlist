@@ -4,7 +4,7 @@
         string[] pilot = Context.Request.Cookies["prefPilot"].Split(':');
 
         <!-- Top Navbar -->
-        <header class="header">
+        <header class="header  header--scrolled">
             <div class="navigation-trigger" data-sa-action="aside-open" data-sa-target=".sidebar">
                 <i class="fas fa-bars"></i>
             </div>
@@ -13,24 +13,15 @@
             </div>
             <form class="search">
                 <div class="search__inner">
-                    <input type="text" class="search__text" placeholder="Search for pilot or accounts...">
-                    <i class="fas fa-search search__helper"></i>
+                    @if (true)
+                    {
+                        <input type="text" class="search__text" accesskey="s" placeholder="Search by pilot or account name...">
+                        <i class="fas fa-search search__helper"></i>
+                    }
                 </div>
             </form>
-            <div class="clock hidden-md-down">
-                <div class="time">
-                    <span class="time__hours"></span>
-                    <span class="time__min"></span>
-                    <span class="time__sec"></span>
-                </div>
-            </div>
-            <div class="clock hidden-md-down">
-                <div class="time">
-                    <span class="time__hours"></span>
-                    <span class="time__min"></span>
-                    <span class="time__sec"></span>
-                </div>
-            </div>
+            <div id="tqStatus"></div>
+            <div id="tqClock"></div>
         </header>
         <!-- End Top Navbar -->
         <!-- Side Navbar -->

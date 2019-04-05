@@ -54,8 +54,7 @@ namespace Imperium_Incursions_Waitlist.Controllers.Auth
 
             CookieOptions options = new CookieOptions
             {
-                IsEssential = true
-                
+                IsEssential = true   
             };
 
             Response.Cookies.Append("prefPilot", pilot.Id + ":" + pilot.Name, options);

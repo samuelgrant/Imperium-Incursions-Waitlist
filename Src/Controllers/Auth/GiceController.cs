@@ -1,20 +1,22 @@
-﻿using DotNetEnv;
+﻿using System;
+using DotNetEnv;
 using System.Net;
 using System.Text;
+using Newtonsoft.Json;
+using System.Threading.Tasks;
+using System.Security.Claims;
+using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Http;
+using System.Collections.Generic;
+using Microsoft.Extensions.Logging;
 using System.Collections.Specialized;
 using System.IdentityModel.Tokens.Jwt;
-using System.Threading.Tasks;
-using Microsoft.AspNetCore.Http;
-using Microsoft.AspNetCore.Mvc;
-using Imperium_Incursions_Waitlist.Services;
-using Newtonsoft.Json;
 using Microsoft.AspNetCore.Authorization;
-using System;
 using Imperium_Incursions_Waitlist.Models;
 using Microsoft.AspNetCore.Authentication;
-using System.Collections.Generic;
-using System.Security.Claims;
+using Imperium_Incursions_Waitlist.Services;
 using Microsoft.AspNetCore.Authentication.Cookies;
+
 
 namespace Imperium_Incursions_Waitlist.Controllers
 {
@@ -23,11 +25,13 @@ namespace Imperium_Incursions_Waitlist.Controllers
     {
         private Data.WaitlistDataContext _Db;
         private IPAddress _RequestorIP;
+        private ILogger _Logger;
 
-        public GiceController(Data.WaitlistDataContext db, IHttpContextAccessor clientAccessor)
+        public GiceController(Data.WaitlistDataContext db, IHttpContextAccessor clientAccessor, ILogger<GiceController> logger)
         {
             _Db = db;
             _RequestorIP = clientAccessor.HttpContext.Connection.RemoteIpAddress;
+            _Logger = logger;
         }
 
         /// <summary>
@@ -70,14 +74,14 @@ namespace Imperium_Incursions_Waitlist.Controllers
             // Verify a code and state query parameter was returned.
             if (code == null || state == null)
             {
-                Log.Error(string.Format("GiceController@Callback - Callback Error one or more query paramaters were missing\nState: {0}\nCode: {1}", state, code));
+                _Logger.LogWarningFormat("GICE Callback Error: One or more of the query parameters are missing. State: {0}. Code: {1}", state, code);
                 return StatusCode(452);
             }
 
             // Verify the state to protect against CSRF attacks.
             if (HttpContext.Session.GetString("state") != state)
             {
-                Log.Warn("GiceController@Callback - State query paramater does not match session value, aborting!");
+                _Logger.LogWarning("GICE Callback Error: Invalid state returned.");
                 HttpContext.Session.Remove("state");
                 return StatusCode(452);
             }
@@ -134,10 +138,8 @@ namespace Imperium_Incursions_Waitlist.Controllers
             }
 
             // Attempt to log the user in
-            // For testing purposes redirect to view
-            // With different information for login or failed login
-            // TODO: Return redirect to index
             await LoginUserUsingId(waitlist_account.Id);
+            _Logger.LogDebugFormat("{0} has logged in.", account["name"].ToString());
 
             return Redirect("~/pilot-select");            
         }
@@ -145,7 +147,7 @@ namespace Imperium_Incursions_Waitlist.Controllers
         [Authorize]
         public async Task<string> Logout()
         {
-            Log.Info(string.Format("GiceController@Callback - Ended the authentication session for {0}", User.Identity.Name));
+            _Logger.LogDebugFormat("{0} has logged out.", User.FindFirst("name").Value);
 
             // Log the user out of our application
             await HttpContext.SignOutAsync();

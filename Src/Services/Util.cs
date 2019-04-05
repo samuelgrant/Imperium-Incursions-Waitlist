@@ -43,7 +43,5 @@ namespace Imperium_Incursions_Waitlist.Services
 
             return System.Convert.ToBase64String(bytes);
         }
-
-        
     }
 }

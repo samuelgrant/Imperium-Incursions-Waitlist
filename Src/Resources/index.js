@@ -10,7 +10,13 @@ import './js/Bootstrap/index';
 
 /* React */
 import './js/React/example';
+
+/* REACT -> Pilot Select Page */
 import './js/React/PilotSelect';
+
+/* REACT -> Navbar */
+import './js/React/TqClock';
+import './js/React/TqStatus';
 
 /* Theme */
 import './js/app.min';

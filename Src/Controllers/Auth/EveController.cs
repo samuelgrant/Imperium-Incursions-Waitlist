@@ -7,6 +7,7 @@ using Imperium_Incursions_Waitlist.Services;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.Logging;
 using Newtonsoft.Json;
 
 namespace Imperium_Incursions_Waitlist.Controllers
@@ -14,9 +15,14 @@ namespace Imperium_Incursions_Waitlist.Controllers
     [Authorize]
     public class EveController : Controller
     {
+        private ILogger _Logger;
         private Data.WaitlistDataContext _Db;
 
-        public EveController(Data.WaitlistDataContext db) => _Db = db;
+        public EveController(Data.WaitlistDataContext db, ILogger<EveController> logger)
+        {
+            _Db = db;
+            _Logger = logger;
+        }
         
         /// <summary>
         /// Initiates Eve SSO workflow
@@ -56,14 +62,14 @@ namespace Imperium_Incursions_Waitlist.Controllers
             // Verify a code and state query parameter was returned.
             if (code == null || state == null)
             {
-                Log.Error(string.Format("GiceController@Callback - Callback Error one or more query paramaters were missing\nState: {0}\nCode: {1}", state, code));
+                _Logger.LogWarningFormat("Eve Callback Error: One or more of the query parameters are missing. State: {0}. Code: {1}", state, code);
                 return StatusCode(452);
             }
 
             // Verify the state to protect against CSRF attacks.
             if (HttpContext.Session.GetString("state") != state)
             {
-                Log.Warn("GiceController@Callback - State query paramater does not match session value, aborting!");
+                _Logger.LogWarning("Eve Callback Error: Invalid state returned.");
                 HttpContext.Session.Remove("state");
                 return StatusCode(452);
             }
@@ -119,7 +125,8 @@ namespace Imperium_Incursions_Waitlist.Controllers
 
                 _Db.Add(pilot);
                 await _Db.SaveChangesAsync();
-                
+
+                _Logger.LogDebugFormat("{0} has linked the pilot {1} to their account.", User.FindFirst("name").Value, pilot.Name);
 
                 //TODO: alert user that it worked
                 return Redirect("/pilot-select");
@@ -136,10 +143,13 @@ namespace Imperium_Incursions_Waitlist.Controllers
                 _Db.Update(pilot);
                 await _Db.SaveChangesAsync();
 
+                _Logger.LogDebugFormat("{0} has updated the pilot {1} that is linked to their account.", User.FindFirst("name").Value, pilot.Name);
+
                 //TODO: alert user that it worked
                 return Redirect("/pilot-select");
             }
 
+            _Logger.LogDebugFormat("{0} has tried to link {1} to their account, however it is linked to someone else’s account.");
             //TODO: alert user that it failed
             return Redirect("/pilot-select");
         }

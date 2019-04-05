@@ -10,45 +10,19 @@ $(window).on('load', function () {
 });
 
 /*------------------------------------------------
-    Header
+    Header -- Tmp remoed so the navbar stays dark
 -------------------------------------------------*/
-$(window).on('scroll', function() {
-    var scroll = $(window).scrollTop();
-    if (scroll >= 20) {
-        $('.header').addClass('header--scrolled');
-    } else {
-        $('.header').removeClass('header--scrolled');
-    }
-});
+//$(window).on('scroll', function() {
+//    var scroll = $(window).scrollTop();
+//    if (scroll >= 20) {
+//        $('.header').addClass('header--scrolled');
+//    } else {
+//        $('.header').removeClass('header--scrolled');
+//    }
+//});
 
 
 $(document).ready(function () {
-
-    /*------------------------------------------------
-        Clock
-    -------------------------------------------------*/
-    if($('.clock')[0]) {
-        var newDate = new Date();
-        newDate.setDate(newDate.getDate());
-
-        setInterval( function() {
-            var seconds = new Date().getSeconds();
-            $('.time__sec').html(( seconds < 10 ? '0' : '' ) + seconds);
-        },1000);
-
-        setInterval( function() {
-            var minutes = new Date().getMinutes();
-            $('.time__min').html(( minutes < 10 ? '0' : '' ) + minutes);
-        },1000);
-
-        setInterval( function() {
-            var hours = new Date().getHours();
-            $('.time__hours').html(( hours < 10 ? '0' : '' ) + hours);
-        }, 1000);
-    }
-
-
-
     /*------------------------------------------------
         Search
     -------------------------------------------------*/

@@ -9417,7 +9417,7 @@ button, input, optgroup, select, textarea {
         color: rgba(255,255,255,.85);
         -webkit-transform: rotate(180deg);
         transform: rotate(180deg);
-        line-height: 2.9rem
+        line-height: 3.9rem
     }
 
     .search__helper:before {
@@ -9455,11 +9455,11 @@ button, input, optgroup, select, textarea {
 .search--focus .search__helper {
     -webkit-transform: rotate(180deg);
     transform: rotate(180deg);
-    line-height: 2.9rem
+    line-height: 2.9rem;
 }
 
 .search--focus .search__helper:before {
-    content: '\f301'
+    content: '\f356'
 }
 
 .app-shortcuts {
