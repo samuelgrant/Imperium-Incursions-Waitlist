@@ -9,14 +9,16 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Logging;
 
 namespace Imperium_Incursions_Waitlist
 {
     public class Startup
     {
-        public Startup(IConfiguration configuration)
+        public Startup(IConfiguration configuration, ILoggerFactory logFactory)
         {
             Configuration = configuration;
+            Services.ApplicationLogging.LoggerFactory = logFactory;
         }
 
         public IConfiguration Configuration { get; }
