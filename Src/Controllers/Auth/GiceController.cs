@@ -1,22 +1,22 @@
 ﻿using System;
-using DotNetEnv;
 using System.Net;
 using System.Text;
-using Newtonsoft.Json;
 using System.Threading.Tasks;
 using System.Security.Claims;
+using System.Collections.Generic;
+using System.Collections.Specialized;
+
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Http;
-using System.Collections.Generic;
 using Microsoft.Extensions.Logging;
-using System.Collections.Specialized;
-using System.IdentityModel.Tokens.Jwt;
 using Microsoft.AspNetCore.Authorization;
-using Imperium_Incursions_Waitlist.Models;
 using Microsoft.AspNetCore.Authentication;
-using Imperium_Incursions_Waitlist.Services;
 using Microsoft.AspNetCore.Authentication.Cookies;
 
+using DotNetEnv;
+using Newtonsoft.Json;
+using Imperium_Incursions_Waitlist.Models;
+using Imperium_Incursions_Waitlist.Services;
 
 namespace Imperium_Incursions_Waitlist.Controllers
 {
@@ -103,18 +103,23 @@ namespace Imperium_Incursions_Waitlist.Controllers
             // Convert a JSON String into a usable object
             var data = Encoding.Default.GetString(response);
             var model = JsonConvert.DeserializeObject<dynamic>(data);
-            string acess_token = model["access_token"].Value;
+            string access_token = model["access_token"].Value;
 
-            //Decode the JWT Token.
-            var account = new JwtSecurityToken(jwtEncodedString: acess_token).Payload;
+            // Vlidate and Decode the JWT token
+            Dictionary<string, string> user = await Util.JwtVerify("https://esi.goonfleet.com/", "https://esi.goonfleet.com/", access_token);
+            if(user.Count == 0)
+            {
+                _Logger.LogWarningFormat("GICE Callback Error: The JwtVerify method failed.");
+                return StatusCode(452);
+            }
 
             // Do we have an account for this GSF User?
-            int gice_id = int.Parse(account["sub"].ToString());
+            int gice_id = int.Parse(user["sub"]);
             var waitlist_account = await _Db.Accounts.FindAsync(gice_id);
             if(waitlist_account != null)
             {
                 // Update and save user account
-                waitlist_account.Name = account["name"].ToString();
+                waitlist_account.Name = user["name"];
                 waitlist_account.LastLogin = DateTime.UtcNow;
                 waitlist_account.LastLoginIP = _RequestorIP.MapToIPv4().ToString();
 
@@ -126,8 +131,8 @@ namespace Imperium_Incursions_Waitlist.Controllers
                 // User doesn't exist, create a new account
                 waitlist_account = new Account()
                 {
-                    Id = int.Parse(account["sub"].ToString()),
-                    Name = account["name"].ToString(),
+                    Id = gice_id,
+                    Name = user["name"],
                     RegisteredAt = DateTime.UtcNow,
                     LastLogin = DateTime.UtcNow,
                     LastLoginIP = _RequestorIP.MapToIPv4().ToString()
@@ -139,7 +144,7 @@ namespace Imperium_Incursions_Waitlist.Controllers
 
             // Attempt to log the user in
             await LoginUserUsingId(waitlist_account.Id);
-            _Logger.LogDebugFormat("{0} has logged in.", account["name"].ToString());
+            _Logger.LogDebugFormat("{0} has logged in.", user["name"]);
 
             return Redirect("~/pilot-select");            
         }
