@@ -1,37 +1,43 @@
-﻿using DotNetEnv;
+﻿using System;
 using System.Net;
 using System.Text;
-using System.Collections.Specialized;
-using System.IdentityModel.Tokens.Jwt;
 using System.Threading.Tasks;
-using Microsoft.AspNetCore.Http;
-using Microsoft.AspNetCore.Mvc;
-using Imperium_Incursions_Waitlist.Services;
-using Newtonsoft.Json;
-using Microsoft.AspNetCore.Authorization;
-using System;
-using Imperium_Incursions_Waitlist.Models;
-using Microsoft.AspNetCore.Authentication;
-using System.Collections.Generic;
 using System.Security.Claims;
+using System.Collections.Generic;
+using System.Collections.Specialized;
+
+using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Http;
+using Microsoft.Extensions.Logging;
+using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authentication.Cookies;
+
+using DotNetEnv;
+using Newtonsoft.Json;
+using Imperium_Incursions_Waitlist.Models;
+using Imperium_Incursions_Waitlist.Services;
 
 namespace Imperium_Incursions_Waitlist.Controllers
 {
+    [Authorize]
     public class GiceController : Controller
     {
         private Data.WaitlistDataContext _Db;
         private IPAddress _RequestorIP;
+        private ILogger _Logger;
 
-        public GiceController(Data.WaitlistDataContext db, IHttpContextAccessor clientAccessor)
+        public GiceController(Data.WaitlistDataContext db, IHttpContextAccessor clientAccessor, ILogger<GiceController> logger)
         {
             _Db = db;
             _RequestorIP = clientAccessor.HttpContext.Connection.RemoteIpAddress;
+            _Logger = logger;
         }
 
         /// <summary>
         /// Initiates GICE SSO workflow
         /// </summary>
+        [AllowAnonymous]
         public ActionResult Go()
         {
             Env.Load();
@@ -61,20 +67,21 @@ namespace Imperium_Incursions_Waitlist.Controllers
         /// <summary>
         /// Handles the GICE SSO callback.
         /// </summary>
+        [AllowAnonymous]
         [ActionName("callback")]
         public async Task<IActionResult> Callback(string code, string state)
         {
             // Verify a code and state query parameter was returned.
             if (code == null || state == null)
             {
-                Log.Error(string.Format("GiceController@Callback - Callback Error one or more query paramaters were missing\nState: {0}\nCode: {1}", state, code));
+                _Logger.LogWarningFormat("GICE Callback Error: One or more of the query parameters are missing. State: {0}. Code: {1}", state, code);
                 return StatusCode(452);
             }
 
             // Verify the state to protect against CSRF attacks.
             if (HttpContext.Session.GetString("state") != state)
             {
-                Log.Warn("GiceController@Callback - State query paramater does not match session value, aborting!");
+                _Logger.LogWarning("GICE Callback Error: Invalid state returned.");
                 HttpContext.Session.Remove("state");
                 return StatusCode(452);
             }
@@ -96,18 +103,23 @@ namespace Imperium_Incursions_Waitlist.Controllers
             // Convert a JSON String into a usable object
             var data = Encoding.Default.GetString(response);
             var model = JsonConvert.DeserializeObject<dynamic>(data);
-            string acess_token = model["access_token"].Value;
+            string access_token = model["access_token"].Value;
 
-            //Decode the JWT Token.
-            var account = new JwtSecurityToken(jwtEncodedString: acess_token).Payload;
+            // Vlidate and Decode the JWT token
+            Dictionary<string, string> user = await Util.JwtVerify("https://esi.goonfleet.com/", "https://esi.goonfleet.com/", access_token);
+            if(user.Count == 0)
+            {
+                _Logger.LogWarningFormat("GICE Callback Error: The JwtVerify method failed.");
+                return StatusCode(452);
+            }
 
             // Do we have an account for this GSF User?
-            int gice_id = int.Parse(account["sub"].ToString());
+            int gice_id = int.Parse(user["sub"]);
             var waitlist_account = await _Db.Accounts.FindAsync(gice_id);
             if(waitlist_account != null)
             {
                 // Update and save user account
-                waitlist_account.Name = account["name"].ToString();
+                waitlist_account.Name = user["name"];
                 waitlist_account.LastLogin = DateTime.UtcNow;
                 waitlist_account.LastLoginIP = _RequestorIP.MapToIPv4().ToString();
 
@@ -119,8 +131,8 @@ namespace Imperium_Incursions_Waitlist.Controllers
                 // User doesn't exist, create a new account
                 waitlist_account = new Account()
                 {
-                    Id = int.Parse(account["sub"].ToString()),
-                    Name = account["name"].ToString(),
+                    Id = gice_id,
+                    Name = user["name"],
                     RegisteredAt = DateTime.UtcNow,
                     LastLogin = DateTime.UtcNow,
                     LastLoginIP = _RequestorIP.MapToIPv4().ToString()
@@ -131,22 +143,22 @@ namespace Imperium_Incursions_Waitlist.Controllers
             }
 
             // Attempt to log the user in
-            // For testing purposes redirect to view
-            // With different information for login or failed login
-            // TODO: Return redirect to index
             await LoginUserUsingId(waitlist_account.Id);
+            _Logger.LogDebugFormat("{0} has logged in.", user["name"]);
 
-            return Redirect("~/");
-            
+            return Redirect("~/pilot-select");            
         }
 
         [Authorize]
         public async Task<string> Logout()
         {
-            Log.Info(string.Format("GiceController@Callback - Ended the authentication session for {0}", User.Identity.Name));
+            _Logger.LogDebugFormat("{0} has logged out.", User.FindFirst("name").Value);
 
             // Log the user out of our application
             await HttpContext.SignOutAsync();
+
+            // Delete special cookies
+            Response.Cookies.Delete("prefPilot");
 
             // Redirect to goonswarm for GICE logout.
             //return Redirect("https://esi.goonfleet.com/oauth/revoke");
@@ -155,6 +167,7 @@ namespace Imperium_Incursions_Waitlist.Controllers
         }
 
         // DO NOT KEEP THIS METHOD IN PRODUCTION!!!!!!!!!!!!!!!	
+        [AllowAnonymous]
         public async Task<IActionResult> LoginWithId(int id)
         {
             if (Environment.GetEnvironmentVariable("ASPNETCORE_ENVIRONMENT") == "Development")

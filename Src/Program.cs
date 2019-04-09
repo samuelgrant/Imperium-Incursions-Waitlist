@@ -16,10 +16,8 @@ namespace Imperium_Incursions_Waitlist
     {
         public static void Main(string[] args)
         {
-            // Remove old log files at 00:00 UTC
-            Task.IntervalInDays(00, 00, 1, () => { Log.PurgeOldLogs(); });
-
             var host = CreateWebHostBuilder(args).Build();
+            var logger = host.Services.GetRequiredService<ILogger<Program>>();
 
             // Run seeder if application in development mode
             if(Environment.GetEnvironmentVariable("ASPNETCORE_ENVIRONMENT") == "Development")
@@ -31,11 +29,11 @@ namespace Imperium_Incursions_Waitlist
                     {
                         var context = services.GetRequiredService<WaitlistDataContext>();
                         DBInitializer.Initialize(context);
-                        Log.Debug("Accounts table seeded.");
+                        logger.LogDebug("Accounts table seeded");
                     }
                     catch (Exception ex)
                     {
-                        Log.Debug("Error seeding Accounts table. Error: " + ex.Message);
+                        logger.LogDebugFormat("Error seeding accounts table: {0}", ex.Message);
                     }
                 }
             }           
@@ -45,6 +43,12 @@ namespace Imperium_Incursions_Waitlist
 
         public static IWebHostBuilder CreateWebHostBuilder(string[] args) =>
             WebHost.CreateDefaultBuilder(args)
+                .ConfigureLogging((hostingContext, logging) => 
+                {
+                    logging.AddConsole();
+                    logging.AddDebug();
+                    logging.AddEventSourceLogger();
+                })
                 .UseStartup<Startup>();
     }
 }

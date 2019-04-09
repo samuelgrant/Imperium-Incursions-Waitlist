@@ -4,18 +4,21 @@ using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Internal;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Logging;
 
 namespace Imperium_Incursions_Waitlist
 {
     public class Startup
     {
-        public Startup(IConfiguration configuration)
+        public Startup(IConfiguration configuration, ILoggerFactory logFactory)
         {
             Configuration = configuration;
+            Services.ApplicationLogging.LoggerFactory = logFactory;
         }
 
         public IConfiguration Configuration { get; }
@@ -70,7 +73,9 @@ namespace Imperium_Incursions_Waitlist
             // For authorisation and Authentication
             app.UseCookiePolicy();
             app.UseSession();
+            app.UseEndpointRouting();
             app.UseAuthentication();
+            app.UsePreferredPilotMiddleware();
 
             app.UseMvc(routes =>
             {
@@ -79,11 +84,16 @@ namespace Imperium_Incursions_Waitlist
                     template: "/auth/{controller}/{action=Go}/{id?}");
                 routes.MapRoute(
                     name: "default",
-                    template: "{controller=Home}/{action=Index}/{id?}");
+                    template: "/{controller=Home}/{action=Index}/{id?}");
                 routes.MapRoute(
                     name: "error",
                     template: "/error",
                     defaults: new {controller = "Error", action = "Render"}
+                );
+                routes.MapRoute(
+                    name: "pilotSelect",
+                    template: "/pilot-select/{action=Index}/{id?}",
+                    defaults: new {controller = "PilotSelect"}
                 );
             });
         }

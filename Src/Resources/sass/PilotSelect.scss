@@ -1,0 +1,47 @@
+﻿.card.login-card {
+    background-color: rgba(0, 0, 0, 0.6);
+    margin-left: 10px;
+    margin-right: 10px;
+}
+
+.content__title > h1 {
+    text-transform: uppercase;
+    font-size: 28px;
+    color: white;
+}
+
+.content__title > h3 {
+    color: whitesmoke;
+}
+
+
+.login-avatar {
+    margin-top: 0px;
+    margin-left: 0px;
+    margin-right: 0px;
+}
+
+.login-card {
+    max-width: 256px;
+}
+
+.login-name {
+    text-align: center;
+    font-size: 22px;
+    margin-top: 20px;
+}
+
+.login-esi {
+    text-align: center;
+    font-size: 15px;
+    text-transform: uppercase;
+    font-weight: bold;
+}
+
+.login-unlink {
+    cursor: pointer;
+}
+
+.login-unlink:hover {
+    text-decoration: underline;
+}

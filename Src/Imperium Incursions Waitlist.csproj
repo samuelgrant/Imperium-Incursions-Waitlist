@@ -6,9 +6,15 @@
     <RootNamespace>Imperium_Incursions_Waitlist</RootNamespace>
   </PropertyGroup>
 
+  <ItemGroup>
+    <Content Include="Resources\js\Libraries\Theme\app.js" />
+    <Content Include="Resources\js\Libraries\Theme\vendors.js" />
+  </ItemGroup>
+
 
   <ItemGroup>
     <PackageReference Include="DotNetEnv" Version="1.2.0" />
+    <PackageReference Include="ESI.NET" Version="2.12.13" />
     <PackageReference Include="Microsoft.AspNetCore.App" />
     <PackageReference Include="Microsoft.AspNetCore.Authentication.OpenIdConnect" Version="2.2.0" />
     <PackageReference Include="Microsoft.AspNetCore.Razor.Design" Version="2.2.0" PrivateAssets="All" />
@@ -22,6 +28,8 @@
 
 
   <ItemGroup>
+    <Folder Include="Logs\" />
+    <Folder Include="Migrations\" />
     <Folder Include="wwwroot\dist\" />
     <Folder Include="Models\" />
   </ItemGroup>

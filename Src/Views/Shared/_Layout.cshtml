@@ -8,6 +8,8 @@
     <meta name="keywords" content="Eve Online, Imperium Incursions Squad, Incursions, Waitlist">
     <meta name="description" content="The Waitlist for the Imperium Incursion Squad. Login to the waitlist to join our fleets.">
     <meta name="author" content="Samuel Grant, samuel_the_terrible, Caitlin Viliana">
+    <meta name="csrf-token" content="">
+
     <!-- Stop Google from automatically detecting the page language -->
     <meta name="google" content="notranslate">
 
@@ -15,14 +17,92 @@
 
     <!-- Styles -->
     <link rel="stylesheet" href="~/dist/bundle.css" />
+    <link rel="stylesheet" href="https://pro.fontawesome.com/releases/v5.8.1/css/all.css" integrity="sha384-Bx4pytHkyTDy3aJKjGkGoHPt3tvv6zlwwjc3iqN7ktaiEMLDPqLSZYts2OjKcBx1" crossorigin="anonymous">
     <link rel="shortcut icon" href="~/favicon.ico" />
     <meta name="theme-color" content="#d67500" />
 </head>
-    <body>
-        
-        @RenderBody()
+<body data-sa-theme="1" style="background-image: url('/images/main.jpg');">
+    <main class="main">
+        <!-- Page loading animation -->
+        <div class="page-loader">
+            <div class="page-loader__spinner">
+                <svg viewBox="25 25 50 50">
+                    <circle cx="50" cy="50" r="20" fill="none" stroke-width="2" stroke-miterlimit="10" />
+                </svg>
+            </div>
+        </div>
+        <!-- Page loading animation -->
 
-        <!-- Site Javascript & React -->
-        <script src="~/dist/bundle.js"></script>
-    </body>
+        @{ await Html.RenderPartialAsync("_Nav.cshtml"); }
+
+        <!-- Main Page -->
+        <section class="content content--full">
+            <div class="content__inner">
+
+                <!-- Body Content -->
+                <div class="quick-stats">
+                    @RenderBody()
+                </div>
+                <!-- End Body Content -->
+                <!-- Footer -->
+                <footer class="footer hidden-xs-down">
+                    <p>Imperium Incursions &copy; 2019. All rights reserved.</p>
+                    <ul class="nav footer__nav">
+                        <li>
+                            <a class="nav-link" href="https://goonfleet.com/index.php/topic/258379-incursion-squad-rules-policies/" target="_blank">Squad Rules</a>
+                        </li>
+                        <li>
+                            <a class="nav-link" href="https://goonfleet.com/index.php/topic/261158-incursion-squad-fittings/" target="_blank">Squad Fittings</a>
+                        </li>
+                        <li>
+                            <a class="nav-link" href="https://goonfleet.com/index.php/topic/259285-new-pilot-guide/" target="_blank">New Pliot Guide</a>
+                        </li>
+                        <li>
+                            <a class="nav-link" data-toggle="modal" data-target="#legal">Legal Disclaimer</a>
+                        </li>
+                        <li>
+                            <a class="nav-link" href="">FC Team</a>
+                        </li>
+                    </ul>
+
+                    <div class="modal fade" id="legal" tabindex="-1">
+                        <div class="modal-dialog modal-lg">
+                            <div class="modal-content">
+                                <div class="modal-header">
+                                    <h4 class="modal-title">Legal Notices</h4>
+                                    <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">×</span></button>
+                                </div>
+                                <div class="modal-body">
+                                    <p>EVE Online and the EVE logo are the registered trademarks of CCP hf. All rights are reserved worldwide. All other trademarks are the property
+                                        of their respective owners. EVE Online, the EVE logo, EVE and all associated logos and designs are the intellectual property of CCP hf.
+                                        All artwork, screenshots, characters, vehicles, storylines, world facts or other recognizable features of the intellectual property relating
+                                        to these trademarks are likewise the intellectual property of CCP hf. CCP hf. has granted permission to Imperium Incursions to use EVE Online
+                                        and all associated logos and designs for promotional and information purposes on its website but does not endorse, and is not in any way affiliated
+                                        with, Imperium Incursions. CCP is in no way responsible for the content on or functioning of this website, nor can it be liable for any damage
+                                        arising from the use of this website.
+                                    </p>
+
+                                    <p class="text-center">Website developed and maintained by Caitlin Viliana/<a href="xmpp:samuel_the_terrible@confrence.goonfleet.com">Samuel the Terrible</a></p>
+                                </div>
+                                <div class="modal-footer">
+                                    <button class="btn btn-light" type="button" data-dismiss="modal">Close</button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </footer>
+                <!-- End Footer -->
+            </div>
+        </section>
+        <!-- End Main Page -->
+    </main>
+
+    <!-- Site Javascript & React -->
+    <script src="https://code.jquery.com/jquery-3.3.1.min.js" integrity="sha256-FgpCb/KJQlLNfOu91ta32o/NMZxltwRo8QtmkMRdAu8=" crossorigin="anonymous"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js" integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM" crossorigin="anonymous"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/jquery.scrollbar/0.2.11/jquery.scrollbar.css" />
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery.scrollbar/0.2.11/jquery.scrollbar.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/jquery-scroll-lock@3.1.3/jquery-scrollLock.min.js"></script>
+    <script src="~/dist/bundle.js"></script>
+</body>
 </html>
