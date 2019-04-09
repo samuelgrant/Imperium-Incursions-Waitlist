@@ -10,3 +10,5 @@ node_modules/
 
 # Development 
 .vs/
+Src/Imperium Incursions Waitlist.csproj.user
+Src/Properties/PublishProfiles/FolderProfile.pubxml.user
