@@ -49,9 +49,13 @@ namespace Imperium_Incursions_Waitlist.Models
         /// <summary>
         /// Checks to see if the account is linked
         /// </summary>
-        public bool IsLinked()
-        {
-            return (AccountId.ToString() != null) ? true : false;
-        }
+        public bool IsLinked() => AccountId.ToString() != null;
+        
+        /// <summary>
+        /// Checks to see if the pilot belongs to a specific ID
+        /// </summary>
+        /// <param name="accountId">The ID of the account to check against</param>
+        /// <returns></returns>
+        public bool BelongsToAccount(int accountId) => AccountId == accountId;
     }
 }
