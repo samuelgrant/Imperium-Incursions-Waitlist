@@ -75,7 +75,7 @@ export class LoginCard extends Component {
     }
 
     isEsiVaild() {
-        return (!!this.props.pilot && this.props.pilot.esiValid) ? true : false;
+        return !!this.props.pilot && this.props.pilot.esiValid;
     }
 
     setMainPilot(character_id) {

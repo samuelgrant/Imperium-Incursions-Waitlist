@@ -39,6 +39,13 @@ namespace Imperium_Incursions_Waitlist.Services
             }
         }
 
+        /// <summary>
+        /// Requests a character's information through ESI
+        /// route /character/{character_id}/
+        /// </summary>
+        /// <param name="character_id">Target characters ID</param>
+        /// <see cref="ESI.NET.Models.Character"/>
+        /// <returns>ESI Character Model</returns>
         public static async Task<Information> GetPilot(int character_id)
         {
             EnsureInit();
