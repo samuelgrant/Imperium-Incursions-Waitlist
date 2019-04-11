@@ -34,6 +34,8 @@ namespace Imperium_Incursions_Waitlist.Models
 
         public ICollection<Ban> UpdatedBans { get; set; }
 
+        public ICollection<AccountRole> AccountRoles { get; set; }
+
         // End of Navigation Properties
 
 
