@@ -1,0 +1,48 @@
+﻿@{
+    if (Context.Request.Cookies["prefPilot"] != null)
+    {
+        string[] pilot = Context.Request.Cookies["prefPilot"].Split(':');
+
+        <!-- Top Navbar -->
+        <header class="header  header--scrolled">
+            <div class="navigation-trigger" data-sa-action="aside-open" data-sa-target=".sidebar">
+                <i class="fas fa-bars"></i>
+            </div>
+            <div class="logo hidden-sm-down">
+                <h1><a href="/">Imperium Incursions</a></h1>
+            </div>
+            <form class="search">
+                <div class="search__inner">
+                    @if (true)
+                    {
+                        <input type="text" class="search__text" accesskey="s" placeholder="Search by pilot or account name...">
+                        <i class="fas fa-search search__helper"></i>
+                    }
+                </div>
+            </form>
+            <div id="tqStatus"></div>
+            <div id="tqClock"></div>
+        </header>
+        <!-- End Top Navbar -->
+        <!-- Side Navbar -->
+        <aside class="sidebar sidebar--hidden">
+            <div class="scrollbar-inner">
+                <div class="user">
+                    <div class="user__info" data-toggle="dropdown">
+                        <img class="user__img" src="@string.Format("https://imageserver.eveonline.com/Character/{0}_64.jpg", pilot[0])" alt="@pilot[1]">
+                        <div>
+                            <div class="user__name">@pilot[1]</div>
+                            <div class="user__email">@User.FindFirst("name").Value.Replace(' ', '_')</div>
+                        </div>
+                    </div>
+                </div>
+                <ul class="navigation">
+                    <li><a href="/pilot-select"><i class="fas fa-users"></i> Manage Pilots</a></li>
+                    <li><a href="/auth/gice/logout"><i class="fas fa-sign-out"></i> Logout</a></li>
+                    <li class="_lowerLine" />
+                </ul>
+            </div>
+        </aside>
+        <!-- End Side Navbar -->
+    }
+}

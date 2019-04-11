@@ -2,11 +2,11 @@
 import { render } from 'react-dom';
 
 const App = () => (
-    <>
+    <div>
         <h1>React in ASP.NET MVC!</h1>
         <div>Hello React World</div>
-        <i className="fas fa-user" />
-    </>
+    </div>
 );
 
-render(<App />, document.getElementById('app'));
+if(document.getElementById('app'))
+    render(<App />, document.getElementById('app'));

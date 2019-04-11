@@ -1,4 +1,4 @@
-<Project Sdk="Microsoft.NET.Sdk.Web">
+﻿<Project Sdk="Microsoft.NET.Sdk.Web">
 
   <PropertyGroup>
     <TargetFramework>netcoreapp2.2</TargetFramework>
@@ -6,15 +6,31 @@
     <RootNamespace>Imperium_Incursions_Waitlist</RootNamespace>
   </PropertyGroup>
 
+  <ItemGroup>
+    <Content Include="Resources\js\Libraries\Theme\app.js" />
+    <Content Include="Resources\js\Libraries\Theme\vendors.js" />
+  </ItemGroup>
+
 
   <ItemGroup>
+    <PackageReference Include="DotNetEnv" Version="1.2.0" />
+    <PackageReference Include="ESI.NET" Version="2.12.13" />
     <PackageReference Include="Microsoft.AspNetCore.App" />
+    <PackageReference Include="Microsoft.AspNetCore.Authentication.OpenIdConnect" Version="2.2.0" />
     <PackageReference Include="Microsoft.AspNetCore.Razor.Design" Version="2.2.0" PrivateAssets="All" />
+    <PackageReference Include="Microsoft.AspNetCore.Session" Version="2.2.0" />
+    <PackageReference Include="Microsoft.Extensions.Caching.Memory" Version="2.2.0" />
+    <PackageReference Include="Microsoft.VisualStudio.Web.CodeGeneration.Design" Version="2.2.2" />
+    <PackageReference Include="Newtonsoft.Json" Version="12.0.1" />
+    <PackageReference Include="System.Configuration.ConfigurationManager" Version="4.5.0" />
     <PackageReference Include="Webpack" Version="4.0.0" />
   </ItemGroup>
 
 
   <ItemGroup>
+    <Folder Include="Logs\" />
+    <Folder Include="Migrations\" />
+    <Folder Include="wwwroot\dist\" />
     <Folder Include="Models\" />
   </ItemGroup>
 
