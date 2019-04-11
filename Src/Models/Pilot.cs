@@ -29,9 +29,7 @@ namespace Imperium_Incursions_Waitlist.Models
         [NotMapped]
         public bool ESIValid
         {
-            get {
-                return (ESIToken != null) ? true : false ;
-            }
+            get => ESIToken != null;
         }
 
         [Display(Name = "Registered At"), DataType(DataType.Date)]

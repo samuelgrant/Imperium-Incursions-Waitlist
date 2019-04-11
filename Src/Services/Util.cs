@@ -18,9 +18,9 @@ namespace Imperium_Incursions_Waitlist.Services
         /// <summary>
         /// Generates a random string.
         /// </summary>
-        /// <param name="MaxCharacters">The max number of characters returned.</param>
+        /// <param name="maxCharacters">The max number of characters returned.</param>
         /// <returns></returns>
-        public static string RandomString(int MaxCharacters)
+        public static string RandomString(int maxCharacters)
         {
             //Generate string builder & a random object.
             StringBuilder builder = new StringBuilder();
@@ -29,7 +29,7 @@ namespace Imperium_Incursions_Waitlist.Services
             // Append characters to string builder until 
             // max the number of characters is reached
             char character;
-            for (int i = 0; i < MaxCharacters; i++)
+            for (int i = 0; i < maxCharacters; i++)
             {
                 character = Convert.ToChar(Convert.ToInt32(Math.Floor(26 * rnd.NextDouble() + 65)));
                 builder.Append(character);

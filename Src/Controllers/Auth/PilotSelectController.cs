@@ -30,7 +30,6 @@ namespace Imperium_Incursions_Waitlist.Controllers.Auth
         /// <summary>
         /// Returns a list of all pilots linked to the account.
         /// </summary>
-        /// <returns></returns>
         [HttpGet]
         [Produces("application/json")]
         public IActionResult Pilots()
@@ -44,6 +43,9 @@ namespace Imperium_Incursions_Waitlist.Controllers.Auth
             return Ok(pilots);
         }
 
+        /// <summary>
+        /// Sets a prefPilot cookie indicating the users preferred pilot
+        /// </summary>
         [HttpPost]
         public async Task<IActionResult> Pilots(int id = 0)
         {
