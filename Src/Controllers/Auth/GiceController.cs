@@ -190,16 +190,13 @@ namespace Imperium_Incursions_Waitlist.Controllers
             // If a user ID was not supplied, fail the login process.
             if (id == -1) return false;
 
-            // Eager load the accounts and the related roles data
-            // (can we do this just for the one account?)
-            var accounts = await _Db.Accounts
+            // Eager load the account and the related roles data
+            var account = await _Db.Accounts
                                 .Include(a => a.AccountRoles)
                                     .ThenInclude(ar => ar.Role)
-                                .ToListAsync();
+                                .SingleOrDefaultAsync(ar => ar.Id == id);
 
-            // Look up the database for the account.
-            // If no account is found fail the login and return.
-            var account = accounts.Find(a => a.Id == id);
+            // Fail if the account is not in the database
             if (account == null) return false;                        
 
             var claims = new List<Claim>
