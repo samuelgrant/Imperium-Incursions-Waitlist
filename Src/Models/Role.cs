@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Newtonsoft.Json;
+using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.Linq;
@@ -15,7 +16,7 @@ namespace Imperium_Incursions_Waitlist.Models
         public string Name { get; set; }
 
         // Navigation properties
-
+        [JsonIgnore]
         public ICollection<AccountRole> AccountRoles { get; set; }
     }
 }

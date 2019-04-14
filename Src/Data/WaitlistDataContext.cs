@@ -9,6 +9,7 @@ namespace Imperium_Incursions_Waitlist.Data
         public DbSet<Ban> Bans { get; set; }
         public DbSet<Pilot> Pilots { get; set; }
         public DbSet<Role> Roles { get; set; }
+        public DbSet<AccountRole> AccountRoles { get; set; }
 
         public WaitlistDataContext(DbContextOptions<WaitlistDataContext> options) : base(options)
         {

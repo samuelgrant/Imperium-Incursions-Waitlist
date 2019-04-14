@@ -11,7 +11,6 @@ namespace Imperium_Incursions_Waitlist.Models
         public int RoleId { get; set; }
 
         // Navigation Properties
-
         public Account Account { get; set; }
         public Role Role { get; set; }
     }
