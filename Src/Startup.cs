@@ -80,6 +80,7 @@ namespace Imperium_Incursions_Waitlist
             app.UseSession();
             app.UseEndpointRouting();
             app.UseAuthentication();
+            app.UseRoleSessionUpdate();
             app.UsePreferredPilotMiddleware();
 
             app.UseMvc(routes =>

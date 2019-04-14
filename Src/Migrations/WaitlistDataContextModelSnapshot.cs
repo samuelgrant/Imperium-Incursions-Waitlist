@@ -47,7 +47,7 @@ namespace Imperium_Incursions_Waitlist.Migrations
 
                     b.HasIndex("RoleId");
 
-                    b.ToTable("AccountRole");
+                    b.ToTable("AccountRoles");
                 });
 
             modelBuilder.Entity("Imperium_Incursions_Waitlist.Models.Ban", b =>
@@ -66,7 +66,7 @@ namespace Imperium_Incursions_Waitlist.Migrations
 
                     b.Property<string>("Reason");
 
-                    b.Property<DateTime?>("UpdatedAt");
+                    b.Property<DateTime>("UpdatedAt");
 
                     b.Property<int?>("UpdatedByAdminId");
 

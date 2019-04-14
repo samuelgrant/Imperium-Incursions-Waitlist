@@ -10,8 +10,8 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace Imperium_Incursions_Waitlist.Migrations
 {
     [DbContext(typeof(WaitlistDataContext))]
-    [Migration("20190411052055_AccountRoles")]
-    partial class AccountRoles
+    [Migration("20190414051016_InitialMigration")]
+    partial class InitialMigration
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
@@ -49,7 +49,7 @@ namespace Imperium_Incursions_Waitlist.Migrations
 
                     b.HasIndex("RoleId");
 
-                    b.ToTable("AccountRole");
+                    b.ToTable("AccountRoles");
                 });
 
             modelBuilder.Entity("Imperium_Incursions_Waitlist.Models.Ban", b =>
@@ -62,13 +62,13 @@ namespace Imperium_Incursions_Waitlist.Migrations
 
                     b.Property<int>("BannedAccountId");
 
-                    b.Property<DateTime?>("ExpiresAt");
+                    b.Property<DateTime>("CreatedAt");
 
-                    b.Property<DateTime>("IssuedAt");
+                    b.Property<DateTime?>("ExpiresAt");
 
                     b.Property<string>("Reason");
 
-                    b.Property<DateTime?>("UpdatedAt");
+                    b.Property<DateTime>("UpdatedAt");
 
                     b.Property<int?>("UpdatedByAdminId");
 
