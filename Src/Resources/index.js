@@ -10,6 +10,7 @@ import './js/Bootstrap/index';
 
 /* React */
 import './js/React/example';
+import './js/React/Bans';
 
 /* REACT -> Pilot Select Page */
 import './js/React/PilotSelect';

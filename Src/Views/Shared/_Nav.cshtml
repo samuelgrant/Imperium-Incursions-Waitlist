@@ -9,11 +9,15 @@
                 <i class="fas fa-bars"></i>
             </div>
             <div class="logo hidden-sm-down">
-                <h1><a href="/">Imperium Incursions</a></h1>
+                @*<h1>*@
+                    <a href="/">
+                        <img src="~/images/imperium_incursions_logo.png" alt="Imperium Incursions Logo" height="70px"/>
+                    </a>
+                @*</h1>*@
             </div>
             <form class="search">
                 <div class="search__inner">
-                    @if (true)
+                    @if (User.Identity.IsAuthenticated && User.IsInRole("Commander") || User.IsInRole("Leadership"))
                     {
                         <input type="text" class="search__text" accesskey="s" placeholder="Search by pilot or account name...">
                         <i class="fas fa-search search__helper"></i>
@@ -37,9 +41,16 @@
                     </div>
                 </div>
                 <ul class="navigation">
-                    <li><a href="/pilot-select"><i class="fas fa-users"></i> Manage Pilots</a></li>
+                    <li><a href="/pilot-select"><i class="fas fa-user-friends"></i> Manage Pilots</a></li>
                     <li><a href="/auth/gice/logout"><i class="fas fa-sign-out"></i> Logout</a></li>
-                    <li class="_lowerLine" />
+
+                    
+                    @if (User.Identity.IsAuthenticated && User.IsInRole("Leadership"))
+                    {
+                        <li class="_lowerLine" />
+                        <li><a href="/admin/bans"><i class="fas fa-gavel"></i> Ban Management</a></li>
+                        <li><a href="/admin/commanders"><i class="fa fa-users-cog"></i> Commander Management</a></li>
+                    }
                 </ul>
             </div>
         </aside>
