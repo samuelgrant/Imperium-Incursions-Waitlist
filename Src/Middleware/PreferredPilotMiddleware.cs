@@ -37,7 +37,7 @@ public class PreferredPilotMiddleware
 
 public static class PreferredPilotMiddlewareExtensions
 {
-    public static IApplicationBuilder UsePreferredPilotMiddleware(this IApplicationBuilder builder)
+    public static IApplicationBuilder UsePreferredPilot(this IApplicationBuilder builder)
     {
         return builder.UseMiddleware<PreferredPilotMiddleware>();
     }

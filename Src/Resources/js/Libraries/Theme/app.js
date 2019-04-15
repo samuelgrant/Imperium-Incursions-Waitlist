@@ -12,14 +12,16 @@ $(window).on('load', function () {
 /*------------------------------------------------
     Header -- Tmp remoed so the navbar stays dark
 -------------------------------------------------*/
-//$(window).on('scroll', function() {
-//    var scroll = $(window).scrollTop();
-//    if (scroll >= 20) {
-//        $('.header').addClass('header--scrolled');
-//    } else {
-//        $('.header').removeClass('header--scrolled');
-//    }
-//});
+/*
+$(window).on('scroll', function () {
+    var scroll = $(window).scrollTop();
+    if (scroll >= 20) {
+        $('.header').addClass('header--scrolled');
+    } else {
+        $('.header').removeClass('header--scrolled');
+    }
+});
+*/
 
 
 $(document).ready(function () {

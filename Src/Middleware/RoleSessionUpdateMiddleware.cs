@@ -25,31 +25,35 @@ public class RoleSessionUpdateMiddleware
 
         //If user is not authenticated
         if(!context.User.Identity.IsAuthenticated)
-            await _next.Invoke(context);
-
-        var user = context.User as ClaimsPrincipal;
-        var identity = user.Identity as ClaimsIdentity;
-
-        var claims = user.Claims.Where(c => c.Type == ClaimTypes.Role).ToArray();
-
-        for(int i = 0; i < claims.Length; i++)
         {
-            identity.RemoveClaim(claims[i]);
+            await _next.Invoke(context);
         }
+        else
+        {
+            var user = context.User as ClaimsPrincipal;
+            var identity = user.Identity as ClaimsIdentity;
 
-        var roles = _Db.Accounts.Include(a => a.AccountRoles).ThenInclude(ar => ar.Role)
-            .Where(a => a.Id == int.Parse(user.FindFirst("id").Value)).SingleOrDefault();
+            var claims = user.Claims.Where(c => c.Type == ClaimTypes.Role).ToArray();
 
-        foreach (var role in roles.AccountRoles)
-            identity.AddClaim(new Claim(ClaimTypes.Role, role.Role.Name));
+            for (int i = 0; i < claims.Length; i++)
+            {
+                identity.RemoveClaim(claims[i]);
+            }
 
-        await _next.Invoke(context);
+            var roles = _Db.Accounts.Include(a => a.AccountRoles).ThenInclude(ar => ar.Role)
+                .Where(a => a.Id == int.Parse(user.FindFirst("id").Value)).SingleOrDefault();
+
+            foreach (var role in roles?.AccountRoles)
+                identity.AddClaim(new Claim(ClaimTypes.Role, role.Role.Name));
+
+            await _next.Invoke(context);
+        }
     }
 }
 
 public static class RoleSessionUpdateMiddlewareExtensions
 {
-    public static IApplicationBuilder UseRoleSessionUpdate(this IApplicationBuilder builder)
+    public static IApplicationBuilder UseSessionBasedRoles(this IApplicationBuilder builder)
     {
         return builder.UseMiddleware<RoleSessionUpdateMiddleware>();
     }

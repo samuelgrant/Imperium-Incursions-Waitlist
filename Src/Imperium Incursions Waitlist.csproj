@@ -27,7 +27,7 @@
 
   <ItemGroup>
     <PackageReference Include="DotNetEnv" Version="1.2.0" />
-    <PackageReference Include="ESI.NET" Version="2.12.13" />
+    <PackageReference Include="ESI.NET" Version="2.13.13" />
     <PackageReference Include="Microsoft.AspNetCore.App" />
     <PackageReference Include="Microsoft.AspNetCore.Authentication.OpenIdConnect" Version="2.2.0" />
     <PackageReference Include="Microsoft.AspNetCore.Razor.Design" Version="2.2.0" PrivateAssets="All" />
@@ -35,6 +35,7 @@
     <PackageReference Include="Microsoft.Extensions.Caching.Memory" Version="2.2.0" />
     <PackageReference Include="Microsoft.VisualStudio.Web.CodeGeneration.Design" Version="2.2.3" />
     <PackageReference Include="Newtonsoft.Json" Version="12.0.1" />
+    <PackageReference Include="Pomelo.EntityFrameworkCore.MySql" Version="2.2.0" />
     <PackageReference Include="System.Configuration.ConfigurationManager" Version="4.5.0" />
     <PackageReference Include="Webpack" Version="4.0.0" />
   </ItemGroup>

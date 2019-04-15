@@ -4,7 +4,7 @@
         string[] pilot = Context.Request.Cookies["prefPilot"].Split(':');
 
         <!-- Top Navbar -->
-        <header class="header  header--scrolled">
+        <header class="header header--scrolled">
             <div class="navigation-trigger" data-sa-action="aside-open" data-sa-target=".sidebar">
                 <i class="fas fa-bars"></i>
             </div>
@@ -45,7 +45,7 @@
                     <li><a href="/auth/gice/logout"><i class="fas fa-sign-out"></i> Logout</a></li>
 
                     
-                    @if (User.Identity.IsAuthenticated && User.IsInRole("Leadership"))
+                    @if (User.Identity.IsAuthenticated && User.IsInRole("Commander") || User.IsInRole("Leadership"))
                     {
                         <li class="_lowerLine" />
                         <li><a href="/admin/bans"><i class="fas fa-gavel"></i> Ban Management</a></li>

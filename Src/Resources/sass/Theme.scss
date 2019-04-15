@@ -9143,7 +9143,7 @@ button, input, optgroup, select, textarea {
 }
 
 .header--scrolled {
-    background-color: rgba(0,0,0,.96)
+    background-color: #090A0A;
 }
 
 .navigation-trigger {
@@ -9417,7 +9417,7 @@ button, input, optgroup, select, textarea {
         color: rgba(255,255,255,.85);
         -webkit-transform: rotate(180deg);
         transform: rotate(180deg);
-        line-height: 3.9rem
+        line-height: 3.9rem;
     }
 
     .search__helper:before {
@@ -9429,8 +9429,12 @@ button, input, optgroup, select, textarea {
     }
 }
 
+.search__helper{
+    top: 10px;
+}
+
 .header--scrolled .search__text {
-    background-color: rgba(255,255,255,.1)
+    background-color: rgba(255, 255, 255, 0.14)
 }
 
 .header--scrolled .search__text:focus {
@@ -9535,11 +9539,14 @@ button, input, optgroup, select, textarea {
 }
 
 .clock {
-    background: rgba(255,255,255,.08);
+    background: rgba(255, 255, 255, 0.14);
     line-height: 100%;
     padding: .7rem 1rem;
     font-size: 1.5rem;
-    margin-left: 1rem
+    margin-left: 1rem;
+    font-size: large;
+    padding-top: 12px;
+    padding-bottom: 12px;
 }
 
 .time > span:not(:last-child):after {
@@ -9651,7 +9658,7 @@ button, input, optgroup, select, textarea {
 }
 
 .sidebar--hidden {
-    background-color: rgba(0,0,0,.96);
+    background-color: #151516;
     transition: opacity .3s,-webkit-transform .3s;
     transition: transform .3s,opacity .3s;
     transition: transform .3s,opacity .3s,-webkit-transform .3s;
