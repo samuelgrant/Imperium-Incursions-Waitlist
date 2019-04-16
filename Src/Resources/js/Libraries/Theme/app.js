@@ -40,7 +40,21 @@ $(document).ready(function () {
         $(this).closest('.search').removeClass('search--focus');
     });
 
-
+    // Autocomplete
+    $("#nav_search").autocomplete({
+        source: (request, response) => {
+            $.ajax({
+                url: `search?q=${request.term}`,
+                dataType: "json",
+                success: function (data) {
+                    response(data);
+                }
+            });
+        },
+        minLength: 3,
+        delay: 500
+    });
+    
     /*------------------------------------------------
         Sidebar toggle menu
     -------------------------------------------------*/

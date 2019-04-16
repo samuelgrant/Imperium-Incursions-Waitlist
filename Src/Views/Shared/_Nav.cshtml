@@ -19,7 +19,7 @@
                 <div class="search__inner">
                     @if (User.Identity.IsAuthenticated && User.IsInRole("Commander") || User.IsInRole("Leadership"))
                     {
-                        <input type="text" class="search__text" accesskey="s" placeholder="Search by pilot or account name...">
+                        <input id="nav_search" type="text" class="search__text" accesskey="s" placeholder="Search by pilot or account name...">
                         <i class="fas fa-search search__helper"></i>
                     }
                 </div>
