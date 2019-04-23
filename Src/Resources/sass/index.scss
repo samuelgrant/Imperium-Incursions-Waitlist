@@ -5,30 +5,33 @@
 @import 'animate.scss';
 @import 'jquery.scrollbar.scss';
 
-@import 'Bootstrap/bootstrap-reboot.scss';
 
 /* Theme */
 @import 'Theme.scss';
+@import 'fonts.scss';
 
 /* Custom Styles */
 @import 'PilotSelect.scss';
 
-
-@font-face {
-    font-family: 'eveAlpha';
-    src: url("../fonts/eve-webfont.woff2") format("woff2"), url("../fonts/eve-webfont.woff") format("woff");
-    font-weight: normal;
-    font-style: normal;
+.bg-defuse, .side-panel {
+    background-color: #151516;
 }
 
-.header {
-    font-family: 'eveAlpha';
+.side-panel > .panel-heading {
+    font-family: eveAlpha;
+    font-weight: 600;
+    background-color: #111112;
+    text-align: center;
+    padding: 13.5px;
+    color: white;
 }
 
-footer.footer {
-    font-family: 'eveAlpha';
+.side-panel > .panel-body {
+    padding: 1px 10px 10px 10px;
 }
 
-.modal-body{
-    font-family: 'Arial';
+.form-control {
+    background-color: hsla(0,0%,100%,.14);
+    border-radius: 3px;
+    border-color: white;
 }
