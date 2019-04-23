@@ -5,6 +5,7 @@ using Imperium_Incursions_Waitlist.Models;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Logging;
+using Microsoft.EntityFrameworkCore;
 
 namespace Imperium_Incursions_Waitlist.Controllers
 {
@@ -34,7 +35,11 @@ namespace Imperium_Incursions_Waitlist.Controllers
         [Produces("application/json")]
         public IActionResult Active()
         {
-            var bans = _Db.Bans.Where(b => b.ExpiresAt > DateTime.UtcNow || b.ExpiresAt == null).OrderBy(c => c.BannedAccount.Name);
+            var bans = _Db.Bans.Where(b => b.ExpiresAt > DateTime.UtcNow || b.ExpiresAt == null)
+                .OrderBy(c => c.BannedAccount.Name)
+                .Include(c => c.BannedAccount)
+                    .ThenInclude(ba => ba.Pilots)
+                .Include(c => c.CreatorAdmin);
             return Ok(bans);
         }
 
@@ -51,13 +56,19 @@ namespace Imperium_Incursions_Waitlist.Controllers
         {
             if (request["reason"] != "" || request["name"] != "")
                 return BadRequest();
+
+            int AdminId = int.Parse(User.FindFirst("id").Value);
+            int BannedAccountId = _Db.Accounts.First(c => c.Name == request["name"]).Id;
+
+            if (AdminId == BannedAccountId)
+                return Forbid("You cannot ban yourself");
            
             try
             {
                 Ban ban = new Ban()
                 {
-                    AdminId = int.Parse(User.FindFirst("id").Value),
-                    BannedAccountId = _Db.Accounts.First(a => a.Name == request["name"]).Id,
+                    AdminId = AdminId,
+                    BannedAccountId = BannedAccountId,
                     Reason = request["reason"],
                     ExpiresAt = Ban.BanExpiryDate(request["expires_at"]),
 
@@ -124,20 +135,20 @@ namespace Imperium_Incursions_Waitlist.Controllers
         /// <summary>
         /// Soft deletes a ban against a specific user account.
         /// </summary>
-        /// <param name="banId">URL Paramater: ID of ban to be revoked</param>
+        /// <param name="id">URL Paramater: ID of ban to be revoked</param>
         /// <returns>HttpStatusCode</returns>
         /// <see cref="StatusCodes"/>
         [HttpDelete]
         [Produces("application/json")]
         [Authorize(Roles = "Leadership")]
-        public IActionResult Revoke(int banId = 0)
+        public IActionResult Revoke(int id = 0)
         {
             // Fail if no ban id is provided
-            if (banId == 0)
+            if (id == 0)
                 return BadRequest();
             
 
-            var currentBan = _Db.Bans.Find(banId);
+            var currentBan = _Db.Bans.Find(id);
 
             if (currentBan == null)
                 return NotFound();

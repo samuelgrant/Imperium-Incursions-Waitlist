@@ -44,7 +44,7 @@ $(document).ready(function () {
     $("#nav_search").autocomplete({
         source: (request, response) => {
             $.ajax({
-                url: `search?q=${request.term}`,
+                url: `/search?q=${request.term}`,
                 dataType: "json",
                 success: function (data) {
                     response(data);
@@ -96,5 +96,50 @@ $(document).ready(function () {
     -------------------------------------------------*/
     $('body').on('click', '.dropdown-menu--active', function (e) {
         e.stopPropagation();
+    });
+
+    /*-------------------------------------------------
+     Auto complete for react text inputs
+     --------------------------------------------------*/
+    $(".account-lookup").autocomplete({
+        source: (request, response) => {
+            $.ajax({
+                url: `/search?q=${request.term}&filter=account`,
+                dataType: "json",
+                success: function (data) {
+                    response(data);
+                }
+            });
+        },
+        minLength: 3,
+        delay: 500
+    });
+
+    $(".pilot-lookup").autocomplete({
+        source: (request, response) => {
+            $.ajax({
+                url: `/search?q=${request.term}&filter=pilot`,
+                dataType: "json",
+                success: function (data) {
+                    response(data);
+                }
+            });
+        },
+        minLength: 3,
+        delay: 500
+    });
+
+    $(".lookup").autocomplete({
+        source: (request, response) => {
+            $.ajax({
+                url: `/search?q=${request.term}`,
+                dataType: "json",
+                success: function (data) {
+                    response(data);
+                }
+            });
+        },
+        minLength: 3,
+        delay: 500
     });
 });
