@@ -1,15 +1,14 @@
 ﻿import React, { Component } from 'react';
+import { Input } from './FormControls'
 
 
 
 export class Account extends Component {
     render() {
-        let value = (this.props.value != null) ? this.props.value : "";
-
         return (
             <div className="form-group">
                 <label htmlFor="#lookup_account">GSF Auth Name:</label>
-                <input id="lookup_account" className="form-control account-lookup" value={value} type="text" name="name" required/>
+                <Input id="lookup_account" type="text" classOverride="form-control account-lookup" value={this.props.value} name="name" required="true"/>
             </div>
         )
     }

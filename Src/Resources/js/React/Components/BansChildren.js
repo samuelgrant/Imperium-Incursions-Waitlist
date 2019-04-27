@@ -1,9 +1,9 @@
 ﻿import React, { Component } from 'react';
 import XmppLink from './XmppLink';
-import { Account, Pilot } from './AutocompleteInputs';
+import { Account } from './AutocompleteInputs';
 import { DateFormat } from '../Helpers';
 
-import { TextArea } from './FormControls'
+import { TextArea, Input } from './FormControls'
 
 export class BanRow extends Component {
     //Permanant or temporary
@@ -72,20 +72,20 @@ export class ManageInfo extends Component {
         if (!this.inputNewBan()) {
             banIssuedAt = (
                 <div className="form-group">
-                    <label>Ban issued:</label>
-                    <input className="form-control" type="text" value={DateFormat(this.props.details.createdAt)} disabled />
+                    <label htmlFor="createdAt">Ban issued:</label>
+                    <Input id="createdAt" type="text" defValue={DateFormat(this.props.details.createdAt)} disabled="true" />
                 </div>
             )
+        }
+
+        let accountSearch = <Input id="lookup_account" type="text" classOverride="form-control account-lookup" name="name" required="true" />
+        if (!this.inputNewBan()) {
+            accountSearch = <Input id="lookup_account" type="text" classOverride="form-control account-lookup" defValue={this.props.details.bannedAccount.name} name="name" required="true" />
         }
 
         let headingText = "New Ban";
         if (!this.inputNewBan()) {
             headingText = "Viewing Ban";
-        }
-
-        let textArea = <TextArea />
-        if (!this.inputNewBan()) {
-            textArea = <TextArea value={this.getReason()} />;
         }
 
         return (
@@ -98,19 +98,22 @@ export class ManageInfo extends Component {
                     <img className="rounded-circle d-block mx-auto" src={this.getPilotUrl()} alt="Pilot's Avatar" />
 
                     <form onSubmit={this.props.onSubmit.bind(this)}>
-                        <Account value={this.getBaneeName()}/>
-
+                        <div className="form-group">
+                            <label htmlFor="#lookup_account">GSF Auth Name:</label>
+                            {accountSearch}
+                        </div>
+                        
                         {banIssuedAt}
 
                         <div className="form-group">
-                            <label htmlFor="">Days until the ban expires:</label>
-                            <input type="number" className="form-control" />
+                            <label htmlFor="banDuration">Days until the ban expires:</label>
+                            <Input type="number" id="banDuration"/>
                             <small className="text-muted">Leave blank for permanant</small>
                         </div>
 
                         <div className="form-group">
                             <label htmlFor="">Reason:</label>
-                            {textArea}
+                            <TextArea />
                             <small className="text-muted">Only visible to the FC team</small>
                         </div>
                         <button className="btn btn-primary" type="button" onClick={this.props.reset.bind(this, null)}>Reset</button>

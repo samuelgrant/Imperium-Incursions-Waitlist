@@ -7,10 +7,7 @@ export default class XmppLink extends Component {
     }
 
     AuthName() {
-        if (this.props.AuthName)
-            return this.props.AuthName;
-
-        return "";
+        return this.props.AuthName || "";
     }
 
     render() {
