@@ -2,6 +2,8 @@
 import { render } from 'react-dom';
 import { BanRow, ManageInfo } from './Components/BansChildren';
 
+const baseUri = "/admin/bans";
+
 export default class BanManagement extends Component {
     constructor(props) {
         super(props);
@@ -9,7 +11,6 @@ export default class BanManagement extends Component {
         this.state = {
             bans: null,
             banIndex: null,
-            baseUri: "/admin/bans"
         }
     }
 
@@ -21,7 +22,7 @@ export default class BanManagement extends Component {
         //Ajax call to API to get data
         $.ajax({
             type: 'get',
-            url: `${this.state.baseUri}/active`,
+            url: `${baseUri}/active`,
             //headers: { 'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content') }
         }).done((activeBans) => {
             this.setState({
@@ -54,7 +55,7 @@ export default class BanManagement extends Component {
     revokeBan(banId) {
         $.ajax({
             type: 'delete',
-            url: `${this.state.baseUri}/revoke/${banId}`
+            url: `${baseUri}/revoke/${banId}`
         }).done(() => {
             this.getData();
         }).fail((err) => {

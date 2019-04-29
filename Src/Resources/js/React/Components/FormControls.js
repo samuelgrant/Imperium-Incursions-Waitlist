@@ -7,21 +7,55 @@ export class TextArea extends Component {
         this.state = {
             value: this.getValue()
         };
-    
 
         this.handleChange = this.handleChange.bind(this);
     }
 
-    getValue() {
-        return this.props.value || "";
+    static getDerivedStateFromProps(props) {
+        return {
+            value: props.value
+        };
     }
 
     handleChange(event) {
         this.setState({ value: event.target.value });
     }
 
+    getId() {
+        return this.props.id || null;
+    }
+
+    getName() {
+        return this.props.name || null;
+    }
+
+    getPlaceholder() {
+        return this.props.placeholder || null;
+    }
+
+    getValue() {
+        console.log(this.props.value)
+        return this.props.value || "";
+    }
+
+    genElementClass() {
+        return this.props.classOverride || "form-control";
+    }
+
+    isDisabled() {
+        return (this.props.disabled == "true") ? true : false;
+    }
+
+    isReadOnly() {
+        return (this.props.readonly == "true") ? true : false;
+    }
+
+    isRequired() {
+        return (this.props.required == "true") ? true : false;
+    }
+
     render() {
-        return (<textarea className="form-control" value={this.state.value} onChange={this.handleChange.bind(this)}></textarea>)
+        return (<textarea id={this.getId()} className={this.genElementClass()} name={this.getName()} placeholder={this.getPlaceholder()} disabled={this.isDisabled()} readonly={this.isReadOnly()} required={this.isRequired()} value={this.state.value} onChange={this.handleChange.bind(this)}></textarea>)
     }
 }
 
@@ -33,6 +67,12 @@ export class Input extends Component {
         };
 
         this.handleChange = this.handleChange.bind(this);
+    }
+
+    static getDerivedStateFromProps(props) {
+        return {
+            value: props.value
+        };
     }
 
     handleChange(event) {
@@ -56,7 +96,7 @@ export class Input extends Component {
     }
 
     getValue() {
-        return this.props.defValue || "";
+        return this.props.Value || "";
     }
 
     genElementClass() {

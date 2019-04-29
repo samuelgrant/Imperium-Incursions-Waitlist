@@ -73,16 +73,23 @@ export class ManageInfo extends Component {
             banIssuedAt = (
                 <div className="form-group">
                     <label htmlFor="createdAt">Ban issued:</label>
-                    <Input id="createdAt" type="text" defValue={DateFormat(this.props.details.createdAt)} disabled="true" />
+                    <Input id="createdAt" type="text" value={DateFormat(this.props.details.createdAt)} disabled="true" />
                 </div>
             )
         }
 
         let accountSearch = <Input id="lookup_account" type="text" classOverride="form-control account-lookup" name="name" required="true" />
         if (!this.inputNewBan()) {
-            accountSearch = <Input id="lookup_account" type="text" classOverride="form-control account-lookup" defValue={this.props.details.bannedAccount.name} name="name" required="true" />
+            accountSearch = <Input id="lookup_account" type="text" classOverride="form-control account-lookup" value={this.props.details.bannedAccount.name} name="name" required="true" />
         }
 
+        // Textarea: Ban Reason
+        let reason = <TextArea id="banReason" name="reason"/>
+        if (!this.inputNewBan()) {
+            reason = <TextArea id="banReason" name="reason" value={this.props.details.reason}/>;
+        }
+
+        // Panel Heading
         let headingText = "New Ban";
         if (!this.inputNewBan()) {
             headingText = "Viewing Ban";
@@ -106,14 +113,14 @@ export class ManageInfo extends Component {
                         {banIssuedAt}
 
                         <div className="form-group">
-                            <label htmlFor="banDuration">Days until the ban expires:</label>
+                            <label htmlFor="banDuration">Ban duration (in days):</label>
                             <Input type="number" id="banDuration"/>
                             <small className="text-muted">Leave blank for permanant</small>
                         </div>
 
                         <div className="form-group">
-                            <label htmlFor="">Reason:</label>
-                            <TextArea />
+                            <label htmlFor="banReason">Reason:</label>
+                            {reason}
                             <small className="text-muted">Only visible to the FC team</small>
                         </div>
                         <button className="btn btn-primary" type="button" onClick={this.props.reset.bind(this, null)}>Reset</button>
