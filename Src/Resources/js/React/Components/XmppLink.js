@@ -3,7 +3,7 @@
 export default class XmppLink extends Component {
 
     createXmppUrl(authName) {
-        return `xmpp:${authName.toLowerCase().replace(' ', '_')}`;
+        return `xmpp:${authName.toLowerCase().replace(/ /g, "_")}`;
     }
 
     AuthName() {

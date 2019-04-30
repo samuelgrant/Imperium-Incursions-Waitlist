@@ -8,7 +8,7 @@ import { TextArea, Input } from './FormControls'
 export class BanRow extends Component {
     //Permanant or temporary
     getBanType() {
-        if(this.props.ban.expiresAt)
+        if(!this.props.ban.expiresAt)
             return <span className="text-danger">Permanant Ban</span>;
 
         return <span className="text-white">Temporary Ban</span>
@@ -28,10 +28,19 @@ export class BanRow extends Component {
         return this.props.ban.creatorAdmin.name || "";
     }
 
+    getPilotUrl() {
+
+        let pilot_id = 0;
+        if (this.props.ban && this.props.ban.bannedAccount)
+            pilot_id = this.props.ban.bannedAccount.pilots[0].id;
+
+        return `https://imageserver.eveonline.com/Character/${pilot_id}_32.jpg`;
+    }
+
     render() {
         return (
             <tr>
-                <td>img</td>
+                <td><img className="img d-block mx-auto" src={this.getPilotUrl()} alt="Pilot's Avatar" /></td>
                 <td><XmppLink AuthName={this.getBaneeName()} /></td>
                 <td><XmppLink AuthName={this.getAdminName()} /></td>
                 <td>{this.getBanType()}</td>
@@ -73,20 +82,27 @@ export class ManageInfo extends Component {
             banIssuedAt = (
                 <div className="form-group">
                     <label htmlFor="createdAt">Ban issued:</label>
-                    <Input id="createdAt" type="text" value={DateFormat(this.props.details.createdAt)} disabled="true" />
+                    <Input id="createdAt" type="text" value={DateFormat(this.props.details.createdAt)} disabled="true" key={this.props.details.id}/>
                 </div>
             )
         }
 
-        let accountSearch = <Input id="lookup_account" type="text" classOverride="form-control account-lookup" name="name" required="true" />
+        // Account search
+        let accountSearch = <Input id="lookup_account" type="text" classOverride="form-control account-lookup" name="name" required="true" key={null}/>
         if (!this.inputNewBan()) {
-            accountSearch = <Input id="lookup_account" type="text" classOverride="form-control account-lookup" value={this.props.details.bannedAccount.name} name="name" required="true" />
+            accountSearch = <Input id="lookup_account" type="text" classOverride="form-control account-lookup" value={this.props.details.bannedAccount.name} name="name" required="true" key={this.props.details.id}/>
+        }
+
+        // Ban Expires input
+        let banExpires = <Input type="text" id="banExpires" key={null} />
+        if (!this.inputNewBan()) {
+            banExpires = <Input type="text" id="banExpires" value={DateFormat(this.props.details.expiresAt)} key={this.props.details.id} />
         }
 
         // Textarea: Ban Reason
-        let reason = <TextArea id="banReason" name="reason"/>
+        let reason = <TextArea id="banReason" name="reason" key={null}/>
         if (!this.inputNewBan()) {
-            reason = <TextArea id="banReason" name="reason" value={this.props.details.reason}/>;
+            reason = <TextArea id="banReason" name="reason" /*value={this.props.details.reason}*//* key={this.props.details.id}*//>;
         }
 
         // Panel Heading
@@ -113,9 +129,9 @@ export class ManageInfo extends Component {
                         {banIssuedAt}
 
                         <div className="form-group">
-                            <label htmlFor="banDuration">Ban duration (in days):</label>
-                            <Input type="number" id="banDuration"/>
-                            <small className="text-muted">Leave blank for permanant</small>
+                            <label htmlFor="banExpires">Ban Expires:</label>
+                            {banExpires}
+                            <small className="text-muted">Bans expire at downtime, leave blank for permanant</small>
                         </div>
 
                         <div className="form-group">

@@ -5,16 +5,10 @@ export class TextArea extends Component {
     constructor(props) {
         super(props);
         this.state = {
-            value: this.getValue()
+            value: this.props.value
         };
 
         this.handleChange = this.handleChange.bind(this);
-    }
-
-    static getDerivedStateFromProps(props) {
-        return {
-            value: props.value
-        };
     }
 
     handleChange(event) {
@@ -34,7 +28,6 @@ export class TextArea extends Component {
     }
 
     getValue() {
-        console.log(this.props.value)
         return this.props.value || "";
     }
 
@@ -69,11 +62,11 @@ export class Input extends Component {
         this.handleChange = this.handleChange.bind(this);
     }
 
-    static getDerivedStateFromProps(props) {
-        return {
-            value: props.value
-        };
-    }
+    //static getDerivedStateFromProps(props) {
+    //    return {
+    //        value: props.value
+    //    };
+    //}
 
     handleChange(event) {
         this.setState({ value: event.target.value });
@@ -96,7 +89,7 @@ export class Input extends Component {
     }
 
     getValue() {
-        return this.props.Value || "";
+        return this.props.value || "";
     }
 
     genElementClass() {
