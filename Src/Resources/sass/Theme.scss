@@ -9543,8 +9543,9 @@ button, input, optgroup, select, textarea {
     color: #fff
 }
 
+// Background disabled
 .clock {
-    background: rgba(255, 255, 255, 0.14);
+    /*background: rgba(255, 255, 255, 0.14);*/
     line-height: 100%;
     padding: .7rem 1rem;
     font-size: 1.5rem;
@@ -9663,7 +9664,7 @@ button, input, optgroup, select, textarea {
 }
 
 .sidebar--hidden {
-    background-color: #151516;
+    background-color: #151516ed;
     transition: opacity .3s,-webkit-transform .3s;
     transition: transform .3s,opacity .3s;
     transition: transform .3s,opacity .3s,-webkit-transform .3s;
@@ -9684,12 +9685,14 @@ button, input, optgroup, select, textarea {
     transform: translate3d(0,0,0)
 }
 
+// Removed the white box around the user_info
 .sidebar--hidden .user__info {
-    background-color: rgba(255,255,255,.09)
+    /*background-color: rgba(255,255,255,.09)*/
 }
 
+// Removed the white box around the user_info
 .sidebar--hidden .user__info:hover {
-    background-color: rgba(255,255,255,.1)
+    /*background-color: rgba(255,255,255,.1)*/
 }
 
 .sidebar__inner {
@@ -9706,6 +9709,7 @@ button, input, optgroup, select, textarea {
     transform: none !important
 }
 
+// Removed the background
 .user__info {
     display: -webkit-box;
     display: -ms-flexbox;
@@ -9719,7 +9723,7 @@ button, input, optgroup, select, textarea {
     cursor: pointer;
     font-size: .9rem;
     padding: 1rem;
-    background-color: rgba(255,255,255,.06);
+    /*background-color: rgba(255,255,255,.06);*/
     transition: background-color .3s
 }
 

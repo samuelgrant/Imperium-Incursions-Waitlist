@@ -4,29 +4,29 @@
         string[] pilot = Context.Request.Cookies["prefPilot"].Split(':');
 
         <!-- Top Navbar -->
-        <header class="header header--scrolled">
-            <div class="navigation-trigger" data-sa-action="aside-open" data-sa-target=".sidebar">
-                <i class="fas fa-bars"></i>
+    <header class="header header--scrolled">
+        <div class="navigation-trigger" data-sa-action="aside-open" data-sa-target=".sidebar">
+            <i class="fas fa-bars"></i>
+        </div>
+        <div class="logo hidden-sm-down">
+            @*<h1>*@
+            <a href="/">
+                <img src="~/images/imperium_incursions_logo.png" alt="Imperium Incursions Logo" height="70px" />
+            </a>
+            @*</h1>*@
+        </div>
+        <form class="search">
+            <div class="search__inner">
+                @if (User.Identity.IsAuthenticated && User.IsInRole("Commander") || User.IsInRole("Leadership"))
+                {
+                    <input id="nav_search" type="text" class="search__text" accesskey="s" placeholder="Search by pilot or account name...">
+                    <i class="fas fa-search search__helper"></i>
+                }
             </div>
-            <div class="logo hidden-sm-down">
-                @*<h1>*@
-                    <a href="/">
-                        <img src="~/images/imperium_incursions_logo.png" alt="Imperium Incursions Logo" height="70px"/>
-                    </a>
-                @*</h1>*@
-            </div>
-            <form class="search">
-                <div class="search__inner">
-                    @if (User.Identity.IsAuthenticated && User.IsInRole("Commander") || User.IsInRole("Leadership"))
-                    {
-                        <input id="nav_search" type="text" class="search__text" accesskey="s" placeholder="Search by pilot or account name...">
-                        <i class="fas fa-search search__helper"></i>
-                    }
-                </div>
-            </form>
-            <div id="tqStatus"></div>
-            <div id="tqClock"></div>
-        </header>
+        </form>
+        <div id="tqClock"></div>
+        <div id="tqStatus"></div>
+    </header>
         <!-- End Top Navbar -->
         <!-- Side Navbar -->
         <aside class="sidebar sidebar--hidden">

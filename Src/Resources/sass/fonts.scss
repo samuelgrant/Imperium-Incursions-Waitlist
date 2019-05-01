@@ -11,8 +11,8 @@
 }
 
 footer.footer {
-    font-family: 'monospace';
-    font-size: 20px;
+    font-family: 'Arial';
+    font-size: 18px;
 }
 
 .modal-body {
@@ -21,4 +21,12 @@ footer.footer {
 
 .font-alpha {
     font-family: 'eveAlpha';
+}
+
+a:link {
+    color: #8FC1E3;
+}
+
+a:link.xmpp {
+    color: #dc7325;
 }

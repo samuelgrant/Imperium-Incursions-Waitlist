@@ -11,6 +11,6 @@ export default class XmppLink extends Component {
     }
 
     render() {
-        return ( <a href={this.createXmppUrl(this.AuthName())}>{this.AuthName()}</a> )        
+        return ( <a class="xmpp" href={this.createXmppUrl(this.AuthName())}>{this.AuthName()}</a> )        
     }
 }
