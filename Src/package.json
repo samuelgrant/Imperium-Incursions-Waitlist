@@ -30,13 +30,13 @@
     "@babel/preset-env": "^7.3.4",
     "@babel/preset-react": "^7.0.0",
     "babel-loader": "^8.0.5",
-    "browser-sync": "^2.26.3",
+    "browser-sync": "^2.26.5",
     "browser-sync-webpack-plugin": "^2.2.2",
     "clean-webpack-plugin": "^1.0.1",
     "css-loader": "^2.1.0",
     "cssnano": "^4.1.10",
     "mini-css-extract-plugin": "^0.5.0",
-    "node-sass": "^4.11.0",
+    "node-sass": "^4.12.0",
     "postcss-loader": "^3.0.0",
     "react": "^16.8.3",
     "react-dom": "^16.8.3",
@@ -48,6 +48,7 @@
     "webpack-notifier": "^1.7.0"
   },
   "dependencies": {
-    "lodash": "^4.17.11"
+    "lodash": "^4.17.11",
+    "react-datetime": "^2.16.3"
   }
 }

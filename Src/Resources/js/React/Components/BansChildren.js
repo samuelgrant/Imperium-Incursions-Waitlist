@@ -1,8 +1,6 @@
 ﻿import React, { Component } from 'react';
 import XmppLink from './XmppLink';
-import { Account } from './AutocompleteInputs';
 import { DateFormat } from '../Helpers';
-
 import { TextArea, Input } from './FormControls'
 
 export class BanRow extends Component {
@@ -31,7 +29,7 @@ export class BanRow extends Component {
     getPilotUrl() {
 
         let pilot_id = 0;
-        if (this.props.ban && this.props.ban.bannedAccount)
+        if (this.props.ban && this.props.ban.bannedAccount.pilots[0])
             pilot_id = this.props.ban.bannedAccount.pilots[0].id;
 
         return `https://imageserver.eveonline.com/Character/${pilot_id}_32.jpg`;
@@ -44,8 +42,8 @@ export class BanRow extends Component {
                 <td><XmppLink AuthName={this.getBaneeName()} /></td>
                 <td><XmppLink AuthName={this.getAdminName()} /></td>
                 <td>{this.getBanType()}</td>
-                <td><button className="btn btn-wl btn-info" onClick={this.props.viewDetails.bind(this, this.props.index)}><i className="fas fa-info-circle"></i></button></td>
-                <td><button className="btn btn-wl btn-success" onClick={this.props.revokeBan.bind(this, this.getBanId())}>Revoke Ban <i className="fas fa-gavel"></i></button></td>
+                <td><button className="btn btn-wl btn-success btn-sm" onClick={this.props.revokeBan.bind(this, this.getBanId())}>Revoke Ban <i className="fas fa-gavel"></i></button></td>
+                <td><button className="btn btn-wl btn-dark btn-sm" onClick={this.props.viewDetails.bind(this, this.props.index)}><i className="fas fa-chevron-double-right"></i></button></td>
             </tr>
         );
     }
@@ -60,7 +58,7 @@ export class ManageInfo extends Component {
     getPilotUrl() {
         
         let pilot_id = 0;
-        if (this.props.details && this.props.details.bannedAccount) 
+        if (this.props.details && this.props.details.bannedAccount.pilots[0]) 
             pilot_id = this.props.details.bannedAccount.pilots[0].id;
 
         return `https://imageserver.eveonline.com/Character/${pilot_id}_128.jpg`;
@@ -87,37 +85,27 @@ export class ManageInfo extends Component {
             )
         }
 
-        // Account search
+        // Text: Account search
         let accountSearch = <Input id="lookup_account" type="text" classOverride="form-control account-lookup" name="name" required="true" key={null}/>
         if (!this.inputNewBan()) {
-            accountSearch = <Input id="lookup_account" type="text" classOverride="form-control account-lookup" value={this.props.details.bannedAccount.name} name="name" required="true" key={this.props.details.id}/>
-        }
-
-        // Ban Expires input
-        let banExpires = <Input type="text" id="banExpires" key={null} />
-        if (!this.inputNewBan()) {
-            banExpires = <Input type="text" id="banExpires" value={DateFormat(this.props.details.expiresAt)} key={this.props.details.id} />
+            accountSearch = <Input id="lookup_account" type="text" classOverride="form-control account-lookup" value={this.props.details.bannedAccount.name} name="name" disabled="true" required="true" key={this.props.details.id}/>
         }
 
         // Textarea: Ban Reason
-        let reason = <TextArea id="banReason" name="reason" key={null}/>
+        let reason = <TextArea id="banReason" name="reason" required="true" key={null}/>
         if (!this.inputNewBan()) {
-            reason = <TextArea id="banReason" name="reason" /*value={this.props.details.reason}*//* key={this.props.details.id}*//>;
+            reason = <TextArea id="banReason" name="reason" value={this.props.details.reason} required="true" key={this.props.details.id}/>;
         }
 
-        // Panel Heading
-        let headingText = "New Ban";
+        // Button: Reset Button
+        let reset_btn;
         if (!this.inputNewBan()) {
-            headingText = "Viewing Ban";
+            reset_btn = <button className="btn btn-dark float-left" type="button" onClick={this.props.reset.bind(this, null)}>Reset <i className="fas fa-undo-alt"></i></button>;
         }
 
         return (
-            <div className="side-panel">
-                <div className="panel-heading">
-                    {headingText}
-                </div>
-
-                <div className="panel-body">
+            <div>
+                <div className="panel-body py-4">
                     <img className="rounded-circle d-block mx-auto" src={this.getPilotUrl()} alt="Pilot's Avatar" />
 
                     <form onSubmit={this.props.onSubmit.bind(this)}>
@@ -130,7 +118,7 @@ export class ManageInfo extends Component {
 
                         <div className="form-group">
                             <label htmlFor="banExpires">Ban Expires:</label>
-                            {banExpires}
+                            <Input type="text" id="banExpires" disabled="true"/>
                             <small className="text-muted">Bans expire at downtime, leave blank for permanant</small>
                         </div>
 
@@ -139,8 +127,9 @@ export class ManageInfo extends Component {
                             {reason}
                             <small className="text-muted">Only visible to the FC team</small>
                         </div>
-                        <button className="btn btn-primary" type="button" onClick={this.props.reset.bind(this, null)}>Reset</button>
-                        <button className="btn btn-danger">Ban User <i className="fas fa-gavel"></i></button>
+
+                        {reset_btn}
+                        <button className="btn btn-danger float-right" type="submit">Ban User <i className="fas fa-gavel"></i></button>
                     </form>
                 </div>
             </div>

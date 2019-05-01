@@ -23,7 +23,6 @@ export default class BanManagement extends Component {
         $.ajax({
             type: 'get',
             url: `${baseUri}/active`,
-            //headers: { 'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content') }
         }).done((activeBans) => {
             this.setState({
                 bans: activeBans,
@@ -45,9 +44,35 @@ export default class BanManagement extends Component {
         this.setState({ banIndex: index});
     }
 
+    //Urls: POST(new)/admin/bans/ban
+    // PUT(update)/admin/bans/update
     submitForm(e) {
-        e.PreventDefault();
-        console.log(e);
+        e.preventDefault();
+
+        let uri = `${baseUri}`;
+        let method = "post";
+
+        if (this.state.banIndex != null) {
+            uri = `${baseUri}/update`;
+            method = "put";
+        }
+            
+
+        $.ajax({
+            type: method,
+            url: uri,
+            data: {
+                name: $("input#lookup_account").val(),
+                expires_at: $("input#banExpires").val(),
+                reason: $("textarea#banReason").val()
+            }
+        }).done(() => {
+            this.getData();
+            this.setBanIndex(null);
+        }).fail((err) => {
+
+        });
+
     }
 
     // Revokes a ban by setting the 
@@ -73,21 +98,21 @@ export default class BanManagement extends Component {
 
         let banDetails = <ManageInfo onSubmit={this.submitForm.bind(this)} reset={this.setBanIndex.bind(this)}/>;
         if (this.state.bans != null && this.state.banIndex != null) {
-            banDetails = <ManageInfo details={this.state.bans[0]} onSubmit={this.submitForm.bind(this)} reset={this.setBanIndex.bind(this)}/>
+            banDetails = <ManageInfo details={this.state.bans[this.state.banIndex]} onSubmit={this.submitForm.bind(this)} reset={this.setBanIndex.bind(this)}/>
         }
 
         return (
             <div className="container">
                 <div className="row">
                     <div className="col-lg-8 col-md-12">
-                        <table className="bg-defuse table table-responsive">
-                            <thead className="thead-inverse">
+                        <table className="table table-responsive">
+                            <thead>
                                 <tr className="font-alpha">
                                     <th></th>
                                     <th>Name</th>
                                     <th>Admin</th>
                                     <th></th>
-                                    <th>Info</th>
+                                    <th></th>
                                     <th></th>
                                 </tr>
                             </thead>
