@@ -87,21 +87,24 @@ export class ManageInfo extends Component {
 
         // Text: Account search
         let accountSearch = <Input id="lookup_account" type="text" classOverride="form-control account-lookup" name="name" required="true" key={null}/>
-        if (!this.inputNewBan()) {
+        if (!this.inputNewBan())
             accountSearch = <Input id="lookup_account" type="text" classOverride="form-control account-lookup" value={this.props.details.bannedAccount.name} name="name" disabled="true" required="true" key={this.props.details.id}/>
-        }
 
         // Textarea: Ban Reason
         let reason = <TextArea id="banReason" name="reason" required="true" key={null}/>
-        if (!this.inputNewBan()) {
+        if (!this.inputNewBan())
             reason = <TextArea id="banReason" name="reason" value={this.props.details.reason} required="true" key={this.props.details.id}/>;
-        }
 
         // Button: Reset Button
         let reset_btn;
-        if (!this.inputNewBan()) {
+        if (!this.inputNewBan()) 
             reset_btn = <button className="btn btn-dark float-left" type="button" onClick={this.props.reset.bind(this, null)}>Reset <i className="fas fa-undo-alt"></i></button>;
-        }
+
+        // Button Text: Ban User/Update Ban
+        let ban_btn_text = "Ban User";
+        if (!this.inputNewBan())
+            ban_btn_text = "Update Ban";
+        
 
         return (
             <div>
@@ -129,7 +132,7 @@ export class ManageInfo extends Component {
                         </div>
 
                         {reset_btn}
-                        <button className="btn btn-danger float-right" type="submit">Ban User <i className="fas fa-gavel"></i></button>
+                        <button className="btn btn-danger float-right" type="submit">{ban_btn_text} <i className="fas fa-gavel"></i></button>
                     </form>
                 </div>
             </div>

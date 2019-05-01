@@ -105,7 +105,8 @@ namespace Imperium_Incursions_Waitlist
             app.UseSession();
             app.UseEndpointRouting();
             app.UseAuthentication();
-            app.UseSessionBasedRoles();//Fails if the visitor is not logged in (DB Exception, probably due to nullID)
+            app.UseSessionBasedRoles();
+            app.UseBans();
             app.UsePreferredPilot();
 
             app.UseMvc(routes =>
