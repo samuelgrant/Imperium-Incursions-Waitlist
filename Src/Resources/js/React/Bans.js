@@ -44,8 +44,6 @@ export default class BanManagement extends Component {
         this.setState({ banIndex: index});
     }
 
-    //Urls: POST(new)/admin/bans/ban
-    // PUT(update)/admin/bans/update
     submitForm(e) {
         e.preventDefault();
 
@@ -53,7 +51,7 @@ export default class BanManagement extends Component {
         let method = "post";
 
         if (this.state.banIndex != null) {
-            uri = `${baseUri}/update`;
+            uri = `${baseUri}/update/${this.state.bans[this.state.banIndex].id}`;
             method = "put";
         }
             
