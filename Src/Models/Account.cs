@@ -46,6 +46,9 @@ namespace Imperium_Incursions_Waitlist.Models
         /// </summary>
         public bool IsBanned()
         {
+            //if (AccountBans == null)
+            //    return false;
+
             foreach (var ban in AccountBans)
             {
                 if (ban.ExpiresAt == null || ban.ExpiresAt > DateTime.UtcNow)

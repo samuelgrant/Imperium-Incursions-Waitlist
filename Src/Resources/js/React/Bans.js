@@ -17,9 +17,9 @@ export default class BanManagement extends Component {
     componentDidMount() {
         this.getData();
     }
-    
+
+    //Ajax call to API to get data
     getData() {
-        //Ajax call to API to get data
         $.ajax({
             type: 'get',
             url: `${baseUri}/active`,
@@ -68,7 +68,7 @@ export default class BanManagement extends Component {
             this.getData();
             this.setBanIndex(null);
         }).fail((err) => {
-
+            console.error(`React/Bans {Bans@submitForm} - Error saving or updating ban`, err);
         });
 
     }

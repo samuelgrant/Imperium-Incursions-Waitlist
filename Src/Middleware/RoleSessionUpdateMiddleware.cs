@@ -24,7 +24,7 @@ public class RoleSessionUpdateMiddleware
         _Db = db;
 
         //If user is not authenticated
-        if(!context.User.Identity.IsAuthenticated)
+        if (!context.User.Identity.IsAuthenticated)
         {
             await _next.Invoke(context);
         }
@@ -43,8 +43,12 @@ public class RoleSessionUpdateMiddleware
             var roles = _Db.Accounts.Include(a => a.AccountRoles).ThenInclude(ar => ar.Role)
                 .Where(a => a.Id == int.Parse(user.FindFirst("id").Value)).SingleOrDefault();
 
-            foreach (var role in roles?.AccountRoles)
-                identity.AddClaim(new Claim(ClaimTypes.Role, role.Role.Name));
+            if (roles != null)
+            {
+                foreach (var role in roles?.AccountRoles)
+                    identity.AddClaim(new Claim(ClaimTypes.Role, role.Role.Name));
+            }
+
 
             await _next.Invoke(context);
         }

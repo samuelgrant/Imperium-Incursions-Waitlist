@@ -35,11 +35,14 @@ public class BansUpdateMiddleware
                 );
 
             if(!account.IsBanned())
+            {
                 await _next.Invoke(context);
-
-            await context.SignOutAsync();
-            context.Response.StatusCode = 418;
-            context.Response.Redirect("/error/banned");//418
+            }
+            else
+            {
+                await context.SignOutAsync();
+                context.Response.Redirect("/error/banned");
+            }
         }
     }
 }
