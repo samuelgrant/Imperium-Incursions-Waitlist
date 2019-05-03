@@ -42,15 +42,18 @@
                 </div>
                 <ul class="navigation">
                     <li><a href="/pilot-select"><i class="fas fa-user-friends"></i> Manage Pilots</a></li>
-                    <li><a href="/auth/gice/logout"><i class="fas fa-sign-out"></i> Logout</a></li>
 
-                    
                     @if (User.Identity.IsAuthenticated && User.IsInRole("Commander") || User.IsInRole("Leadership"))
                     {
+                        <!-- Leadership Functions -->
                         <li class="_lowerLine" />
                         <li><a href="/admin/bans"><i class="fas fa-gavel"></i> Ban Management</a></li>
-                        <li><a href="/admin/commanders"><i class="fa fa-users-cog"></i> Commander Management</a></li>
+                        <li><a href="/admin/commanders"><i class="fa fa-users-cog"></i> User Management</a></li>
+                        <!-- End Leadership Functions -->
                     }
+
+                    <!-- Logout -->
+                    <li><a href="/auth/gice/logout"><i class="fas fa-sign-out"></i> Logout</a></li>
                 </ul>
             </div>
         </aside>

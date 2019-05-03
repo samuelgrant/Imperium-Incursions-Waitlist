@@ -25,7 +25,7 @@ namespace Imperium_Incursions_Waitlist.Controllers
         [HttpGet]
         public IActionResult Index()
         {
-            return View(viewName: "~/Views/Commanders.cshtml");
+            return View(viewName: "~/Views/UserManagement.cshtml");
         }
 
 
@@ -33,7 +33,7 @@ namespace Imperium_Incursions_Waitlist.Controllers
         /// Returns a list of accounts that have one or more account roles. 
         /// </summary>
         [HttpGet]
-        public IActionResult Active()
+        public IActionResult Elevated()
         {
             var fcs = _Db.Accounts
                 .Include(a => a.Pilots)
