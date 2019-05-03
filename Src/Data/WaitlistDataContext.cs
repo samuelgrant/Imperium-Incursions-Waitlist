@@ -68,7 +68,10 @@ namespace Imperium_Incursions_Waitlist.Data
                         .HasData(
                             new Role { Id = 1, Name = "Commander" },
                             new Role { Id = 2, Name = "Leadership"}
-                            );
+                        );
+
+            modelBuilder.Entity<Alliance>()
+                        .HasData(new { Id = 0, Name = "" });
 
             // Finished seeding account roles
         }

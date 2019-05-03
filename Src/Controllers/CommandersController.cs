@@ -37,6 +37,8 @@ namespace Imperium_Incursions_Waitlist.Controllers
         {
             var fcs = _Db.Accounts
                 .Include(a => a.Pilots)
+                    .ThenInclude(a => a.Corporation)
+                    .ThenInclude(a => a.Alliance)
                 .Include(a => a.AccountRoles)
                     .ThenInclude(ar => ar.Role)
                 .Where(a => a.AccountRoles.Count > 0)

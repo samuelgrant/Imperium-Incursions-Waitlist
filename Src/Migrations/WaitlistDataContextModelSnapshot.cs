@@ -59,6 +59,13 @@ namespace Imperium_Incursions_Waitlist.Migrations
                     b.HasKey("Id");
 
                     b.ToTable("Alliance");
+
+                    b.HasData(
+                        new
+                        {
+                            Id = 0,
+                            Name = ""
+                        });
                 });
 
             modelBuilder.Entity("Imperium_Incursions_Waitlist.Models.Ban", b =>
@@ -102,9 +109,7 @@ namespace Imperium_Incursions_Waitlist.Migrations
 
                     b.HasKey("Id");
 
-                    b.HasIndex("AllianceId")
-                        .IsUnique()
-                        .HasFilter("[AllianceId] IS NOT NULL");
+                    b.HasIndex("AllianceId");
 
                     b.ToTable("Corporation");
                 });
@@ -195,8 +200,8 @@ namespace Imperium_Incursions_Waitlist.Migrations
             modelBuilder.Entity("Imperium_Incursions_Waitlist.Models.Corporation", b =>
                 {
                     b.HasOne("Imperium_Incursions_Waitlist.Models.Alliance", "Alliance")
-                        .WithOne("Corporation")
-                        .HasForeignKey("Imperium_Incursions_Waitlist.Models.Corporation", "AllianceId");
+                        .WithMany("Corporations")
+                        .HasForeignKey("AllianceId");
                 });
 
             modelBuilder.Entity("Imperium_Incursions_Waitlist.Models.Pilot", b =>

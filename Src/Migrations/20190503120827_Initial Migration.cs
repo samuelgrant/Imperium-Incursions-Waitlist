@@ -160,6 +160,11 @@ namespace Imperium_Incursions_Waitlist.Migrations
                 });
 
             migrationBuilder.InsertData(
+                table: "Alliance",
+                columns: new[] { "Id", "Name" },
+                values: new object[] { 0, "" });
+
+            migrationBuilder.InsertData(
                 table: "Roles",
                 columns: new[] { "Id", "Name" },
                 values: new object[] { 1, "Commander" });
@@ -192,9 +197,7 @@ namespace Imperium_Incursions_Waitlist.Migrations
             migrationBuilder.CreateIndex(
                 name: "IX_Corporation_AllianceId",
                 table: "Corporation",
-                column: "AllianceId",
-                unique: true,
-                filter: "[AllianceId] IS NOT NULL");
+                column: "AllianceId");
 
             migrationBuilder.CreateIndex(
                 name: "IX_Pilots_AccountId",

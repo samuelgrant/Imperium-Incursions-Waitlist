@@ -15,8 +15,7 @@ namespace Imperium_Incursions_Waitlist.Models
         public string Name { get; set; }
 
         // Navigation properties
-
-        public Corporation Corporation { get; set; }
+        public ICollection<Corporation> Corporations { get; set; }
 
         public static void IsInDatabase(int id, Data.WaitlistDataContext _Db)
         {

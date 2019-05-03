@@ -36,15 +36,12 @@ namespace Imperium_Incursions_Waitlist.Models
             {
                 Id = id,
                 Name = result.Result.Name,
-                AllianceId = result.Result.AllianceId
+                AllianceId = result.Result.AllianceId 
             };
 
             //Corporation is not in an alliance
-            if (corporation.AllianceId == null)
-                return;
-
-
-            Alliance.IsInDatabase((int)corporation.AllianceId, _Db);
+            if (corporation.AllianceId != 0)
+                Alliance.IsInDatabase((int)corporation.AllianceId, _Db);
 
             _Db.Add(corporation);
             _Db.SaveChanges();
