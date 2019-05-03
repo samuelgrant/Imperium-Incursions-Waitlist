@@ -155,7 +155,7 @@ namespace Imperium_Incursions_Waitlist.Controllers
 
 
             var currentBan = _Db.Bans.Include(c => c.BannedAccount).SingleOrDefault(c => c.Id == id);
-            string baneeName = currentBan.BannedAccount.Name;
+            string baneeName = currentBan?.BannedAccount?.Name;
 
             if (currentBan == null)
                 return NotFound();

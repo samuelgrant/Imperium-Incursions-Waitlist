@@ -40,7 +40,7 @@ namespace Imperium_Incursions_Waitlist.Controllers
                 .Include(a => a.AccountRoles)
                     .ThenInclude(ar => ar.Role)
                 .Where(a => a.AccountRoles.Count > 0)
-                .OrderBy(s => s.Name);
+                .OrderBy(a => a.Name);
                
             return Ok(fcs);
         }
