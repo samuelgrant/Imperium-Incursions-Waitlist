@@ -7,8 +7,16 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <Compile Remove="Migrations\20190327072413_InitialCommit.cs" />
+    <Compile Remove="Migrations\20190327072413_InitialCommit.Designer.cs" />
     <Compile Remove="Migrations\20190411050700_AccountRoles.cs" />
     <Compile Remove="Migrations\20190411050700_AccountRoles.Designer.cs" />
+    <Compile Remove="Migrations\20190411052055_AccountRoles.cs" />
+    <Compile Remove="Migrations\20190411052055_AccountRoles.Designer.cs" />
+    <Compile Remove="Migrations\20190414001454_UpdatedBansModel.cs" />
+    <Compile Remove="Migrations\20190414001454_UpdatedBansModel.Designer.cs" />
+    <Compile Remove="Migrations\20190414033827_InitialMigration.cs" />
+    <Compile Remove="Migrations\20190414033827_InitialMigration.Designer.cs" />
   </ItemGroup>
 
   <ItemGroup>
@@ -19,14 +27,15 @@
 
   <ItemGroup>
     <PackageReference Include="DotNetEnv" Version="1.2.0" />
-    <PackageReference Include="ESI.NET" Version="2.12.13" />
+    <PackageReference Include="ESI.NET" Version="2.13.13" />
     <PackageReference Include="Microsoft.AspNetCore.App" />
     <PackageReference Include="Microsoft.AspNetCore.Authentication.OpenIdConnect" Version="2.2.0" />
     <PackageReference Include="Microsoft.AspNetCore.Razor.Design" Version="2.2.0" PrivateAssets="All" />
     <PackageReference Include="Microsoft.AspNetCore.Session" Version="2.2.0" />
     <PackageReference Include="Microsoft.Extensions.Caching.Memory" Version="2.2.0" />
-    <PackageReference Include="Microsoft.VisualStudio.Web.CodeGeneration.Design" Version="2.2.2" />
+    <PackageReference Include="Microsoft.VisualStudio.Web.CodeGeneration.Design" Version="2.2.3" />
     <PackageReference Include="Newtonsoft.Json" Version="12.0.1" />
+    <PackageReference Include="Pomelo.EntityFrameworkCore.MySql" Version="2.2.0" />
     <PackageReference Include="System.Configuration.ConfigurationManager" Version="4.5.0" />
     <PackageReference Include="Webpack" Version="4.0.0" />
   </ItemGroup>

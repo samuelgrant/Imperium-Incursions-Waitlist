@@ -4,6 +4,7 @@ using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.HttpOverrides;
 using Microsoft.AspNetCore.Internal;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
@@ -15,14 +16,16 @@ namespace Imperium_Incursions_Waitlist
 {
     public class Startup
     {
-        public Startup(IConfiguration configuration, ILoggerFactory logFactory)
+        private IHostingEnvironment CurrentEnvironment { get; set; }
+        public IConfiguration Configuration { get; }
+
+        public Startup(IConfiguration configuration, ILoggerFactory logFactory, IHostingEnvironment env)
         {
             Configuration = configuration;
             Services.ApplicationLogging.LoggerFactory = logFactory;
+            CurrentEnvironment = env;
         }
-
-        public IConfiguration Configuration { get; }
-
+              
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
@@ -43,11 +46,32 @@ namespace Imperium_Incursions_Waitlist
 
             services.AddMvc().SetCompatibilityVersion(CompatibilityVersion.Version_2_2);
 
-            services.AddDbContext<WaitlistDataContext>(options =>
-                options.UseSqlServer(Configuration.GetConnectionString("DefaultConnection")));
+            services.AddMvc().AddJsonOptions(options =>
+            {
+                options.SerializerSettings.ReferenceLoopHandling = Newtonsoft.Json.ReferenceLoopHandling.Ignore;
+            });
+
+            // Use MS SQL in development
+            // Allows use of VS SQL Server explorer
+            if (CurrentEnvironment.IsDevelopment())
+            {
+                services.AddDbContext<WaitlistDataContext>(options =>
+                    options.UseSqlServer(Configuration.GetConnectionString("MsSqlConnection")));
+            }
+            // Use MySQL on linux based testing & Production servers
+            else
+            {
+                services.AddDbContext<WaitlistDataContext>(options =>
+                    options.UseMySql(Configuration.GetConnectionString("MySqlConnection")));
+            }
+                
 
             services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationScheme)
-                .AddCookie(o => o.LoginPath = "/auth/gice");
+                .AddCookie(options => 
+                {
+                    options.LoginPath = "/auth/gice";
+                    options.AccessDeniedPath = "/";
+                });
 
             services.AddSingleton<IHttpContextAccessor, HttpContextAccessor>();
         }
@@ -61,13 +85,19 @@ namespace Imperium_Incursions_Waitlist
             }
             else
             {
+                UpdatDatabase(app);
                 app.UseStatusCodePagesWithReExecute("/error");
                 // The default HSTS value is 30 days. You may want to change this for production scenarios, see https://aka.ms/aspnetcore-hsts.
-                app.UseHsts();
+                //app.UseHsts();
             }
 
             app.UseHttpsRedirection();
             app.UseStaticFiles();
+
+            app.UseForwardedHeaders(new ForwardedHeadersOptions
+            {
+                ForwardedHeaders = ForwardedHeaders.XForwardedFor | ForwardedHeaders.XForwardedProto
+            });
 
             // Cookies and Sessions
             // For authorisation and Authentication
@@ -75,13 +105,18 @@ namespace Imperium_Incursions_Waitlist
             app.UseSession();
             app.UseEndpointRouting();
             app.UseAuthentication();
-            app.UsePreferredPilotMiddleware();
+            app.UseSessionBasedRoles();
+            //app.UseBans();
+            app.UsePreferredPilot();
 
             app.UseMvc(routes =>
             {
                 routes.MapRoute(
                     name: "auth",
                     template: "/auth/{controller}/{action=Go}/{id?}");
+                routes.MapRoute(
+                    name: "admin",
+                    template: "/admin/{controller}/{action=Index}/{id?}");
                 routes.MapRoute(
                     name: "default",
                     template: "/{controller=Home}/{action=Index}/{id?}");
@@ -96,6 +131,19 @@ namespace Imperium_Incursions_Waitlist
                     defaults: new {controller = "PilotSelect"}
                 );
             });
+        }
+
+        private void UpdatDatabase(IApplicationBuilder app)
+        {
+            using (var serviceScope = app.ApplicationServices
+           .GetRequiredService<IServiceScopeFactory>()
+           .CreateScope())
+            {
+                using (var context = serviceScope.ServiceProvider.GetService<WaitlistDataContext>())
+                {
+                    context.Database.Migrate();
+                }
+            }
         }
     }
 }

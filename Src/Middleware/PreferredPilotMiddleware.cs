@@ -14,11 +14,11 @@ public class PreferredPilotMiddleware
 
     public async Task Invoke(HttpContext context)
     {
-        string requestController = context.GetRouteData().Values["controller"].ToString();
+        string requestController = context.GetRouteData()?.Values["controller"]?.ToString();
 
         // The following controllers bypass this middleware as they need to be able to work in order to allow a pilot to be selected
         // 1) PilotSelectController, 2) EveController, 3) GiceController, as well as 4) Unauthenticated users.
-        if (context.User.FindFirst("id") == null || requestController == "PilotSelect" || requestController == "Eve" || requestController == "Gice")
+        if (!context.User.Identity.IsAuthenticated || requestController == "PilotSelect" || requestController == "Eve" || requestController == "Gice")
         {
             await _next.Invoke(context);
         }
@@ -37,7 +37,7 @@ public class PreferredPilotMiddleware
 
 public static class PreferredPilotMiddlewareExtensions
 {
-    public static IApplicationBuilder UsePreferredPilotMiddleware(this IApplicationBuilder builder)
+    public static IApplicationBuilder UsePreferredPilot(this IApplicationBuilder builder)
     {
         return builder.UseMiddleware<PreferredPilotMiddleware>();
     }

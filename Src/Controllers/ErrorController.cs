@@ -40,5 +40,10 @@ namespace Imperium_Incursions_Waitlist.Controllers
             // Catch all remaining errors.
             return View(viewName: "GeneralError");
         }
+
+        public IActionResult Banned()
+        {
+            return View(viewName: "Ban");
+        }
     }
 }

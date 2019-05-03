@@ -289,6 +289,11 @@ textarea {
     resize: vertical
 }
 
+textarea.form-control {
+    resize: vertical;
+    height: 100px;
+}
+
 fieldset {
     min-width: 0;
     padding: 0;
@@ -1625,10 +1630,6 @@ pre code {
     background-color: rgba(255,255,255,.075)
 }
 
-.form-control, .form-control:disabled, .form-control:focus, .form-control[readonly] {
-    background-color: transparent
-}
-
 @media (max-width:991px) {
     .table-responsive {
         display: block;
@@ -1657,6 +1658,10 @@ pre code {
     border: 1px solid rgba(255,255,255,.2);
     border-radius: 0;
     transition: border-color ease-in-out .15s,box-shadow ease-in-out .15s
+}
+
+.form-control:disabled {
+    cursor: not-allowed;
 }
 
 .form-control::-ms-expand {
@@ -9143,7 +9148,7 @@ button, input, optgroup, select, textarea {
 }
 
 .header--scrolled {
-    background-color: rgba(0,0,0,.96)
+    background-color: #090A0A;
 }
 
 .navigation-trigger {
@@ -9417,7 +9422,7 @@ button, input, optgroup, select, textarea {
         color: rgba(255,255,255,.85);
         -webkit-transform: rotate(180deg);
         transform: rotate(180deg);
-        line-height: 3.9rem
+        line-height: 3.9rem;
     }
 
     .search__helper:before {
@@ -9429,8 +9434,12 @@ button, input, optgroup, select, textarea {
     }
 }
 
+.search__helper{
+    top: 10px;
+}
+
 .header--scrolled .search__text {
-    background-color: rgba(255,255,255,.1)
+    background-color: rgba(255, 255, 255, 0.14)
 }
 
 .header--scrolled .search__text:focus {
@@ -9534,12 +9543,16 @@ button, input, optgroup, select, textarea {
     color: #fff
 }
 
+// Background disabled
 .clock {
-    background: rgba(255,255,255,.08);
+    /*background: rgba(255, 255, 255, 0.14);*/
     line-height: 100%;
     padding: .7rem 1rem;
     font-size: 1.5rem;
-    margin-left: 1rem
+    margin-left: 1rem;
+    font-size: large;
+    padding-top: 12px;
+    padding-bottom: 12px;
 }
 
 .time > span:not(:last-child):after {
@@ -9651,7 +9664,7 @@ button, input, optgroup, select, textarea {
 }
 
 .sidebar--hidden {
-    background-color: rgba(0,0,0,.96);
+    background-color: #151516ed;
     transition: opacity .3s,-webkit-transform .3s;
     transition: transform .3s,opacity .3s;
     transition: transform .3s,opacity .3s,-webkit-transform .3s;
@@ -9672,12 +9685,14 @@ button, input, optgroup, select, textarea {
     transform: translate3d(0,0,0)
 }
 
+// Removed the white box around the user_info
 .sidebar--hidden .user__info {
-    background-color: rgba(255,255,255,.09)
+    /*background-color: rgba(255,255,255,.09)*/
 }
 
+// Removed the white box around the user_info
 .sidebar--hidden .user__info:hover {
-    background-color: rgba(255,255,255,.1)
+    /*background-color: rgba(255,255,255,.1)*/
 }
 
 .sidebar__inner {
@@ -9694,6 +9709,7 @@ button, input, optgroup, select, textarea {
     transform: none !important
 }
 
+// Removed the background
 .user__info {
     display: -webkit-box;
     display: -ms-flexbox;
@@ -9707,7 +9723,7 @@ button, input, optgroup, select, textarea {
     cursor: pointer;
     font-size: .9rem;
     padding: 1rem;
-    background-color: rgba(255,255,255,.06);
+    /*background-color: rgba(255,255,255,.06);*/
     transition: background-color .3s
 }
 
@@ -11434,46 +11450,6 @@ button, input, optgroup, select, textarea {
 
 [data-sa-theme] {
     transition: background .3s
-}
-
-[data-sa-theme="1"] {
-    background-color: #772036
-}
-
-[data-sa-theme="2"] {
-    background-color: #273C5B
-}
-
-[data-sa-theme="3"] {
-    background-color: #174042
-}
-
-[data-sa-theme="4"] {
-    background-color: #383844
-}
-
-[data-sa-theme="5"] {
-    background-color: #49423F
-}
-
-[data-sa-theme="6"] {
-    background-color: #5e3d22
-}
-
-[data-sa-theme="7"] {
-    background-color: #234d6d
-}
-
-[data-sa-theme="8"] {
-    background-color: #3b5e5e
-}
-
-[data-sa-theme="9"] {
-    background-color: #0a4c3e
-}
-
-[data-sa-theme="10"] {
-    background-color: #7b3d54
 }
 
 .themes {
