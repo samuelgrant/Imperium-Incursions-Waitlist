@@ -20,6 +20,7 @@ namespace Imperium_Incursions_Waitlist.Models
         public string Name { get; set; }
 
         [Display(Name = "Corporation ID")]
+        [JsonIgnore]
         public long CorporationId { get; set; }
 
         [Display(Name = "ESI Token")]
@@ -42,6 +43,7 @@ namespace Imperium_Incursions_Waitlist.Models
 
         // Navigation properties
         public Account Account { get; set; }
+        public Corporation Corporation { get; set; }
 
 
         /// <summary>
