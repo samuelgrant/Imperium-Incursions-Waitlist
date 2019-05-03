@@ -11,10 +11,10 @@ namespace Imperium_Incursions_Waitlist.Models
     public class Corporation
     {
         [DatabaseGenerated(DatabaseGeneratedOption.None)]
-        public int Id { get; set; }
+        public long Id { get; set; }
 
         [JsonIgnore]
-        public int AllianceId { get; set; }
+        public int? AllianceId { get; set; }
 
         public string Name { get; set; }
 
