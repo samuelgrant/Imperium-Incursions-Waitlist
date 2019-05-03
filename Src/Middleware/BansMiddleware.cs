@@ -9,12 +9,12 @@ using System.Security.Claims;
 using Imperium_Incursions_Waitlist.Models;
 using Microsoft.AspNetCore.Authentication;
 
-public class BansUpdateMiddleware
+public class BansMiddleware
 {
     private readonly RequestDelegate _next;
     private WaitlistDataContext _Db;
 
-    public BansUpdateMiddleware(RequestDelegate next)
+    public BansMiddleware(RequestDelegate next)
     {
         _next = next;
     }
@@ -51,6 +51,6 @@ public static class GiceBansUpdateMiddlewareExtensions
 {
     public static IApplicationBuilder UseBans(this IApplicationBuilder builder)
     {
-        return builder.UseMiddleware<BansUpdateMiddleware>();
+        return builder.UseMiddleware<BansMiddleware>();
     }
 }
