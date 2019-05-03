@@ -50,6 +50,17 @@ namespace Imperium_Incursions_Waitlist.Migrations
                     b.ToTable("AccountRoles");
                 });
 
+            modelBuilder.Entity("Imperium_Incursions_Waitlist.Models.Alliance", b =>
+                {
+                    b.Property<int>("Id");
+
+                    b.Property<string>("Name");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("Alliance");
+                });
+
             modelBuilder.Entity("Imperium_Incursions_Waitlist.Models.Ban", b =>
                 {
                     b.Property<int>("Id")
@@ -81,6 +92,23 @@ namespace Imperium_Incursions_Waitlist.Migrations
                     b.ToTable("Bans");
                 });
 
+            modelBuilder.Entity("Imperium_Incursions_Waitlist.Models.Corporation", b =>
+                {
+                    b.Property<long>("Id");
+
+                    b.Property<int?>("AllianceId");
+
+                    b.Property<string>("Name");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("AllianceId")
+                        .IsUnique()
+                        .HasFilter("[AllianceId] IS NOT NULL");
+
+                    b.ToTable("Corporation");
+                });
+
             modelBuilder.Entity("Imperium_Incursions_Waitlist.Models.Pilot", b =>
                 {
                     b.Property<int>("Id");
@@ -101,6 +129,8 @@ namespace Imperium_Incursions_Waitlist.Migrations
                     b.HasKey("Id");
 
                     b.HasIndex("AccountId");
+
+                    b.HasIndex("CorporationId");
 
                     b.ToTable("Pilots");
                 });
@@ -162,12 +192,24 @@ namespace Imperium_Incursions_Waitlist.Migrations
                         .OnDelete(DeleteBehavior.Restrict);
                 });
 
+            modelBuilder.Entity("Imperium_Incursions_Waitlist.Models.Corporation", b =>
+                {
+                    b.HasOne("Imperium_Incursions_Waitlist.Models.Alliance", "Alliance")
+                        .WithOne("Corporation")
+                        .HasForeignKey("Imperium_Incursions_Waitlist.Models.Corporation", "AllianceId");
+                });
+
             modelBuilder.Entity("Imperium_Incursions_Waitlist.Models.Pilot", b =>
                 {
                     b.HasOne("Imperium_Incursions_Waitlist.Models.Account", "Account")
                         .WithMany("Pilots")
                         .HasForeignKey("AccountId")
                         .OnDelete(DeleteBehavior.Cascade);
+
+                    b.HasOne("Imperium_Incursions_Waitlist.Models.Corporation", "Corporation")
+                        .WithMany("Pilots")
+                        .HasForeignKey("CorporationId")
+                        .OnDelete(DeleteBehavior.Restrict);
                 });
 #pragma warning restore 612, 618
         }
