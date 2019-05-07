@@ -112,14 +112,17 @@ namespace Imperium_Incursions_Waitlist.Controllers
         [HttpDelete]
         [Produces("application/json")]
         [Authorize(Roles = "Leadership")]
-        public IActionResult RemoveRole(FormCollection request)
+        public IActionResult Revoke(IFormCollection request)
         {
             // Parse inputs as ints
             int.TryParse(request["accountId"], out int accountId);
             int.TryParse(request["roleId"], out int roleId);
             // Validate to ensure the required fields were returned.
             if (accountId == 0 || roleId == 0)
-                return BadRequest("Invalid role or account ID provided");      
+                return BadRequest("Invalid role or account ID provided");
+
+            if (accountId == int.Parse(User.FindFirst("Id").Value))
+                return Unauthorized("You are not allowed to remove your own groups");
             
 
             var accountRole = _Db.AccountRoles

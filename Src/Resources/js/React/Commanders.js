@@ -1,6 +1,6 @@
 ﻿import React, { Component } from 'react';
 import { render } from 'react-dom';
-import { UserRow } from './Components/CommandersChildren';
+import { UserRow, ManageInfo } from './Components/CommandersChildren';
 
 
 const baseUri = "/admin/commanders";
@@ -27,7 +27,7 @@ export default class UserManagement extends Component {
         }).done((result) => {
             this.setState({ users: result });
         }).fail((err) => {
-            console.error(`React/Commanders {Commanders@getData} - Error getting active users`, err);
+            console.error(`React/Commanders {Commanders@getData} - Error getting active users`, err.responseText);
         });
 
         $.ajax({
@@ -36,10 +36,32 @@ export default class UserManagement extends Component {
         }).done((result) => {
             this.setState({ roles: result });
         }).fail((err) => {
-            console.error(`React/Commanders {Commanders@getData} - Error getting the avaliable acount roles`, err);
+            console.error(`React/Commanders {Commanders@getData} - Error getting the avaliable account roles`, err.responseText);
         });
 
         this.setUserIndex(null);
+    }
+
+    submitForm(e) {
+
+    }
+
+    removeGroup(i) {
+        
+        $.ajax({
+            type: 'delete',
+            url: `${baseUri}/revoke`,
+            data: {
+                roleId: i,
+                accountId: this.state.users[this.state.userIndex].id || null
+            }
+        }).done((result) => {
+            let x = this.state.userIndex;
+            this.getData();
+            this.setUserIndex(x);
+        }).fail((err) => {
+            console.error(`React/Commanders {Commanders@removeGroup} - Error revoking role`, err.responseText);
+        });
     }
 
     setUserIndex(i) {
@@ -58,7 +80,11 @@ export default class UserManagement extends Component {
                 return <UserRow user={user} viewDetails={this.setUserIndex.bind(this)} index={index} key={index} />
             });
         }
+
         let userDetails;
+        if (!!this.getUsers()) {
+            userDetails = <ManageInfo details={this.state.users[this.state.userIndex]} roles={this.state.roles} onSubmit={this.submitForm.bind(this)} removeGroup={this.removeGroup.bind(this)} reset={this.setUserIndex.bind(this)} />
+        }
 
         return (
             <div className="container">

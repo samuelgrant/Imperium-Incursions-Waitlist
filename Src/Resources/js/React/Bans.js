@@ -29,7 +29,7 @@ export default class BanManagement extends Component {
                 banIndex: null
             });
         }).fail((err) => {
-            console.error(`React/Bans {Bans@getData} - Error getting active bans`, err);
+            console.error(`React/Bans {Bans@getData} - Error getting active bans`, err.responseText);
         })
     }
 
@@ -68,7 +68,7 @@ export default class BanManagement extends Component {
             this.getData();
             this.setBanIndex(null);
         }).fail((err) => {
-            console.error(`React/Bans {Bans@submitForm} - Error saving or updating ban`, err);
+            console.error(`React/Bans {Bans@submitForm} - Error saving or updating ban`, err.responseText);
         });
 
     }
@@ -82,7 +82,7 @@ export default class BanManagement extends Component {
         }).done(() => {
             this.getData();
         }).fail((err) => {
-            console.error(`React/Bans {Bans@revokeBan} - Error revoking ban id: ${banId}`, err);
+            console.error(`React/Bans {Bans@revokeBan} - Error revoking ban id: ${banId}`, err.responseText);
         });
     }
 
