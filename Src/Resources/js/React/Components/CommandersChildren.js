@@ -83,11 +83,22 @@ export class ManageInfo extends Component {
         return null;
     }
 
+    //Needs to get the FC name
+    //If the state knows what it is use that
+    //Otherwise use the value of the text input
+    getFcName() {
+
+        if (!this.inputNewFc() && !!this.props.details)
+            return this.props.details.name;      
+
+        return "no name";
+    }
+
     render() {
         // Text: Account search
-        let accountSearch = <Input id="lookup_account" type="text" classOverride="form-control account-lookup" name="name" required="true" key={null} />
+        let accountSearch = <Input ref={this.AccountName} id="lookup_account" type="text" classOverride="form-control account-lookup" name="name" required="true" key={null} />
         if (!this.inputNewFc())
-            accountSearch = <Input id="lookup_account" type="text" classOverride="form-control account-lookup" value={this.props.details.name} name="name" disabled="true" required="true" key={this.props.details.id} />
+            accountSearch = <Input ref={this.AccountName} id="lookup_account" type="text" classOverride="form-control account-lookup" value={this.props.details.name} name="name" disabled="true" required="true" key={this.props.details.id} />
 
         // String: Date the FC last logged in
         let date;
@@ -99,7 +110,7 @@ export class ManageInfo extends Component {
         let avaliable_roles;
         if (this.props.roles) {
             avaliable_roles = this.props.roles.map((role) => {
-                return <a className="dropdown-item" role="presentation" href="#">{role.name}</a>;
+                return <a className="dropdown-item" role="presentation" onClick={this.props.onSubmit.bind(this, role.id, this.getFcName())}>{role.name}</a>;
             });
         }
 
@@ -109,6 +120,13 @@ export class ManageInfo extends Component {
             in_roles = this.props.details.accountRoles.map((r) => {
                 return <span className="badge role">{r.role.name} <i className="fas fa-times ml-2" onClick={this.props.removeGroup.bind(this, r.role.id)} ></i></span>
             });
+        }
+
+        // Button: Reset Button
+        let reset_btn = {};
+        if (!this.inputNewFc()) {
+            reset_btn.large = <button className="btn btn-dark float-left" type="button" onClick={this.props.reset.bind(this, null)}>Back <i className="fas fa-undo-alt"></i></button>;
+            reset_btn.small = <i className="fas fa-times-circle float-right mr-3" onClick={this.props.reset.bind(this, null)}></i>
         }
 
         // Div: Pilot (List of individual pilots, their images and  names)
@@ -141,8 +159,8 @@ export class ManageInfo extends Component {
             corporation = (
                 <div className="corporation">
                     <h4>Corporation</h4>
-                    <img src={`https://imageserver.eveonline.com/Corporation/${this.getCorporation().id}_64.png`} alt="Corporation Logo" />
-                    {this.getCorporation().name}
+                    <img src={`https://imageserver.eveonline.com/Corporation/${this.getCorporation().id}_32.png`} alt="Corporation Logo" />
+                    <Corporation corporation={this.getCorporation()} />
                 </div>
             )
         }
@@ -153,8 +171,8 @@ export class ManageInfo extends Component {
             alliance = (
                 <div className="alliance">
                     <h4>Alliance</h4>
-                    <img src={`https://imageserver.eveonline.com/Alliance/${this.getAlliance().id}_64.png`} alt="Alliance Logo" />
-                    {this.getAlliance().name}
+                    <img src={`https://imageserver.eveonline.com/Alliance/${this.getAlliance().id}_32.png`} alt="Alliance Logo" />
+                    <Alliance alliance={this.getAlliance()} />
                 </div> 
             )
         }
@@ -162,6 +180,7 @@ export class ManageInfo extends Component {
         return (
             <div>
                 <div className="panel-body py-4">
+                    {reset_btn.small}
                     <img className="rounded-circle d-block mx-auto" src={this.getPilotUrl()} alt="Pilot's Avatar" />
 
                     <form onSubmit={this.props.onSubmit.bind(this)}>
@@ -193,6 +212,7 @@ export class ManageInfo extends Component {
                             </div>
                         </div>{/* <!-- End Add to role --> */}
                     </form>
+                    {reset_btn.large}
                 </div>
             </div>
         )

@@ -1,6 +1,7 @@
 ﻿import React, { Component } from 'react';
 import { render } from 'react-dom';
 import { UserRow, ManageInfo } from './Components/CommandersChildren';
+import { isNumber } from 'util';
 
 
 const baseUri = "/admin/commanders";
@@ -24,6 +25,7 @@ export default class UserManagement extends Component {
         $.ajax({
             type: 'get',
             url: `${baseUri}/elevated`,
+            async: false
         }).done((result) => {
             this.setState({ users: result });
         }).fail((err) => {
@@ -33,6 +35,7 @@ export default class UserManagement extends Component {
         $.ajax({
             type: 'get',
             url: `${baseUri}/roles`,
+            async: false
         }).done((result) => {
             this.setState({ roles: result });
         }).fail((err) => {
@@ -42,8 +45,31 @@ export default class UserManagement extends Component {
         this.setUserIndex(null);
     }
 
-    submitForm(e) {
+    addGroup(role_id, account) {
+        let account_id;
+        let account_name;
 
+        if (!isNaN(account)) {
+            account_id = account;
+        } else {
+            account_name = account;
+        }
+
+        $.ajax({
+            type: 'post',
+            url: `${baseUri}/addrole`,
+            data: {
+                "role_id": role_id,
+                "account_id": account_id,
+                "account_name": account_name
+            }
+        }).done((result) => {
+            let x = this.state.userIndex;
+            this.getData();
+            this.setUserIndex(x);
+        }).fail((err) => {
+            console.error(`React/Commanders {Commanders@addGroup} - Error revoking role`, err.responseText);
+        });
     }
 
     removeGroup(i) {
@@ -83,7 +109,7 @@ export default class UserManagement extends Component {
 
         let userDetails;
         if (!!this.getUsers()) {
-            userDetails = <ManageInfo details={this.state.users[this.state.userIndex]} roles={this.state.roles} onSubmit={this.submitForm.bind(this)} removeGroup={this.removeGroup.bind(this)} reset={this.setUserIndex.bind(this)} />
+            userDetails = <ManageInfo details={this.state.users[this.state.userIndex]} roles={this.state.roles} onSubmit={this.addGroup.bind(this)} removeGroup={this.removeGroup.bind(this)} reset={this.setUserIndex.bind(this)} />
         }
 
         return (

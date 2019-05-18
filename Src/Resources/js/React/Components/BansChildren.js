@@ -96,9 +96,12 @@ export class ManageInfo extends Component {
             reason = <TextArea id="banReason" name="reason" value={this.props.details.reason} required="true" key={this.props.details.id}/>;
 
         // Button: Reset Button
-        let reset_btn;
-        if (!this.inputNewBan()) 
-            reset_btn = <button className="btn btn-dark float-left" type="button" onClick={this.props.reset.bind(this, null)}>Reset <i className="fas fa-undo-alt"></i></button>;
+        let reset_btn = {};
+        if (!this.inputNewBan()) {
+            reset_btn.large = <button className="btn btn-dark float-left" type="button" onClick={this.props.reset.bind(this, null)}>Back <i className="fas fa-undo-alt"></i></button>;
+            reset_btn.small = <i className="fas fa-times-circle float-right mr-3" onClick={this.props.reset.bind(this, null)}></i>
+        }
+            
 
         // Button Text: Ban User/Update Ban
         let ban_btn_text = "Ban User";
@@ -109,6 +112,7 @@ export class ManageInfo extends Component {
         return (
             <div>
                 <div className="panel-body py-4">
+                    {reset_btn.small}
                     <img className="rounded-circle d-block mx-auto" src={this.getPilotUrl()} alt="Pilot's Avatar" />
 
                     <form onSubmit={this.props.onSubmit.bind(this)}>
@@ -131,7 +135,7 @@ export class ManageInfo extends Component {
                             <small className="text-muted">Only visible to the FC team</small>
                         </div>
 
-                        {reset_btn}
+                        {reset_btn.large}
                         <button className="btn btn-danger float-right" type="submit">{ban_btn_text} <i className="fas fa-gavel"></i></button>
                     </form>
                 </div>

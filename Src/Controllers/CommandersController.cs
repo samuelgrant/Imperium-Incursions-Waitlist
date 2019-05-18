@@ -63,20 +63,22 @@ namespace Imperium_Incursions_Waitlist.Controllers
         [HttpPost]
         [Produces("application/json")]
         [Authorize(Roles = "Leadership")]
-        public IActionResult AddRole(FormCollection request)
+        public IActionResult AddRole(IFormCollection request)
         {
             // Validate form inputs
 
             // Parse inputs as ints
-            int.TryParse(request["accountId"], out int accountId);
-            int.TryParse(request["roleId"], out int roleId);
-            string accountName = request["accountName"];
+            int.TryParse(request["account_id"], out int accountId);
+            int.TryParse(request["role_id"], out int roleId);
+            string accountName = request["account_name"];
+
 
             // Validate to ensure the required fields were returned.
             if (accountId == 0 && String.IsNullOrEmpty(accountName) || roleId == 0)
-                return BadRequest("Invalid role or account ID/Name provided");            
+                return BadRequest("Invalid role or account ID/Name provided");
 
             var account = _Db.Accounts.Where(a => a.Name == accountName || a.Id == accountId).SingleOrDefault();
+            
             var role = _Db.Roles.Find(roleId);
 
             if (account == null)
