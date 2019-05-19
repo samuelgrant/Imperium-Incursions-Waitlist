@@ -106,7 +106,7 @@ namespace Imperium_Incursions_Waitlist
             app.UseEndpointRouting();
             app.UseAuthentication();
             app.UseSessionBasedRoles();
-            //app.UseBans();
+            app.UseBans();
             app.UsePreferredPilot();
 
             app.UseMvc(routes =>

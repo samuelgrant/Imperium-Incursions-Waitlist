@@ -65,13 +65,10 @@ namespace Imperium_Incursions_Waitlist.Controllers
         [Authorize(Roles = "Leadership")]
         public IActionResult AddRole(IFormCollection request)
         {
-            // Validate form inputs
-
             // Parse inputs as ints
             int.TryParse(request["account_id"], out int accountId);
             int.TryParse(request["role_id"], out int roleId);
             string accountName = request["account_name"];
-
 
             // Validate to ensure the required fields were returned.
             if (accountId == 0 && String.IsNullOrEmpty(accountName) || roleId == 0)
@@ -81,9 +78,15 @@ namespace Imperium_Incursions_Waitlist.Controllers
             
             var role = _Db.Roles.Find(roleId);
 
+            // User account does not exist
             if (account == null)
                 return NotFound("Account not found.");
 
+            // Stops a user from changing their own role
+            if (account.Id == int.Parse(User.FindFirst("Id").Value))
+                return Unauthorized("You are not allowed to add your own groups");
+
+            // Role doesn't exist
             if (role == null)
                 return NotFound("Role not found.");
 
