@@ -4,7 +4,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 
 namespace Imperium_Incursions_Waitlist.Migrations
 {
-    public partial class initMigration : Migration
+    public partial class InitialMigration : Migration
     {
         protected override void Up(MigrationBuilder migrationBuilder)
         {
@@ -21,6 +21,18 @@ namespace Imperium_Incursions_Waitlist.Migrations
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_Accounts", x => x.Id);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "Alliance",
+                columns: table => new
+                {
+                    Id = table.Column<int>(nullable: false),
+                    Name = table.Column<string>(nullable: true)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Alliance", x => x.Id);
                 });
 
             migrationBuilder.CreateTable(
@@ -76,26 +88,22 @@ namespace Imperium_Incursions_Waitlist.Migrations
                 });
 
             migrationBuilder.CreateTable(
-                name: "Pilots",
+                name: "Corporation",
                 columns: table => new
                 {
-                    Id = table.Column<int>(nullable: false),
-                    AccountId = table.Column<int>(nullable: false),
-                    Name = table.Column<string>(nullable: false),
-                    CorporationId = table.Column<long>(nullable: false),
-                    ESIToken = table.Column<string>(nullable: true),
-                    RegisteredAt = table.Column<DateTime>(nullable: false),
-                    UpdatedAt = table.Column<DateTime>(nullable: true)
+                    Id = table.Column<long>(nullable: false),
+                    AllianceId = table.Column<int>(nullable: true),
+                    Name = table.Column<string>(nullable: true)
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_Pilots", x => x.Id);
+                    table.PrimaryKey("PK_Corporation", x => x.Id);
                     table.ForeignKey(
-                        name: "FK_Pilots_Accounts_AccountId",
-                        column: x => x.AccountId,
-                        principalTable: "Accounts",
+                        name: "FK_Corporation_Alliance_AllianceId",
+                        column: x => x.AllianceId,
+                        principalTable: "Alliance",
                         principalColumn: "Id",
-                        onDelete: ReferentialAction.Cascade);
+                        onDelete: ReferentialAction.Restrict);
                 });
 
             migrationBuilder.CreateTable(
@@ -121,6 +129,40 @@ namespace Imperium_Incursions_Waitlist.Migrations
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
                 });
+
+            migrationBuilder.CreateTable(
+                name: "Pilots",
+                columns: table => new
+                {
+                    Id = table.Column<int>(nullable: false),
+                    AccountId = table.Column<int>(nullable: false),
+                    Name = table.Column<string>(nullable: false),
+                    CorporationId = table.Column<long>(nullable: false),
+                    ESIToken = table.Column<string>(nullable: true),
+                    RegisteredAt = table.Column<DateTime>(nullable: false),
+                    UpdatedAt = table.Column<DateTime>(nullable: true)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Pilots", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_Pilots_Accounts_AccountId",
+                        column: x => x.AccountId,
+                        principalTable: "Accounts",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                    table.ForeignKey(
+                        name: "FK_Pilots_Corporation_CorporationId",
+                        column: x => x.CorporationId,
+                        principalTable: "Corporation",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Restrict);
+                });
+
+            migrationBuilder.InsertData(
+                table: "Alliance",
+                columns: new[] { "Id", "Name" },
+                values: new object[] { 0, "" });
 
             migrationBuilder.InsertData(
                 table: "Roles",
@@ -153,9 +195,19 @@ namespace Imperium_Incursions_Waitlist.Migrations
                 column: "UpdatedByAdminId");
 
             migrationBuilder.CreateIndex(
+                name: "IX_Corporation_AllianceId",
+                table: "Corporation",
+                column: "AllianceId");
+
+            migrationBuilder.CreateIndex(
                 name: "IX_Pilots_AccountId",
                 table: "Pilots",
                 column: "AccountId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Pilots_CorporationId",
+                table: "Pilots",
+                column: "CorporationId");
         }
 
         protected override void Down(MigrationBuilder migrationBuilder)
@@ -174,6 +226,12 @@ namespace Imperium_Incursions_Waitlist.Migrations
 
             migrationBuilder.DropTable(
                 name: "Accounts");
+
+            migrationBuilder.DropTable(
+                name: "Corporation");
+
+            migrationBuilder.DropTable(
+                name: "Alliance");
         }
     }
 }

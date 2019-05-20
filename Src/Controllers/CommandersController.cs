@@ -25,7 +25,7 @@ namespace Imperium_Incursions_Waitlist.Controllers
         [HttpGet]
         public IActionResult Index()
         {
-            return View(viewName: "~/Views/Commanders.cshtml");
+            return View(viewName: "~/Views/UserManagement.cshtml");
         }
 
 
@@ -33,14 +33,16 @@ namespace Imperium_Incursions_Waitlist.Controllers
         /// Returns a list of accounts that have one or more account roles. 
         /// </summary>
         [HttpGet]
-        public IActionResult Active()
+        public IActionResult Elevated()
         {
             var fcs = _Db.Accounts
                 .Include(a => a.Pilots)
+                    .ThenInclude(a => a.Corporation)
+                    .ThenInclude(a => a.Alliance)
                 .Include(a => a.AccountRoles)
                     .ThenInclude(ar => ar.Role)
                 .Where(a => a.AccountRoles.Count > 0)
-                .OrderBy(s => s.Name);
+                .OrderBy(a => a.Name);
                
             return Ok(fcs);
         }
@@ -61,25 +63,30 @@ namespace Imperium_Incursions_Waitlist.Controllers
         [HttpPost]
         [Produces("application/json")]
         [Authorize(Roles = "Leadership")]
-        public IActionResult AddRole(FormCollection request)
+        public IActionResult AddRole(IFormCollection request)
         {
-            // Validate form inputs
-
             // Parse inputs as ints
-            int.TryParse(request["accountId"], out int accountId);
-            int.TryParse(request["roleId"], out int roleId);
-            string accountName = request["accountName"];
+            int.TryParse(request["account_id"], out int accountId);
+            int.TryParse(request["role_id"], out int roleId);
+            string accountName = request["account_name"];
 
             // Validate to ensure the required fields were returned.
             if (accountId == 0 && String.IsNullOrEmpty(accountName) || roleId == 0)
-                return BadRequest("Invalid role or account ID/Name provided");            
+                return BadRequest("Invalid role or account ID/Name provided");
 
             var account = _Db.Accounts.Where(a => a.Name == accountName || a.Id == accountId).SingleOrDefault();
+            
             var role = _Db.Roles.Find(roleId);
 
+            // User account does not exist
             if (account == null)
                 return NotFound("Account not found.");
 
+            // Stops a user from changing their own role
+            if (account.Id == int.Parse(User.FindFirst("Id").Value))
+                return Unauthorized("You are not allowed to add your own groups");
+
+            // Role doesn't exist
             if (role == null)
                 return NotFound("Role not found.");
 
@@ -110,14 +117,17 @@ namespace Imperium_Incursions_Waitlist.Controllers
         [HttpDelete]
         [Produces("application/json")]
         [Authorize(Roles = "Leadership")]
-        public IActionResult RemoveRole(FormCollection request)
+        public IActionResult Revoke(IFormCollection request)
         {
             // Parse inputs as ints
             int.TryParse(request["accountId"], out int accountId);
             int.TryParse(request["roleId"], out int roleId);
             // Validate to ensure the required fields were returned.
             if (accountId == 0 || roleId == 0)
-                return BadRequest("Invalid role or account ID provided");      
+                return BadRequest("Invalid role or account ID provided");
+
+            if (accountId == int.Parse(User.FindFirst("Id").Value))
+                return Unauthorized("You are not allowed to remove your own groups");
             
 
             var accountRole = _Db.AccountRoles

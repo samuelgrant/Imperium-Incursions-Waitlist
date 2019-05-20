@@ -62,14 +62,11 @@ export class Input extends Component {
         this.handleChange = this.handleChange.bind(this);
     }
 
-    //static getDerivedStateFromProps(props) {
-    //    return {
-    //        value: props.value
-    //    };
-    //}
-
     handleChange(event) {
         this.setState({ value: event.target.value });
+
+        if (this.props.handleChange)
+            this.props.handleChange(event.target.value);
     }
 
     getId() {
