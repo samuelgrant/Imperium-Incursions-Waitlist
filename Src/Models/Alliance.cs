@@ -17,7 +17,7 @@ namespace Imperium_Incursions_Waitlist.Models
         // Navigation properties
         public ICollection<Corporation> Corporations { get; set; }
 
-        public static void IsInDatabase(int id, Data.WaitlistDataContext _Db)
+        public static void EnsureInDatabase(int id, Data.WaitlistDataContext _Db)
         {
             var alliance = _Db.Alliance.Find(id);
             if (alliance != null)

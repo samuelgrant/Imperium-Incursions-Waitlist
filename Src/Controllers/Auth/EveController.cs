@@ -108,7 +108,7 @@ namespace Imperium_Incursions_Waitlist.Controllers
             var x = await EsiWrapper.GetPilot(int.Parse(character_id));
             long corporation_id = x.CorporationId;
 
-            Corporation.IsInDatabase(corporation_id, _Db);
+            Corporation.EnsureInDatabase(corporation_id, _Db);
 
             var pilot = await _Db.Pilots.FindAsync(int.Parse(character_id));
             if(pilot == null)

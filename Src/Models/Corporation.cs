@@ -24,7 +24,7 @@ namespace Imperium_Incursions_Waitlist.Models
         public Alliance Alliance { get; set; }
         public ICollection<Pilot> Pilots { get; set; }
 
-        public static void IsInDatabase(long id, Data.WaitlistDataContext _Db)
+        public static void EnsureInDatabase(long id, Data.WaitlistDataContext _Db)
         {
             var corporation = _Db.Corporation.Find(id);
             if (corporation != null)
@@ -41,7 +41,7 @@ namespace Imperium_Incursions_Waitlist.Models
 
             //Corporation is not in an alliance
             if (corporation.AllianceId != 0)
-                Alliance.IsInDatabase((int)corporation.AllianceId, _Db);
+                Alliance.EnsureInDatabase((int)corporation.AllianceId, _Db);
 
             _Db.Add(corporation);
             _Db.SaveChanges();
