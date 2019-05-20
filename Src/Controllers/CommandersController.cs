@@ -132,6 +132,8 @@ namespace Imperium_Incursions_Waitlist.Controllers
 
             var accountRole = _Db.AccountRoles
                                 .Where(ar => ar.AccountId == accountId && ar.RoleId == roleId)
+                                .Include(ar => ar.Account)
+                                .Include(ar => ar.Role)
                                 .SingleOrDefault();
 
             if (accountRole == null)
@@ -139,7 +141,6 @@ namespace Imperium_Incursions_Waitlist.Controllers
 
             try
             {
-
                 _Db.Remove(accountRole);
                 _Db.SaveChanges();
 
@@ -150,7 +151,7 @@ namespace Imperium_Incursions_Waitlist.Controllers
             catch (Exception ex)
             {
                 _Logger.LogWarning("RemoveRole: Error revoking role from {0}: {1}", accountRole.Account.Name, ex.Message);
-                return BadRequest();
+                return BadRequest(ex.Message);
             }
         }
     }
