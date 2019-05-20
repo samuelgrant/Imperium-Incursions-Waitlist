@@ -68,7 +68,7 @@ export default class UserManagement extends Component {
             this.getData();
             this.setUserIndex(x);
         }).fail((err) => {
-            console.error(`React/Commanders {Commanders@addGroup} - Error revoking role`, err.responseText);
+            console.error(`React/Commanders {Commanders@addGroup} - Error adding group`, err.responseText);
         });
     }
 
@@ -86,7 +86,7 @@ export default class UserManagement extends Component {
             this.getData();
             this.setUserIndex(x);
         }).fail((err) => {
-            console.error(`React/Commanders {Commanders@removeGroup} - Error revoking role`, err.responseText);
+            console.error(`React/Commanders {Commanders@removeGroup} - Error revoking group`, err.responseText);
         });
     }
 
