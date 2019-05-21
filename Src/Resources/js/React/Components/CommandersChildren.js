@@ -83,6 +83,10 @@ export class ManageInfo extends Component {
         return null;
     }
 
+    handleChange(x) {
+        this.props.handleChange(x);
+    }
+
     render() {
 
         let fcName;
@@ -90,7 +94,7 @@ export class ManageInfo extends Component {
             fcName = this.props.details.name;
 
         // Text: Account search
-        let accountSearch = <Input ref={this.AccountName} id="lookup_account" type="text" classOverride="form-control account-lookup" name="name" required="true" key={null} />
+        let accountSearch = <Input ref={this.AccountName} id="lookup_account" type="text" classOverride="form-control account-lookup" name="name" required="true" handleChange={this.handleChange.bind(this)} key={null} />
         if (!this.inputNewFc())
             accountSearch = <Input ref={this.AccountName} id="lookup_account" type="text" classOverride="form-control account-lookup" value={this.props.details.name} name="name" disabled="true" required="true" key={this.props.details.id} />
 
