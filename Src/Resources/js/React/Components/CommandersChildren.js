@@ -2,7 +2,7 @@
 import XmppLink from './XmppLink';
 import { DateFormat } from '../Helpers';
 import { TextArea, Input } from './FormControls'
-import { Corporation, Alliance } from './EsiUi';
+import { Corporation, Alliance, Pilot } from './EsiUi';
 
 export class UserRow extends Component {
     getCorporation() {
@@ -130,7 +130,7 @@ export class ManageInfo extends Component {
                 return (
                     <span className="pilot">
                         <img src={`https://imageserver.eveonline.com/Character/${pilot.id}_32.jpg`} alt="Pilot Avatar" />
-                        <span>{ pilot.name }</span>
+                        <Pilot pilot={pilot} />
                     </span>
                 )
             });
