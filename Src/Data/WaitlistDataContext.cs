@@ -18,6 +18,13 @@ namespace Imperium_Incursions_Waitlist.Data
         public DbSet<ShipType> ShipTypes { get; set; }
         public DbSet<ShipSkill> ShipSkills { get; set; }
         public DbSet<Fit> Fits { get; set; }
+        public DbSet<CommChannel> CommChannels { get; set; }
+        public DbSet<Fleet> Fleets { get; set; }
+        public DbSet<FleetAssignment> FleetAssignments { get; set; }
+        public DbSet<FleetRole> FleetRoles { get; set; }
+        public DbSet<SelectedFits> SelectedFits { get; set; }
+        public DbSet<SelectedRole> SelectedRoles { get; set; }
+        public DbSet<WaitingPilot> WaitingPilots { get; set; }
 
         public WaitlistDataContext(DbContextOptions<WaitlistDataContext> options) : base(options)
         {
