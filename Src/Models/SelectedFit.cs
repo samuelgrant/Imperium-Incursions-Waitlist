@@ -5,7 +5,7 @@ using System.Threading.Tasks;
 
 namespace Imperium_Incursions_Waitlist.Models
 {
-    public class SelectedFits
+    public class SelectedFit
     {
         public int WaitingPilotId { get; set; }
 

@@ -18,7 +18,7 @@ namespace Imperium_Incursions_Waitlist.Models
 
         // Navigation properties
 
-        public ICollection<Skill> Skills { get; set; }
+        public ICollection<ShipSkill> ShipSkills { get; set; }
         public ICollection<Fit> Fits { get; set; }
     }
 }

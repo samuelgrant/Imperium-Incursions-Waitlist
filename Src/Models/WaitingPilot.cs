@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
 using System.Linq;
 using System.Threading.Tasks;
 
@@ -13,8 +14,8 @@ namespace Imperium_Incursions_Waitlist.Models
         public int PilotId { get; set; }
 
         public int SystemId { get; set; }
-
-        public int RemovedByAccountId { get; set; }
+        
+        public int? RemovedByAccountId { get; set; }
 
         public bool NewPilot { get; set; }
 
@@ -32,8 +33,10 @@ namespace Imperium_Incursions_Waitlist.Models
 
         public Account RemovedByAccount { get; set; }
 
+        public FleetAssignment FleetAssignment { get; set; }
+
         public ICollection<SelectedRole> SelectedRoles { get; set; }
 
-        public ICollection<SelectedFits> SelectedFits { get; set; }
+        public ICollection<SelectedFit> SelectedFits { get; set; }
     }
 }

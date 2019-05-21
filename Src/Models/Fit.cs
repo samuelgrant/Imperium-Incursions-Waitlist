@@ -31,7 +31,7 @@ namespace Imperium_Incursions_Waitlist.Models
 
         public ShipType ShipType { get; set; }
 
-        public SelectedFits SelectedFits { get; set; }
+        public ICollection<SelectedFit> SelectedFits { get; set; }
     }
 
 
