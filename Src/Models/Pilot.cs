@@ -5,6 +5,7 @@ using System.Threading.Tasks;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 using Newtonsoft.Json;
+using Imperium_Incursions_Waitlist.Services;
 
 namespace Imperium_Incursions_Waitlist.Models
 {
@@ -20,6 +21,8 @@ namespace Imperium_Incursions_Waitlist.Models
         public string Name { get; set; }
 
         [Display(Name = "Corporation ID")]
+        [JsonIgnore]
+        [ForeignKey("Corporation")]
         public long CorporationId { get; set; }
 
         [Display(Name = "ESI Token")]
@@ -42,6 +45,7 @@ namespace Imperium_Incursions_Waitlist.Models
 
         // Navigation properties
         public Account Account { get; set; }
+        public Corporation Corporation { get; set; }
 
 
         /// <summary>

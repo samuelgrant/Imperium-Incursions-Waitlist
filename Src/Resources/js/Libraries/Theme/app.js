@@ -12,14 +12,16 @@ $(window).on('load', function () {
 /*------------------------------------------------
     Header -- Tmp remoed so the navbar stays dark
 -------------------------------------------------*/
-//$(window).on('scroll', function() {
-//    var scroll = $(window).scrollTop();
-//    if (scroll >= 20) {
-//        $('.header').addClass('header--scrolled');
-//    } else {
-//        $('.header').removeClass('header--scrolled');
-//    }
-//});
+/*
+$(window).on('scroll', function () {
+    var scroll = $(window).scrollTop();
+    if (scroll >= 20) {
+        $('.header').addClass('header--scrolled');
+    } else {
+        $('.header').removeClass('header--scrolled');
+    }
+});
+*/
 
 
 $(document).ready(function () {
@@ -38,7 +40,21 @@ $(document).ready(function () {
         $(this).closest('.search').removeClass('search--focus');
     });
 
-
+    // Autocomplete
+    $("#nav_search").autocomplete({
+        source: (request, response) => {
+            $.ajax({
+                url: `/search?q=${request.term}`,
+                dataType: "json",
+                success: function (data) {
+                    response(data);
+                }
+            });
+        },
+        minLength: 3,
+        delay: 500
+    });
+    
     /*------------------------------------------------
         Sidebar toggle menu
     -------------------------------------------------*/
@@ -80,5 +96,50 @@ $(document).ready(function () {
     -------------------------------------------------*/
     $('body').on('click', '.dropdown-menu--active', function (e) {
         e.stopPropagation();
+    });
+
+    /*-------------------------------------------------
+     Auto complete for react text inputs
+     --------------------------------------------------*/
+    $(".account-lookup").autocomplete({
+        source: (request, response) => {
+            $.ajax({
+                url: `/search?q=${request.term}&filter=account`,
+                dataType: "json",
+                success: function (data) {
+                    response(data);
+                }
+            });
+        },
+        minLength: 3,
+        delay: 500
+    });
+
+    $(".pilot-lookup").autocomplete({
+        source: (request, response) => {
+            $.ajax({
+                url: `/search?q=${request.term}&filter=pilot`,
+                dataType: "json",
+                success: function (data) {
+                    response(data);
+                }
+            });
+        },
+        minLength: 3,
+        delay: 500
+    });
+
+    $(".lookup").autocomplete({
+        source: (request, response) => {
+            $.ajax({
+                url: `/search?q=${request.term}`,
+                dataType: "json",
+                success: function (data) {
+                    response(data);
+                }
+            });
+        },
+        minLength: 3,
+        delay: 500
     });
 });

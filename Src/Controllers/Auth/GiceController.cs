@@ -17,6 +17,8 @@ using DotNetEnv;
 using Newtonsoft.Json;
 using Imperium_Incursions_Waitlist.Models;
 using Imperium_Incursions_Waitlist.Services;
+using Microsoft.EntityFrameworkCore;
+using System.Linq;
 
 namespace Imperium_Incursions_Waitlist.Controllers
 {
@@ -188,16 +190,24 @@ namespace Imperium_Incursions_Waitlist.Controllers
             // If a user ID was not supplied, fail the login process.
             if (id == -1) return false;
 
-            // Look up the database for the account.
-            // If no account is found fail the login and return.
-            var account = await _Db.Accounts.FindAsync(id);
-            if (account == null) return false;
+            // Eager load the account and the related roles data
+            var account = await _Db.Accounts
+                                .Include(a => a.AccountRoles)
+                                    .ThenInclude(ar => ar.Role)
+                                .SingleOrDefaultAsync(ar => ar.Id == id);
+
+            // Fail if the account is not in the database
+            if (account == null) return false;                        
 
             var claims = new List<Claim>
             {
                 new Claim("id", account.Id.ToString()),
                 new Claim("name", account.Name)
             };
+
+            // Add a claim for each role type associated to the account
+            foreach (var role in account.AccountRoles.Select(ar => ar.Role))            
+                claims.Add(new Claim(ClaimTypes.Role, role.Name));            
 
             var claimsIdentity = new ClaimsIdentity(
                 claims, CookieAuthenticationDefaults.AuthenticationScheme);

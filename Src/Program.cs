@@ -20,7 +20,7 @@ namespace Imperium_Incursions_Waitlist
             var logger = host.Services.GetRequiredService<ILogger<Program>>();
 
             // Run seeder if application in development mode
-            if(Environment.GetEnvironmentVariable("ASPNETCORE_ENVIRONMENT") == "Development")
+            if (Environment.GetEnvironmentVariable("ASPNETCORE_ENVIRONMENT") == "Development")
             {
                 using (var scope = host.Services.CreateScope())
                 {
@@ -36,19 +36,19 @@ namespace Imperium_Incursions_Waitlist
                         logger.LogDebugFormat("Error seeding accounts table: {0}", ex.Message);
                     }
                 }
-            }           
+            }
 
             host.Run();
         }
 
         public static IWebHostBuilder CreateWebHostBuilder(string[] args) =>
             WebHost.CreateDefaultBuilder(args)
-                .ConfigureLogging((hostingContext, logging) => 
+                .ConfigureLogging((hostingContext, logging) =>
                 {
                     logging.AddConsole();
                     logging.AddDebug();
                     logging.AddEventSourceLogger();
                 })
                 .UseStartup<Startup>();
-    }
+    } 
 }
