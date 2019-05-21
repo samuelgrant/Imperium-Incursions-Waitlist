@@ -28,11 +28,17 @@ export class Corporation extends Component {
     }
 
     getId() {
-        return this.props.corporation.id || -1;
+        if (this.props.corporation)
+            return this.props.corporation.id;
+        
+        return -1;
     }
 
     getName() {
-        return this.props.corporation.name || "";
+        if(this.props.corporation)
+            return this.props.corporation.name;
+
+        return "";
     }
 
     render() {
@@ -47,11 +53,17 @@ export class Alliance extends Component {
     }
 
     getId() {
-        return this.props.alliance.id || -1;
+        if (this.props.alliance)
+            return this.props.alliance.id;
+
+        return -1;
     }
 
     getName() {
-        return this.props.alliance.name || "";
+        if (this.props.alliance)
+            return this.props.alliance.name;
+
+        return "";
     }
 
     render() {

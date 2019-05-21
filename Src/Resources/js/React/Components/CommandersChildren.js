@@ -13,10 +13,10 @@ export class UserRow extends Component {
     }
 
     getAlliance() {
-        if (this.props.user && this.props.user.pilots[0].corporation.alliance)
+        if (this.props.user && this.props.user.pilots[0] && this.props.user.pilots[0].corporation)
             return this.props.user.pilots[0].corporation.alliance;
 
-        return "";
+        return;
     }
 
     // Name of the FCs GICE account
@@ -157,7 +157,7 @@ export class ManageInfo extends Component {
             corporation = (
                 <div className="corporation">
                     <h4>Corporation</h4>
-                    <img src={`https://imageserver.eveonline.com/Corporation/${this.getCorporation().id}_32.png`} alt="Corporation Logo" />
+                    <img src={`https://imageserver.eveonline.com/Corporation/${(this.getCorporation()) ? this.getCorporation().id : 0}_32.png`} alt="Corporation Logo" />
                     <Corporation corporation={this.getCorporation()} />
                 </div>
             )
@@ -169,7 +169,7 @@ export class ManageInfo extends Component {
             alliance = (
                 <div className="alliance">
                     <h4>Alliance</h4>
-                    <img src={`https://imageserver.eveonline.com/Alliance/${this.getAlliance().id}_32.png`} alt="Alliance Logo" />
+                    <img src={`https://imageserver.eveonline.com/Alliance/${(this.getAlliance()) ? this.getAlliance().id : 0}_32.png`} alt="Alliance Logo" />
                     <Alliance alliance={this.getAlliance()} />
                 </div> 
             )
