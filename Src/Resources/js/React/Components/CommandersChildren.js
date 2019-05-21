@@ -2,7 +2,7 @@
 import XmppLink from './XmppLink';
 import { DateFormat } from '../Helpers';
 import { TextArea, Input } from './FormControls'
-import { Corporation, Alliance } from './EsiUi';
+import { Corporation, Alliance, Pilot } from './EsiUi';
 
 export class UserRow extends Component {
     getCorporation() {
@@ -13,10 +13,10 @@ export class UserRow extends Component {
     }
 
     getAlliance() {
-        if (this.props.user && this.props.user.pilots[0].corporation.alliance)
+        if (this.props.user && this.props.user.pilots[0] && this.props.user.pilots[0].corporation)
             return this.props.user.pilots[0].corporation.alliance;
 
-        return "";
+        return;
     }
 
     // Name of the FCs GICE account
@@ -83,6 +83,10 @@ export class ManageInfo extends Component {
         return null;
     }
 
+    handleChange(x) {
+        this.props.handleChange(x);
+    }
+
     render() {
 
         let fcName;
@@ -90,7 +94,7 @@ export class ManageInfo extends Component {
             fcName = this.props.details.name;
 
         // Text: Account search
-        let accountSearch = <Input ref={this.AccountName} id="lookup_account" type="text" classOverride="form-control account-lookup" name="name" required="true" key={null} />
+        let accountSearch = <Input ref={this.AccountName} id="lookup_account" type="text" classOverride="form-control account-lookup" name="name" required="true" handleChange={this.handleChange.bind(this)} key={null} />
         if (!this.inputNewFc())
             accountSearch = <Input ref={this.AccountName} id="lookup_account" type="text" classOverride="form-control account-lookup" value={this.props.details.name} name="name" disabled="true" required="true" key={this.props.details.id} />
 
@@ -130,7 +134,7 @@ export class ManageInfo extends Component {
                 return (
                     <span className="pilot">
                         <img src={`https://imageserver.eveonline.com/Character/${pilot.id}_32.jpg`} alt="Pilot Avatar" />
-                        <span>{ pilot.name }</span>
+                        <Pilot pilot={pilot} />
                     </span>
                 )
             });
@@ -153,7 +157,7 @@ export class ManageInfo extends Component {
             corporation = (
                 <div className="corporation">
                     <h4>Corporation</h4>
-                    <img src={`https://imageserver.eveonline.com/Corporation/${this.getCorporation().id}_32.png`} alt="Corporation Logo" />
+                    <img src={`https://imageserver.eveonline.com/Corporation/${(this.getCorporation()) ? this.getCorporation().id : 0}_32.png`} alt="Corporation Logo" />
                     <Corporation corporation={this.getCorporation()} />
                 </div>
             )
@@ -165,7 +169,7 @@ export class ManageInfo extends Component {
             alliance = (
                 <div className="alliance">
                     <h4>Alliance</h4>
-                    <img src={`https://imageserver.eveonline.com/Alliance/${this.getAlliance().id}_32.png`} alt="Alliance Logo" />
+                    <img src={`https://imageserver.eveonline.com/Alliance/${(this.getAlliance()) ? this.getAlliance().id : 0}_32.png`} alt="Alliance Logo" />
                     <Alliance alliance={this.getAlliance()} />
                 </div> 
             )

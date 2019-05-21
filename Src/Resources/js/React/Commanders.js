@@ -46,8 +46,9 @@ export default class UserManagement extends Component {
     }
 
     addGroup(role_id) {
-        let account_id = this.state.users[this.state.userIndex].id || null
-        let account_name = this.state.new_commander;            
+        
+        let account_id = (this.state.users[this.state.userIndex]) ? this.state.users[this.state.userIndex].id : null;
+        let account_name = this.state.userInput;            
 
         $.ajax({
             type: 'post',
@@ -66,8 +67,7 @@ export default class UserManagement extends Component {
         });
     }
 
-    removeGroup(i) {
-        
+    removeGroup(i) {    
         $.ajax({
             type: 'delete',
             url: `${baseUri}/revoke`,
@@ -92,6 +92,10 @@ export default class UserManagement extends Component {
         return (!!this.state.users) ? this.state.users : null;
     }
 
+    setStateFromInput(x) {
+        this.setState({ userInput: x });
+    }
+
 
     render() {
         let users;
@@ -103,7 +107,7 @@ export default class UserManagement extends Component {
 
         let userDetails;
         if (!!this.getUsers()) {
-            userDetails = <ManageInfo details={this.state.users[this.state.userIndex]} roles={this.state.roles} onSubmit={this.addGroup.bind(this)} removeGroup={this.removeGroup.bind(this)} reset={this.setUserIndex.bind(this)} />
+            userDetails = <ManageInfo details={this.state.users[this.state.userIndex]} roles={this.state.roles} onSubmit={this.addGroup.bind(this)} removeGroup={this.removeGroup.bind(this)} handleChange={this.setStateFromInput.bind(this)} reset={this.setUserIndex.bind(this)} />
         }
 
         return (

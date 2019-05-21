@@ -53,9 +53,14 @@ body {
 }
 
 
-.alliance, .corporation {
+.alliance, .corporation, .pilot {
     font-size: large;
     padding-bottom: 20px;
+}
+
+.alliance a, .corporation a, .pilot a {
+    padding-left: 5px;
+    font-size: medium;
 }
 
 .badge.role {
