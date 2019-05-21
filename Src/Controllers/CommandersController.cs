@@ -7,7 +7,6 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.AspNetCore.Http;
-using Imperium_Incursions_Waitlist.Models;
 
 namespace Imperium_Incursions_Waitlist.Controllers
 {
@@ -94,7 +93,7 @@ namespace Imperium_Incursions_Waitlist.Controllers
             try
             {
 
-                _Db.AccountRoles.Add(new AccountRole
+                _Db.AccountRoles.Add(new Models.AccountRole
                 {
                     AccountId = account.Id,
                     RoleId = role.Id,
