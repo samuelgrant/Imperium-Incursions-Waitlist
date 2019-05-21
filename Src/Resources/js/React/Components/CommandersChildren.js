@@ -83,18 +83,12 @@ export class ManageInfo extends Component {
         return null;
     }
 
-    //Needs to get the FC name
-    //If the state knows what it is use that
-    //Otherwise use the value of the text input
-    getFcName() {
-
-        if (!this.inputNewFc() && !!this.props.details)
-            return this.props.details.name;      
-
-        return "no name";
-    }
-
     render() {
+
+        let fcName;
+        if (this.inputNewFc() && this.props.details)
+            fcName = this.props.details.name;
+
         // Text: Account search
         let accountSearch = <Input ref={this.AccountName} id="lookup_account" type="text" classOverride="form-control account-lookup" name="name" required="true" key={null} />
         if (!this.inputNewFc())
@@ -107,10 +101,10 @@ export class ManageInfo extends Component {
         }
 
         // Dropdown Item: Roles avaliable to the FC
-        let avaliable_roles;
+        let avaliable_roles;        
         if (this.props.roles) {
             avaliable_roles = this.props.roles.map((role) => {
-                return <a className="dropdown-item" role="presentation" onClick={this.props.onSubmit.bind(this, role.id, this.getFcName())}>{role.name}</a>;
+                return <a className="dropdown-item" role="presentation" onClick={this.props.onSubmit.bind(this, role.id)}>{role.name}</a>;
             });
         }
 

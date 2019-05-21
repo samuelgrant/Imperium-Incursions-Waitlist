@@ -45,15 +45,24 @@ export default class UserManagement extends Component {
         this.setUserIndex(null);
     }
 
-    addGroup(role_id, account) {
-        let account_id;
-        let account_name;
+    addGroup(role_id) {
+        //console.log(role_id);
+        //let account_id;
+        //let account_name;
 
-        if (!isNaN(account)) {
-            account_id = account;
-        } else {
-            account_name = account;
-        }
+        //if (!isNaN(account)) {
+        //    account_id = account;
+        //} else {
+        //    account_name = account;
+        //}
+
+
+        //if (this.state.userIndex) {
+           let account_id = this.state.users[this.state.userIndex].id || null
+        //} else {
+            let account_name = this.state.new_commander;
+        //}
+            
 
         $.ajax({
             type: 'post',

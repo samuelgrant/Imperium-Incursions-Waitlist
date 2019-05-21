@@ -7,6 +7,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.AspNetCore.Http;
+using Imperium_Incursions_Waitlist.Models;
 
 namespace Imperium_Incursions_Waitlist.Controllers
 {
@@ -92,12 +93,12 @@ namespace Imperium_Incursions_Waitlist.Controllers
 
             try
             {
-                account.AccountRoles.Add(
-                    new Models.AccountRole
-                    {
-                        Role = role,
-                        Account = account
-                    });
+
+                _Db.AccountRoles.Add(new AccountRole
+                {
+                    AccountId = account.Id,
+                    RoleId = role.Id,
+                });
 
                 _Db.SaveChanges();
 
@@ -107,7 +108,7 @@ namespace Imperium_Incursions_Waitlist.Controllers
             catch (Exception ex)
             {
                 _Logger.LogWarning("AddRole: Error granting role to {0} : {1}", account.Name, ex.Message);
-                return BadRequest();
+                return BadRequest(ex.Message);
             }
         }
 
