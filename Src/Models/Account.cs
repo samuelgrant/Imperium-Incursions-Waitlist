@@ -35,11 +35,11 @@ namespace Imperium_Incursions_Waitlist.Models
         [JsonIgnore]
         public ICollection<Ban> UpdatedBans { get; set; }
         [JsonIgnore]
-        public ICollection<Ban> AccountNotes { get; set; }
+        public ICollection<Note> AccountNotes { get; set; }
         [JsonIgnore]
-        public ICollection<Ban> CreatedNotes { get; set; }
+        public ICollection<Note> CreatedNotes { get; set; }
         [JsonIgnore]
-        public ICollection<Ban> UpdatedNotes { get; set; }
+        public ICollection<Note> UpdatedNotes { get; set; }
 
         public ICollection<AccountRole> AccountRoles { get; set; }
 
