@@ -46,6 +46,8 @@ namespace Imperium_Incursions_Waitlist.Models
         // Navigation properties
         public Account Account { get; set; }
         public Corporation Corporation { get; set; }
+        public ICollection<PilotSkill> PilotSkills { get; set; }
+        public ICollection<Fleet> OwnedFleets { get; set; }
 
 
         /// <summary>

@@ -12,6 +12,12 @@ namespace Imperium_Incursions_Waitlist.Data
         public DbSet<AccountRole> AccountRoles { get; set; }
         public DbSet<Corporation> Corporation { get; set; }
         public DbSet<Alliance> Alliance { get; set; }
+        public DbSet<Note> Notes { get; set; }
+        public DbSet<Skill> Skills { get; set; }
+        public DbSet<PilotSkill> PilotSkills { get; set; }
+        public DbSet<ShipType> ShipTypes { get; set; }
+        public DbSet<ShipSkill> ShipSkills { get; set; }
+        public DbSet<Fit> Fits { get; set; }
 
         public WaitlistDataContext(DbContextOptions<WaitlistDataContext> options) : base(options)
         {
@@ -22,6 +28,8 @@ namespace Imperium_Incursions_Waitlist.Data
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             //base.OnModelCreating(modelBuilder);
+
+            // Configure account to ban relationships
 
             modelBuilder.Entity<Ban>()
                         .HasOne<Account>("BannedAccount")
@@ -41,6 +49,28 @@ namespace Imperium_Incursions_Waitlist.Data
                         .HasForeignKey("AdminId")
                         .OnDelete(DeleteBehavior.Restrict);
 
+            // Configure account to note relationships
+
+            modelBuilder.Entity<Note>()
+                        .HasOne<Account>("TargetAccount")
+                        .WithMany("AccountNotes")
+                        .HasForeignKey("TargetAccountId")
+                        .OnDelete(DeleteBehavior.Cascade);
+
+            modelBuilder.Entity<Note>()
+                        .HasOne<Account>("UpdatingAdmin")
+                        .WithMany("UpdatedNotes")
+                        .HasForeignKey("UpdatedByAdminId")
+                        .OnDelete(DeleteBehavior.Restrict);
+
+            modelBuilder.Entity<Note>()
+                        .HasOne<Account>("CreatorAdmin")
+                        .WithMany("CreatedNotes")
+                        .HasForeignKey("AdminId")
+                        .OnDelete(DeleteBehavior.Restrict);
+
+            // Todo: Check whether this is needed - I think we don't need to declare this
+            // relationship in fluent API
             modelBuilder.Entity<Pilot>()
                     .HasOne<Corporation>("Corporation")
                     .WithMany("Pilots")
