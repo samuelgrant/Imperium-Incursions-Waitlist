@@ -14,19 +14,48 @@ namespace Imperium_Incursions_Waitlist.Data
         public static void Initialize(WaitlistDataContext context)
         {
             // Check for existing account records
-            if (context.Accounts.Any())            
-                return; // Already contains accounts            
-
-            var accounts = new Account[]
+            if (!context.Accounts.Any())
             {
+                // No Accounts in database, seeding basic accounts.
+                var accounts = new Account[]
+                {
                 new Account {Id = 1, Name = "SamJ", RegisteredAt = DateTime.Now},
                 new Account {Id = 2, Name = "MitchQ", RegisteredAt = DateTime.Now},
                 new Account {Id = 3, Name = "DanteG", RegisteredAt = DateTime.Now}
-            };
+                };
 
-            foreach(Account account in accounts)            
-                context.Accounts.Add(account);
-            
+                foreach (Account account in accounts)
+                    context.Accounts.Add(account);
+            }
+
+            // Check for existing Comms Channel records
+            if (!context.CommChannels.Any())
+            {
+                // No channels in database, seeding basic channels
+                var CommChannels = new CommChannel[]
+                {
+                    new CommChannel {
+                        LinkText = "Incursions -> Fleet A",
+                        Url = "mumble://mumble.goonfleet.com/Squads%20and%20SIGs/Incursions/Fleet%20A?title=Goonfleet&version=1.2.0"
+                    },
+                    new CommChannel {
+                        LinkText = "Incursions -> Fleet B",
+                        Url = "mumble://mumble.goonfleet.com/Squads%20and%20SIGs/Incursions/Fleet%20B?title=Goonfleet&version=1.2.0"
+                    },
+                    new CommChannel {
+                        LinkText = "Incursions -> Fleet C",
+                        Url = "mumble://mumble.goonfleet.com/Squads%20and%20SIGs/Incursions/Fleet%20C?title=Goonfleet&version=1.2.0"
+                    },
+                    new CommChannel {
+                        LinkText = "Incursions -> Fleet D",
+                        Url = "mumble://mumble.goonfleet.com/Squads%20and%20SIGs/Incursions/Fleet%20D?title=Goonfleet&version=1.2.0"
+                    }
+                };
+
+                foreach (CommChannel channel in CommChannels)
+                    context.CommChannels.Add(channel);
+            }
+
             context.SaveChanges();
         }        
     }

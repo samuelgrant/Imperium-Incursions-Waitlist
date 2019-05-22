@@ -9,9 +9,9 @@ import './js/Bootstrap/index';
 
 
 /* React */
-import './js/React/example';
 import './js/React/Bans';
 import './js/React/Commanders';
+import './js/React/Index';
 
 /* REACT -> Pilot Select Page */
 import './js/React/PilotSelect';

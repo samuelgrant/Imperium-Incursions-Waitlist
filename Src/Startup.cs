@@ -119,7 +119,7 @@ namespace Imperium_Incursions_Waitlist
                     template: "/admin/{controller}/{action=Index}/{id?}");
                 routes.MapRoute(
                     name: "default",
-                    template: "/{controller=Home}/{action=Index}/{id?}");
+                    template: "/{controller=Waitlist}/{action=Index}/{id?}");
                 routes.MapRoute(
                     name: "error",
                     template: "/error",

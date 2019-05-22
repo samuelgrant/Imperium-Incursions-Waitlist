@@ -8,6 +8,7 @@ using ESI.NET.Models.Corporation;
 using Microsoft.Extensions.Options;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Hosting;
+using DotNetEnv;
 
 namespace Imperium_Incursions_Waitlist.Services
 {
@@ -24,11 +25,15 @@ namespace Imperium_Incursions_Waitlist.Services
             {
                 try
                 {
+                    Env.Load();
+
                     IOptions<EsiConfig> options = Options.Create<EsiConfig>(new EsiConfig()
                     {
                         EsiUrl = "https://esi.evetech.net/",
                         DataSource = DataSource.Tranquility,
-                        UserAgent = "Imperium Incursions Waitlist. Contact Caitlin Viliana"
+                        UserAgent = "Imperium Incursions Waitlist. Contact Caitlin Viliana",
+                        ClientId = Env.GetString("eve_clientID"),
+                        SecretKey = Env.GetString("eve_clientSecret")
                     });
 
                     s_client = new EsiClient(options);

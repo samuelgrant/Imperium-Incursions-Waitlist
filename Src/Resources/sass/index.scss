@@ -36,6 +36,16 @@
     border-color: white;
 }
 
+label.required::after{
+    content: "  *";
+    color: red;
+    font-weight: bolder;
+}
+
+select option {
+    background: #272727;
+}
+
 /* For Firefox */
 input[type='number'] {
     -moz-appearance: textfield;
@@ -74,4 +84,31 @@ body {
     display: inline-block;
     margin-bottom: .5rem;
     padding: 0px .25rem 0px .25rem;
+}
+
+// Buttons
+button.close{
+    color: whitesmoke;
+}
+
+button.close:hover, button.close:active {
+    color: white;
+}
+
+.btn {
+    color: white;
+    border-radius: 0;
+    font-family: "Arial Unicode MS";
+}
+
+.btn-success {
+    background-color: #38C63D;
+}
+
+.btn-danger {
+    background-color: #C92E2E;
+}
+
+.btn-dark {
+    background-color: #090A0A;
 }
