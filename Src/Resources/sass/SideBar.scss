@@ -1,0 +1,46 @@
+﻿body {
+    margin: 0;
+    padding: 0;
+    font-family: arial;
+    background-color: orange;
+    overflow: hidden;
+}
+
+.sidebar-special {
+    position: fixed;
+    top: 0;
+    right: -350px;
+    background-color: #151516;
+    width: 350px;
+    height: 100%;
+    transition: .3s;
+    padding: 20px;
+    padding-top: 90px;
+    border-left: 0.25px solid #C92E2E;
+}
+
+ul {
+    margin: 0;
+    padding: 20px 0;
+}
+
+ul li {
+    list-style: none;
+}
+
+ul li a {
+    padding: 10px 20px;
+    color: #fff;
+    display: block;
+    text-decoration: none;
+    border-bottom: 1px solid rgba(0,0,0,0.2);
+}
+
+ul li a:hover {
+    background-color: grey;
+}
+
+
+.active {
+    right: 0;
+}

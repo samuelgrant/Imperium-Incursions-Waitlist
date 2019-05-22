@@ -25,3 +25,9 @@ import './js/React/TqStatus';
 import './js/app.min';
 import './js/Libraries/Theme/app';
 import './js/Libraries/Theme/vendors';
+
+// Sidebar
+$('.sidebarBtn').click(function () {
+    $('.sidebar-special').toggleClass('active');
+    $('.sidebarBtn').toggleClass('toggle');
+});
