@@ -34,8 +34,20 @@ namespace Imperium_Incursions_Waitlist.Models
         public ICollection<Ban> CreatedBans { get; set; }
         [JsonIgnore]
         public ICollection<Ban> UpdatedBans { get; set; }
-        
+        [JsonIgnore]
+        public ICollection<Note> AccountNotes { get; set; }
+        [JsonIgnore]
+        public ICollection<Note> CreatedNotes { get; set; }
+        [JsonIgnore]
+        public ICollection<Note> UpdatedNotes { get; set; }
+
         public ICollection<AccountRole> AccountRoles { get; set; }
+
+        public ICollection<Fleet> BackseatedFleets { get; set; }
+
+        public ICollection<WaitingPilot> RemovedPilots { get; set; }
+
+        // Need a property to return owned fleets (via pilots)
 
         // End of Navigation Properties
 
