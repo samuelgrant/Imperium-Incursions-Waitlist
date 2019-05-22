@@ -13,6 +13,20 @@ export class NewFleetLink extends Component {
 }
 
 export class NewFleetModal extends Component {
+    registerFleet(e) {
+        e.preventDefault();
+
+        $.ajax({
+            type: 'post',
+            url: `/fleets`,
+            data: $("#newFleetForm").serialize()
+        }).done((fleetId) => {
+            window.location.href = `/fleets/${fleetId}`
+        }).fail((err) => {
+            console.error(`React/NewFleetModal {NewFleetModal@registerFleet} - Error registering the fleet`, err.responseText);
+        })
+    }
+
     render() {
 
         let boss;
@@ -38,7 +52,7 @@ export class NewFleetModal extends Component {
 
         return (
             <Modal id="newFleetModal" title="Start a fleet!" dismiss="true">
-                <form method="post" action="/fleets">
+                <form id="newFleetForm" onSubmit={this.registerFleet.bind(this)}>
                     <div className="form-group">
                         <label className="required" htmlFor="EsiFleet">ESI Fleet URL:</label>
                         <Input id="EsiFleet" name="EsiFleetUrl" placeholder="https://esi.evetech.net/v1/fleets/.../?datasource=tranquility" autocomplete="false" required="true"/>
