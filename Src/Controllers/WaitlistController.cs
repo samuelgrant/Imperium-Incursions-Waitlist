@@ -30,7 +30,7 @@ namespace Imperium_Incursions_Waitlist.Controllers
         [Produces("application/json")]
         public IActionResult FcSettings()
         {
-            if (!User.IsInRole("Fleet Commanders"))
+            if (!User.IsInRole("Commander"))
                 return Ok();
 
             try

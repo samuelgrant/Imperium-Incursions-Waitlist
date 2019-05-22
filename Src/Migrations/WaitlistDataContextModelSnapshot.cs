@@ -170,17 +170,19 @@ namespace Imperium_Incursions_Waitlist.Migrations
 
                     b.Property<int?>("BossPilotId");
 
+                    b.Property<DateTime?>("ClosedAt");
+
                     b.Property<int>("CommChannelId");
 
                     b.Property<DateTime>("CreatedAt");
 
-                    b.Property<int>("EveFleetId");
+                    b.Property<long>("EveFleetId");
 
                     b.Property<bool>("IsPublic");
 
                     b.Property<int?>("SystemId");
 
-                    b.Property<int>("Type");
+                    b.Property<string>("Type");
 
                     b.Property<DateTime?>("UpdatedAt");
 

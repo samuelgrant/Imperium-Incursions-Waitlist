@@ -45,7 +45,6 @@ export default class Index extends Component {
 
         let publicFleets;
 
-
         return (
             <div className="container">
                 <div className="row">
@@ -53,6 +52,7 @@ export default class Index extends Component {
                     {noFleets}
 
                     {publicFleets}
+
                     <NewFleetLink />
                 </div>
                 <div className="row">

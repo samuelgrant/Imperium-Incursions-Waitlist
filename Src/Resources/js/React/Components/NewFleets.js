@@ -38,35 +38,37 @@ export class NewFleetModal extends Component {
 
         return (
             <Modal id="newFleetModal" title="Start a fleet!" dismiss="true">
-                <div className="form-group">
-                    <label className="required" htmlFor="EsiFleet">ESI Fleet URL:</label>
-                    <Input id="EsiFleet" placeholder="https://esi.evetech.net/v1/fleets/.../?datasource=tranquility" required="true"/>
-                </div>
+                <form method="post" action="/fleets">
+                    <div className="form-group">
+                        <label className="required" htmlFor="EsiFleet">ESI Fleet URL:</label>
+                        <Input id="EsiFleet" name="EsiFleetUrl" placeholder="https://esi.evetech.net/v1/fleets/.../?datasource=tranquility" autocomplete="false" required="true"/>
+                    </div>
 
-                <div className="form-group">
-                    <label className="required" htmlFor="FleetBoss">Fleet Boss:</label>
-                    <select id="FleetBoss" className="form-control" required>
-                        {boss}
-                    </select>
-                    <span className="text-muted font-italic">Must be the pilot with the star in game.</span>
-                </div>
+                    <div className="form-group">
+                        <label className="required" htmlFor="FleetBoss">Fleet Boss:</label>
+                        <select id="FleetBoss" name="FleetBoss" className="form-control" required>
+                            {boss}
+                        </select>
+                        <span className="text-muted font-italic">Must be the pilot with the star in game.</span>
+                    </div>
 
-                <div className="form-group">
-                    <label className="required" htmlFor="FleetType">Fleet Boss:</label>
-                    <select id="FleetType" className="form-control" required>
-                        {types}
-                    </select>
-                    <span className="text-muted font-italic">This will display your fleet cap to pilots.</span>
-                </div>
+                    <div className="form-group">
+                        <label className="required" htmlFor="FleetType">Fleet Boss:</label>
+                        <select id="FleetType" name="FleetType" className="form-control" required>
+                            {types}
+                        </select>
+                        <span className="text-muted font-italic">This will display your fleet cap to pilots.</span>
+                    </div>
 
-                <div className="form-group">
-                    <label className="required" htmlFor="FleetComms">Fleet Comms:</label>
-                    <select id="FleetComms" className="form-control" required>
-                        {comms}
-                    </select>
-                </div>
+                    <div className="form-group">
+                        <label className="required" htmlFor="FleetComms">Fleet Comms:</label>
+                        <select id="FleetComms" name="FleetComms" className="form-control" required>
+                            {comms}
+                        </select>
+                    </div>
 
-                <button className="btn btn-success pull-right">Register Fleet</button>
+                    <button className="btn btn-success pull-right">Register Fleet</button>
+                </form>
             </Modal>
         )
     }

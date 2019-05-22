@@ -15,6 +15,13 @@ export class TextArea extends Component {
         this.setState({ value: event.target.value });
     }
 
+    autocomplete() {
+        if (this.props.autocomplete && !!this.props.autocomplete)
+            return "off";
+
+        return;
+    }
+
     getId() {
         return this.props.id || null;
     }
@@ -48,7 +55,7 @@ export class TextArea extends Component {
     }
 
     render() {
-        return (<textarea id={this.getId()} className={this.genElementClass()} name={this.getName()} placeholder={this.getPlaceholder()} disabled={this.isDisabled()} readonly={this.isReadOnly()} required={this.isRequired()} value={this.state.value} onChange={this.handleChange.bind(this)}></textarea>)
+        return (<textarea id={this.getId()} className={this.genElementClass()} name={this.getName()} placeholder={this.getPlaceholder()} autocomplete={this.autocomplete()} disabled={this.isDisabled()} readonly={this.isReadOnly()} required={this.isRequired()} value={this.state.value} onChange={this.handleChange.bind(this)}></textarea>)
     }
 }
 
@@ -67,6 +74,13 @@ export class Input extends Component {
 
         if (this.props.handleChange)
             this.props.handleChange(event.target.value);
+    }
+
+    autocomplete() {
+        if (this.props.autocomplete && !!this.props.autocomplete)
+            return "off";
+
+        return;
     }
 
     getId() {
@@ -106,6 +120,6 @@ export class Input extends Component {
     }
 
     render() {
-        return (<input type={this.getType()} id={this.getId()} className={this.genElementClass()} name={this.getName()} placeholder={this.getPlaceholder()} value={this.state.value} disabled={this.isDisabled()} readonly={this.isReadOnly()} required={this.isRequired()} onChange={this.handleChange.bind(this)}/>)
+        return (<input type={this.getType()} id={this.getId()} className={this.genElementClass()} name={this.getName()} placeholder={this.getPlaceholder()} value={this.state.value} autocomplete={this.autocomplete()} disabled={this.isDisabled()} readonly={this.isReadOnly()} required={this.isRequired()} onChange={this.handleChange.bind(this)}/>)
     }
 }

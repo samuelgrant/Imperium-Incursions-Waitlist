@@ -17,6 +17,8 @@
     <Compile Remove="Migrations\20190414001454_UpdatedBansModel.Designer.cs" />
     <Compile Remove="Migrations\20190414033827_InitialMigration.cs" />
     <Compile Remove="Migrations\20190414033827_InitialMigration.Designer.cs" />
+    <Compile Remove="Migrations\20190521053944_Add Models.cs" />
+    <Compile Remove="Migrations\20190521053944_Add Models.Designer.cs" />
   </ItemGroup>
 
   <ItemGroup>

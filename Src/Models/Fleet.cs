@@ -6,17 +6,11 @@ using System.Threading.Tasks;
 
 namespace Imperium_Incursions_Waitlist.Models
 {
-    public enum FleetType
-    {
-        // Put fleet types here - can shift enum to a different file if needed
-    }
-
-
     public class Fleet
     {
         public int Id { get; set; }
 
-        public int EveFleetId { get; set; }
+        public long EveFleetId { get; set; }
 
         public int BossId { get; set; }
 
@@ -28,7 +22,7 @@ namespace Imperium_Incursions_Waitlist.Models
 
         public bool IsPublic { get; set; }
 
-        public FleetType Type { get; set; }
+        public string Type { get; set; }
 
         [Display(Name = "Created At"), DataType(DataType.Date)]
         [DisplayFormat(DataFormatString = "{0:dd-MM-yyyy}")]
@@ -37,6 +31,10 @@ namespace Imperium_Incursions_Waitlist.Models
         [Display(Name = "Updated At"), DataType(DataType.Date)]
         [DisplayFormat(DataFormatString = "{0:dd-MM-yyyy}")]
         public DateTime? UpdatedAt { get; set; }
+
+        [Display(Name = "Closed At"), DataType(DataType.Date)]
+        [DisplayFormat(DataFormatString = "{0:dd-MM-yyyy}")]
+        public DateTime? ClosedAt { get; set; }
 
         // Navigation properties
 
