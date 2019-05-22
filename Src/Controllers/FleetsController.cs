@@ -22,9 +22,11 @@ namespace Imperium_Incursions_Waitlist.Controllers
             _Logger = logger;
         }
 
+        [Route("/fleets/{id}")]
         public IActionResult Index(int id)
         {
-            return View();
+            ViewData["fleetId"] = id;
+            return View(viewName: "~/Views/FleetManagement.cshtml");
         }
 
 

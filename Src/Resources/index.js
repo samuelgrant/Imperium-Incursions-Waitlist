@@ -12,6 +12,7 @@ import './js/Bootstrap/index';
 import './js/React/Bans';
 import './js/React/Commanders';
 import './js/React/Index';
+import './js/React/FleetManagement';
 
 /* REACT -> Pilot Select Page */
 import './js/React/PilotSelect';

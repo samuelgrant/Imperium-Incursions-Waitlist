@@ -15,11 +15,6 @@ namespace Imperium_Incursions_Waitlist.Controllers
 
         public HomeController(Data.WaitlistDataContext db) => _Db = db;
 
-        public IActionResult Index()
-        {
-            return View();
-        }
-
         [Route("/search")]
         [Produces("application/json")]
         public IActionResult Search(string q, string filter = "")
