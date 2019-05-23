@@ -35,6 +35,22 @@ export default class Index extends Component {
         }
     }
 
+    isPublic() {
+        return (this.state.fleet) ? this.state.fleet.isPublic : null;
+    }
+
+    handleCheckboxChange() {
+        $.ajax({
+            type: 'put',
+            url: `${baseUri}/${this.state.fleetId}/status`,
+            data: { status: !this.isPublic() }
+        }).done(() => {
+            this.getData();
+        }).fail((err) => {
+            console.error(`React/FleetManagement {FleetManagement@handleCheckboxChange} - Error updating fleet status`, err.responseText);
+        });
+    }
+
     getData() {
         $.ajax({
             type: 'get',
@@ -89,10 +105,9 @@ export default class Index extends Component {
 
     render() {
         let fleetPrivate;
-        if (true) {
+        if (!this.isPublic()) {
             fleetPrivate = (
                 <Alert type="danger">
-                    **** NON CONDITIONAL ****
                     <span className="font-weight-bold">Fleet Not Listed: </span>
                     If no fleets are listed, the waitlist will show as offline.
                 </Alert>
@@ -153,7 +168,7 @@ export default class Index extends Component {
 
                         <SideSection title="Fleet Status">
                             <label class="switch">
-                                <input type="checkbox" id="togBtn" />
+                                <input type="checkbox" id="togBtn" defaultChecked={this.isPublic()} onChange={this.handleCheckboxChange.bind(this)}/>
                                     <div class="slider round">
                                         <span class="on">Listed</span>
                                         <span class="off">Not Listed</span>

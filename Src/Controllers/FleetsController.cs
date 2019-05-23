@@ -85,6 +85,29 @@ namespace Imperium_Incursions_Waitlist.Controllers
                 return BadRequest("Error setting fleet comms.");
             }
         }
+        [HttpPut]
+        [Route("/fleets/{id}/status")]
+        [Produces("application/json")]
+        public IActionResult Status(IFormCollection request, int id)
+        {
+            var fleet = _Db.Fleets.Where(c => c.Id == id && c.ClosedAt == null).FirstOrDefault();
+            if (fleet == null)
+                // Cannot write changes to a fleet that is not open.
+                return NotFound("Fleet not found.");
+
+            try
+            {
+                fleet.IsPublic = bool.Parse(request["status"].ToString());
+                _Db.SaveChanges();
+
+                return Ok();
+            }
+            catch (Exception ex)
+            {
+                _Logger.LogError("Cannot change the fleet status (Fleet ID: {0}) Status: {1} {2}.", fleet.Id, fleet.IsPublic, ex.Message);
+                return BadRequest("Error setting fleet status.");
+            }
+        }
 
         [HttpPut]
         [Route("/fleets/{id}/type")]
