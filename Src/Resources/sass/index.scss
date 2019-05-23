@@ -9,6 +9,7 @@
 /* Theme */
 @import 'Theme.scss';
 @import 'fonts.scss';
+@import 'FormControl.scss';
 
 /* Custom Styles */
 @import 'PilotSelect.scss';
@@ -29,33 +30,6 @@
 
 .side-panel > .panel-body {
     padding: 1px 10px 10px 10px;
-}
-
-.form-control {
-    background-color: hsla(0,0%,100%,.14);
-    border-radius: 3px;
-    border-color: white;
-}
-
-label.required::after{
-    content: "  *";
-    color: red;
-    font-weight: bolder;
-}
-
-select option {
-    background: #272727;
-}
-
-/* For Firefox */
-input[type='number'] {
-    -moz-appearance: textfield;
-}
-/* Webkit browsers like Safari and Chrome */
-input[type=number]::-webkit-inner-spin-button,
-input[type=number]::-webkit-outer-spin-button {
-    -webkit-appearance: none;
-    margin: 0;
 }
 
 body {
@@ -112,4 +86,12 @@ button.close:hover, button.close:active {
 
 .btn-dark {
     background-color: #090A0A;
+}
+
+.btn-warning {
+    background-color: #DC7325;
+}
+
+.mumble{
+    font-size: x-large;
 }

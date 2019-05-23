@@ -6,6 +6,7 @@ using Imperium_Incursions_Waitlist.Models;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
 
 namespace Imperium_Incursions_Waitlist.Controllers
@@ -25,10 +26,89 @@ namespace Imperium_Incursions_Waitlist.Controllers
         [Route("/fleets/{id}")]
         public IActionResult Index(int id)
         {
+            var fleet = _Db.Fleets.Where(c => c.Id == id && c.ClosedAt == null).FirstOrDefault();
+            if(fleet == null)
+                // Fleet not found
+                return NotFound("Fleet not found.");
+
             ViewData["fleetId"] = id;
             return View(viewName: "~/Views/FleetManagement.cshtml");
         }
 
+        [HttpGet]
+        [Route("/fleets/{id}/data")]
+        [Produces("application/json")]
+        public IActionResult Data(int id)
+        {
+
+            var Fleet = _Db.Fleets.Include(i => i.BossPilot)
+                                  .Include(i => i.CommChannel).Where(c => c.Id == id && c.ClosedAt == null).FirstOrDefault();
+            if (Fleet == null)
+                return NotFound($"Fleet {id} not found.");
+
+
+            return Ok(Fleet);
+        }
+
+        /// <summary>
+        /// Sets the fleet comms for the fleet
+        /// </summary>
+        /// <param name="request"></param>
+        /// <param name="id"></param>
+        /// <returns></returns>
+        [HttpPut]
+        [Route("/fleets/{id}/comms")]
+        [Produces("application/json")]
+        public IActionResult Comms(IFormCollection request, int id)
+        {
+            int commsId = int.Parse(request["commsId"].ToString());
+
+            var fleet = _Db.Fleets.Where(c => c.Id == id && c.ClosedAt == null).FirstOrDefault();
+            if (fleet == null)
+                // Cannot write changes to a fleet that is not open.
+                return NotFound("Fleet not found.");
+
+            CommChannel comm = _Db.CommChannels.Find(commsId);
+            if (comm == null)
+                return BadRequest("Comms setting is invalid");
+
+            try
+            {
+                fleet.CommChannel = comm;
+                _Db.SaveChanges();
+
+                return Ok();
+            }
+            catch (Exception ex)
+            {
+                _Logger.LogError("Cannot change the fleet comms (Fleet ID: {0}) channel {1} {2}.", fleet.Id, comm.LinkText, ex.Message);
+                return BadRequest("Error setting fleet comms.");
+            }
+        }
+
+        [HttpPut]
+        [Route("/fleets/{id}/type")]
+        [Produces("application/json")]
+        public IActionResult Type(IFormCollection request, int id)
+        {
+            var fleet = _Db.Fleets.Where(c => c.Id == id && c.ClosedAt == null).FirstOrDefault();
+            if (fleet == null)
+                // Cannot write changes to a fleet that is not open.
+                return NotFound("Fleet not found.");
+
+            try
+            {
+                fleet.Type = request["type"].ToString();
+                _Db.SaveChanges();
+
+                return Ok();
+            }
+            catch (Exception ex)
+            {
+                _Logger.LogError("Cannot change the fleet type (Fleet ID: {0}) Type: {1} {2}.", fleet.Id, fleet.Type, ex.Message);
+                return BadRequest("Error setting fleet type.");
+            }
+        }
 
         /// <summary>
         /// Registers a new fleet with the waitlist
@@ -80,7 +160,9 @@ namespace Imperium_Incursions_Waitlist.Controllers
                 BossId = bossId,
                 CommChannelId = comms.Id,
                 IsPublic = false,
-                Type = fleetType
+                Type = fleetType,
+                CreatedAt = DateTime.UtcNow,
+                UpdatedAt = DateTime.UtcNow
             };
 
             _Db.Fleets.Add(newFleet);
@@ -88,6 +170,19 @@ namespace Imperium_Incursions_Waitlist.Controllers
 
             // Redirect to page!
             return Ok(newFleet.Id);
+        }
+
+        [HttpDelete]
+        [Route("/fleets/{id}")]
+        [Produces("application/json")]
+        public IActionResult Close(int id)
+        {
+            var fleet = _Db.Fleets.Where(c => c.Id == id && c.ClosedAt == null).FirstOrDefault();
+            fleet.ClosedAt = DateTime.UtcNow;
+
+            _Db.SaveChanges();
+
+            return Ok();
         }
     }
 }

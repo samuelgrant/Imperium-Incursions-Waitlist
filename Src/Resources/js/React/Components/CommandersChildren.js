@@ -1,5 +1,5 @@
 ﻿import React, { Component } from 'react';
-import XmppLink from './XmppLink';
+import { XmppLink } from './CommLinks';
 import { DateFormat } from '../Helpers';
 import { TextArea, Input } from './FormControls'
 import { Corporation, Alliance, Pilot } from './EsiUi';
