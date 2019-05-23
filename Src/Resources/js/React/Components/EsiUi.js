@@ -9,11 +9,17 @@ export class Pilot extends Component {
     }
 
     getId() {
-        return this.props.pilot.id || -1;
+        if (this.props.pilot)
+            return this.props.pilot.id;
+
+        return 0;
     }
 
     getName() {
-        return this.props.pilot.name || "";
+        if (this.props.pilot)
+            return this.props.pilot.name;
+
+        return "";
     }
 
     render() {

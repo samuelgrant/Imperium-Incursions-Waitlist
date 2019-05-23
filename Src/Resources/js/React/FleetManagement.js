@@ -3,6 +3,7 @@ import { render } from 'react-dom';
 import Alert from './Components/Alert';
 import { SidePanel, SideSection, SidePanelButton } from './Components/SidePanel';
 import { MumbleLink, XmppLink } from './Components/CommLinks';
+import { Pilot } from './Components/EsiUi';
 
 const baseUri = "/fleets";
 
@@ -117,14 +118,28 @@ export default class Index extends Component {
         let commOptions;
         if (this.state.fcOptions) {
             commOptions = this.state.fcOptions.comms.map((channel) => {
-                return <a class="dropdown-item" role="presentation" onClick={this.setComms.bind(this, channel.id)}>{channel.linkText}</a>;
+                return <a className="dropdown-item" role="presentation" onClick={this.setComms.bind(this, channel.id)}>{channel.linkText}</a>;
             });
         }
 
         let fleetTypes;
         if (this.state.fcOptions) {
             fleetTypes = this.state.fcOptions.fleetTypes.map((type) => {
-                return <a class="dropdown-item" role="presentation" onClick={this.setType.bind(this, type)}>{type}</a>;
+                return <a className="dropdown-item" role="presentation" onClick={this.setType.bind(this, type)}>{type}</a>;
+            });
+        }
+
+        let boss_myPilots;
+        if (this.state.fcOptions) {
+            boss_myPilots = this.state.fcOptions.pilots.map((pilot) => {
+                return <a className="dropdown-item" role="presentation">{pilot.name}</a>
+            });
+        }
+
+        let backSeat_myPilots;
+        if (this.state.fcOptions) {
+            backSeat_myPilots = this.state.fcOptions.pilots.map((pilot) => {
+                return <a className="dropdown-item" role="presentation">{pilot.name}</a>
             });
         }
         
@@ -137,15 +152,50 @@ export default class Index extends Component {
 
                 <SidePanel id="fleetSettings" title="Fleet Settings">
                     <div className="row">
-                        <SideSection title="Fleet Commander"></SideSection>
+                        <SideSection title="Fleet Commander">
+                            <div className="row mumble">
+                                <div className="col-3">
+                                    <img className="ml-3 pr-2" src={`https://image.eveonline.com/Character/${96304094}_64.jpg`} />
+                                </div> 
+                                <div className="col-9">
+                                    <Pilot pilot={(this.state.fleet) ? this.state.fleet.bossPilot : null} />
+                                
 
-                        <SideSection title="Backseat"></SideSection>
+                                    <div className="dropdown">
+                                        <button class="btn btn-dark dropdown-toggle" data-toggle="dropdown" aria-expanded="false" type="button">I'm the Boss....</button>
+                                        <div class="dropdown-menu" role="menu">
+                                            {boss_myPilots}
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </SideSection>
+
+                        <SideSection title="Backseat">
+                            <div className="row mumble">
+                                <div className="col-3">
+                                    <img className="ml-3 pr-2" src={`https://image.eveonline.com/Character/${96304094}_64.jpg`} />
+                                </div>
+                                <div className="col-9">
+                                    <XmppLink AuthName={(this.state.fleet) ? this.state.fleet.bossPilot.name : null} />
+                                    <i className="fas fa-times-circle clear"></i>
+
+
+                                    <div className="dropdown">
+                                        <button class="btn btn-dark dropdown-toggle" data-toggle="dropdown" aria-expanded="false" type="button">I'm the Backseat....</button>
+                                        <div class="dropdown-menu" role="menu">
+                                            {backSeat_myPilots}
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </SideSection>
 
                         <SideSection title="Mumble">
                             <MumbleLink commChannel={(this.getFleetSettings()) ? this.getFleetSettings().commChannel : null} />
                             
                             <div className="dropdown pt-2">
-                                <button class="btn btn-dark mx-auto dropdown-toggle" data-toggle="dropdown" aria-expanded="false" type="button">Select Comms </button>
+                                <button class="btn btn-dark mx-auto dropdown-toggle" data-toggle="dropdown" aria-expanded="false" type="button">Select Comms....</button>
                                 <div class="dropdown-menu" role="menu">
                                     {commOptions}
                                 </div>
@@ -159,7 +209,7 @@ export default class Index extends Component {
                             </span>
 
                             <div className="dropdown pt-2">
-                                <button class="btn btn-dark mx-auto dropdown-toggle" data-toggle="dropdown" aria-expanded="false" type="button">Select Type </button>
+                                <button class="btn btn-dark mx-auto dropdown-toggle" data-toggle="dropdown" aria-expanded="false" type="button">Select Type....</button>
                                 <div class="dropdown-menu" role="menu">
                                     {fleetTypes}
                                 </div>
@@ -176,10 +226,9 @@ export default class Index extends Component {
                             </label>
                         </SideSection>
                     </div>
-                    <p>Show Fleet on Waitlist</p>
-
 
                     <hr />
+
                     <div className="row">
                         <div className="col-6 py-1">
                             <button className="btn btn-danger btn-block" onClick={this.closeFleet.bind(this)}>
