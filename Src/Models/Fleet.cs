@@ -56,7 +56,27 @@ namespace Imperium_Incursions_Waitlist.Models
         /// <returns>Number of pilots in the fleet</returns>
         public string GetOngridCount()
         {
-            return "0 / 60";
+            int denominator = 0;
+
+
+            if(Type == FleetType.Mothership.ToString())
+            {
+                denominator = 120;
+            }
+            else if(Type == FleetType.Headquarters.ToString())
+            {
+                denominator = 60;
+            }
+            else if(Type == FleetType.Assaults.ToString())
+            {
+                denominator = 30;
+            }
+            else if(Type == FleetType.Vanguards.ToString())
+            {
+                denominator = 15;
+            }
+            
+            return $"0 / {denominator}";
         }
     }
 }

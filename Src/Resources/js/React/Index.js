@@ -3,6 +3,7 @@ import { render } from 'react-dom';
 import { NewFleetModal, NewFleetLink } from './components/newfleets';
 import Alert from './components/alert';
 import FleetInfo from './Components/FleetInfo';
+import { setInterval } from 'timers';
 
 const baseUri = "/waitlist";
 
@@ -16,7 +17,11 @@ export default class Index extends Component {
         }
     }
 
-    componentDidMount() { this.getFleets(); this.getFcSettings() }
+    componentDidMount() {
+        this.getFleets();
+        this.getFcSettings()
+        setInterval(() => this.getFleets(), 1000 * 10);
+    }
 
     getFleets() {
         $.ajax({

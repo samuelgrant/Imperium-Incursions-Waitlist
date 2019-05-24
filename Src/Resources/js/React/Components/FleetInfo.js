@@ -12,26 +12,26 @@ export default class FleetInfo extends Component {
             });
         }
         return (
-            <div className="col-4">
+            <div className="col-lg-4 col-md-6 col-sm-12">
                 <div className="card fleet-info">
                     <div className="card-body">
                         <div className="row">
-                            <div className="col-6">
+                            <div className="col-lg-6 col-md-12">
                                 FC: <Pilot pilot={this.props.fleet.fc}/>
                             </div>
 
-                            <div className="col-6">
+                            <div className="col-lg-6 col-md-12">
                                 {this.props.fleet.systemId}
                             </div>
                         </div>
                         
                         <div className="row">
-                            <div className="col-6">
+                            <div className="col-lg-6 col-md-12">
                                 <i className="fas fa-users"></i> 
                                 {this.props.fleet.memberCount}
                             </div>
 
-                            <div className="col-6">
+                            <div className="col-lg-6 col-md-12">
                                 <MumbleLink commChannel={this.props.fleet.comms} />
                             </div>
                         </div>

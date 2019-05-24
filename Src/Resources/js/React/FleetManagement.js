@@ -22,6 +22,8 @@ export default class Index extends Component {
         this.setState({
             fleetId: $("#fleetManagement").data("fleetid")
         }, () => this.getData());
+
+        setInterval(() => this.getData(), 1000 * 10);
     }
 
     isPublic() {

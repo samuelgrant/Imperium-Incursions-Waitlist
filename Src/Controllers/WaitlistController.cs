@@ -47,7 +47,7 @@ namespace Imperium_Incursions_Waitlist.Controllers
                 }
                 else
                 {
-                    return Ok(_Db.Fleets.Where(c => c.ClosedAt == null)
+                    return Ok(_Db.Fleets.Where(c => c.ClosedAt == null && c.IsPublic)
                         .Select(c => new {
                             c.Id,
                             c.Type,

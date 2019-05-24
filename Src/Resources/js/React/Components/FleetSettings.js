@@ -115,7 +115,7 @@ export class Backseat extends Component {
                         <XmppLink AuthName={ (this.props.account) ? this.props.account.name : null } />
 
                         <div className="d-block">
-                            <button className="btn btn-dark mr-2" onClick={this.set.bind(this)}>I'm the backseat....</button>
+                            <button className="btn btn-lg btn-dark mr-2" onClick={this.set.bind(this)}>I'm the backseat....</button>
                             <i className="fas fa-times-circle clear" onClick={this.clear.bind(this)}></i>
                         </div>
                     </div>
@@ -160,7 +160,7 @@ export class Boss extends Component {
                         <Pilot pilot={this.getPilot()} />
 
                         <div className="dropdown">
-                            <button class="btn btn-dark dropdown-toggle" data-toggle="dropdown" aria-expanded="false" type="button">I'm the Boss....</button>
+                            <button class="btn btn-lg btn-dark dropdown-toggle" data-toggle="dropdown" aria-expanded="false" type="button">I'm the Boss....</button>
                             <div class="dropdown-menu" role="menu">
                                 {pilots}
                             </div>
@@ -211,7 +211,7 @@ export class Mumble extends Component {
                 </span>
 
                 <div className="dropdown pt-2">
-                    <button class="btn btn-dark mx-auto dropdown-toggle" data-toggle="dropdown" aria-expanded="false" type="button">Select Comms....</button>
+                    <button class="btn btn-lg btn-dark dropdown-toggle" data-toggle="dropdown" aria-expanded="false" type="button">Select Comms....</button>
                     <div class="dropdown-menu" role="menu">
                         {commOptions}
                     </div>
@@ -280,7 +280,7 @@ export class Type extends Component {
                 </span>
 
                 <div className="dropdown pt-2">
-                    <button class="btn btn-dark mx-auto dropdown-toggle" data-toggle="dropdown" aria-expanded="false" type="button">Select Type....</button>
+                    <button class="btn btn-lg btn-dark dropdown-toggle" data-toggle="dropdown" aria-expanded="false" type="button">Select Type....</button>
                     <div class="dropdown-menu" role="menu">
                         {fleetTypes}
                     </div>

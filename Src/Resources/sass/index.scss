@@ -93,11 +93,6 @@ button.close:hover, button.close:active {
     background-color: #DC7325;
 }
 
-.dropdown-toggle {
-    width: 160px;
-    text-align: left;
-}
-
 .sidepanel-content {
     font-size: large;
 }
@@ -110,17 +105,25 @@ i.clear {
     font-size: medium;
 }
 
+i {
+    padding-right: 15px;
+}
+
+.btn-sm i {
+    padding-right: 5px;
+}
+
 .fleet-info  .card-body {
     padding: 0px;
+}
+
+.fleet-info .card-body .xmpp {
+    margin-left: -15px;
 }
 
 .fleet-info .card-body .row, .fleet-info .card-body .row .xmpp{
     padding: 1.25rem;
     font-size: x-large;
-}
-
-.fleet-info .card-body .row i{
-    padding-right: 15px;
 }
 
 .btn-group.special {
