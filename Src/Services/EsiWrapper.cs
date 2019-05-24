@@ -33,7 +33,7 @@ namespace Imperium_Incursions_Waitlist.Services
                         DataSource = DataSource.Tranquility,
                         UserAgent = "Imperium Incursions Waitlist. Contact Caitlin Viliana",
                         ClientId = Env.GetString("eve_clientID"),
-                        SecretKey = Env.GetString("eve_clientSecret")
+                        SecretKey = Env.GetString("eve_clientSecret"),
                     });
 
                     s_client = new EsiClient(options);

@@ -65,8 +65,6 @@ export class ManageInfo extends Component {
     }
 
     getReason() {
-        if(this.props.details && this.props.details.reason)
-         console.log(this.props.details.reason);
         return (this.props.details && this.props.details.reason) ? this.props.details.reason : "";
     }
 

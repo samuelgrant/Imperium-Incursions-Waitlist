@@ -2,8 +2,9 @@
 import { render } from 'react-dom';
 import Alert from './Components/Alert';
 import { SidePanel, SideSection, SidePanelButton } from './Components/SidePanel';
-import { MumbleLink, XmppLink } from './Components/CommLinks';
+import { XmppLink } from './Components/CommLinks';
 import { Pilot } from './Components/EsiUi';
+import { Mumble, Status, Type } from './Components/FleetSettings';
 
 const baseUri = "/fleets";
 
@@ -13,7 +14,7 @@ export default class Index extends Component {
 
         this.state = {
             fcOptions: null,
-            fleetId: 1
+            fleetId: null
         }
     }
 
@@ -38,18 +39,6 @@ export default class Index extends Component {
 
     isPublic() {
         return (this.state.fleet) ? this.state.fleet.isPublic : null;
-    }
-
-    handleCheckboxChange() {
-        $.ajax({
-            type: 'put',
-            url: `${baseUri}/${this.state.fleetId}/status`,
-            data: { status: !this.isPublic() }
-        }).done(() => {
-            this.getData();
-        }).fail((err) => {
-            console.error(`React/FleetManagement {FleetManagement@handleCheckboxChange} - Error updating fleet status`, err.responseText);
-        });
     }
 
     getData() {
@@ -79,29 +68,8 @@ export default class Index extends Component {
         return this.state.fleet || null;
     }
 
-    setComms(i) {
-        $.ajax({
-            type: 'put',
-            url: `${baseUri}/${this.state.fleetId}/comms`,
-            data: { commsId: i }
-        }).done(() => {
-            this.getData();
-        }).fail((err) => {
-            console.error(`React/FleetManagement {Index@setComms} - Error setting the comms channel for this fleet`, err.responseText);
-        });
-    }
-
-    setType(i) {
-        console.log(i);
-        $.ajax({
-            type: 'put',
-            url: `${baseUri}/${this.state.fleetId}/type`,
-            data: { type: i }
-        }).done(() => {
-            this.getData();
-        }).fail((err) => {
-            console.error(`React/FleetManagement {Index@setComms} - Error setting the comms channel for this fleet`, err.responseText);
-        });
+    getSettings() {
+        return this.state.fcOptions || null;
     }
 
     render() {
@@ -113,20 +81,6 @@ export default class Index extends Component {
                     If no fleets are listed, the waitlist will show as offline.
                 </Alert>
             );
-        }
-
-        let commOptions;
-        if (this.state.fcOptions) {
-            commOptions = this.state.fcOptions.comms.map((channel) => {
-                return <a className="dropdown-item" role="presentation" onClick={this.setComms.bind(this, channel.id)}>{channel.linkText}</a>;
-            });
-        }
-
-        let fleetTypes;
-        if (this.state.fcOptions) {
-            fleetTypes = this.state.fcOptions.fleetTypes.map((type) => {
-                return <a className="dropdown-item" role="presentation" onClick={this.setType.bind(this, type)}>{type}</a>;
-            });
         }
 
         let boss_myPilots;
@@ -191,40 +145,21 @@ export default class Index extends Component {
                             </div>
                         </SideSection>
 
-                        <SideSection title="Mumble">
-                            <MumbleLink commChannel={(this.getFleetSettings()) ? this.getFleetSettings().commChannel : null} />
-                            
-                            <div className="dropdown pt-2">
-                                <button class="btn btn-dark mx-auto dropdown-toggle" data-toggle="dropdown" aria-expanded="false" type="button">Select Comms....</button>
-                                <div class="dropdown-menu" role="menu">
-                                    {commOptions}
-                                </div>
-                            </div>
-                        </SideSection>
+                        <Mumble channel={(this.getFleetSettings()) ? this.getFleetSettings().commChannel : null}
+                            options={(this.getSettings()) ? this.getSettings().comms : null}
+                            u={this.getData.bind(this)}
+                            fleetId={this.state.fleetId} />
 
-                        <SideSection title="Fleet Type">
-                            <span className="mumble">
-                                <i className="far fa-location pr-4"></i>
-                                {(this.getFleetSettings()) ? this.getFleetSettings().type : ""}
-                            </span>
+                        <Type type={(this.getFleetSettings()) ? this.getFleetSettings().type : ""}
+                            options={(this.getSettings()) ? this.getSettings().fleetTypes : null}
+                            u={this.getData.bind(this)}
+                            fleetId={this.state.fleetId} />
 
-                            <div className="dropdown pt-2">
-                                <button class="btn btn-dark mx-auto dropdown-toggle" data-toggle="dropdown" aria-expanded="false" type="button">Select Type....</button>
-                                <div class="dropdown-menu" role="menu">
-                                    {fleetTypes}
-                                </div>
-                            </div>
-                        </SideSection>
-
-                        <SideSection title="Fleet Status">
-                            <label class="switch">
-                                <input type="checkbox" id="togBtn" defaultChecked={this.isPublic()} onChange={this.handleCheckboxChange.bind(this)}/>
-                                    <div class="slider round">
-                                        <span class="on">Listed</span>
-                                        <span class="off">Not Listed</span>
-                                    </div>
-                            </label>
-                        </SideSection>
+                        <Status public={this.isPublic()}
+                            u={this.getData.bind(this)}
+                            fleetId={this.state.fleetId}
+                        />
+                        
                     </div>
 
                     <hr />
