@@ -4,7 +4,7 @@ import Alert from './Components/Alert';
 import { SidePanel, SideSection, SidePanelButton } from './Components/SidePanel';
 import { XmppLink } from './Components/CommLinks';
 import { Pilot } from './Components/EsiUi';
-import { Mumble, Status, Type } from './Components/FleetSettings';
+import { BtnClose, BtnClear, BtnInvAll, BtnInvFaxes, Mumble, Status, Type } from './Components/FleetSettings';
 
 const baseUri = "/fleets";
 
@@ -24,17 +24,6 @@ export default class Index extends Component {
         this.setState({
             fleetId: $("#fleetManagement").data("fleetid")
         }, () => this.getData());
-    }
-
-    closeFleet() {
-        if (confirm("Are you sure you want to close this fleet?")) {
-            $.ajax({
-                type: 'delete',
-                url: `${baseUri}/${this.state.fleetId}`
-            }).done(() => {
-                window.location.href = `/`
-            })
-        }
     }
 
     isPublic() {
@@ -157,39 +146,17 @@ export default class Index extends Component {
 
                         <Status public={this.isPublic()}
                             u={this.getData.bind(this)}
-                            fleetId={this.state.fleetId}
-                        />
-                        
+                            fleetId={this.state.fleetId} />
                     </div>
 
                     <hr />
 
                     <div className="row">
-                        <div className="col-6 py-1">
-                            <button className="btn btn-danger btn-block" onClick={this.closeFleet.bind(this)}>
-                                Close Fleet
-                                <i className="far fa-times-circle"></i>
-                            </button>
-                        </div>
-                        <div className="col-6 py-1">
-                            <button className="btn btn-danger btn-block disabled">
-                                Clear Waitlist
-                                <i className="far fa-times-circle"></i>
-                            </button>
-                        </div>
+                        <BtnClose fleetId={this.state.fleetId} />
+                        <BtnClear fleetId={this.state.fleetId} />
 
-                        <div className="col-6 py-1">
-                            <button className="btn btn-warning btn-block disabled">
-                                Invite All
-                                <i className="fas fa-info-circle"></i>
-                            </button>
-                        </div>
-                        <div className="col-6 py-1">
-                            <button className="btn btn-warning btn-block disabled">
-                                Invite all Faxes
-                                <i className="fas fa-info-circle"></i>
-                            </button>
-                        </div>
+                        <BtnInvAll fleetId={this.state.fleetId} />
+                        <BtnInvFaxes fleetId={this.state.fleetId} />
                     </div>
                 </SidePanel>
                 

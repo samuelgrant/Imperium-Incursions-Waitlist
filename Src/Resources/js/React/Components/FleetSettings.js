@@ -4,6 +4,75 @@ import { MumbleLink } from './CommLinks';
 
 const baseUri = "/fleets";
 
+
+/** Fleet Settings Buttons **/
+
+export class BtnClose extends Component {
+
+    closeFleet() {
+        if (confirm("Are you sure you want to close this fleet?")) {
+            $.ajax({
+                type: 'delete',
+                url: `${baseUri}/${this.props.fleetId}`
+            }).done(() => {
+                window.location.href = `/`
+            })
+        }
+    }
+
+    render() {
+        return (
+            <div className="col-6 py-1">
+                <button className="btn btn-danger btn-block" onClick={this.closeFleet.bind(this)}>
+                    Close Fleet
+                    <i className="far fa-times-circle"></i>
+                </button>
+            </div>
+        );
+    }
+}
+
+export class BtnClear extends Component {
+    render() {
+        return (
+            <div className="col-6 py-1">
+                <button className="btn btn-danger btn-block disabled">
+                    Clear Fleet
+                    <i className="far fa-times-circle"></i>
+                </button>
+            </div>
+        );
+    }
+}
+
+export class BtnInvAll extends Component {
+    render() {
+        return (
+            <div className="col-6 py-1">
+                <button className="btn btn-warning btn-block disabled">
+                    Invite All
+                    <i className="fas fa-info-circle"></i>
+                </button>
+            </div>
+        );
+    }
+}
+
+export class BtnInvFaxes extends Component {
+    render() {
+        return (
+            <div className="col-6 py-1">
+                <button className="btn btn-warning btn-block disabled">
+                    Invite all Faxes
+                    <i className="fas fa-info-circle"></i>
+                </button>
+            </div>
+        );
+    }
+}
+
+/** Fleet Settings Options */
+
 export class Mumble extends Component {
 
     getComms() {
