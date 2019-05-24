@@ -89,7 +89,7 @@ export class Backseat extends Component {
         }).done(() => {
             this.props.u();
         }).fail((err) => {
-            console.error(`React/FleetSettings {Backseat@set} - Error setting the backseat for this fleet`, err.responseText);
+            console.error(`React/FleetSettings {Backseat@set} - Error setting the flet backseat `, err.responseText);
         });
     }
 
@@ -107,7 +107,7 @@ export class Backseat extends Component {
     render() {
         return (
             <SideSection title="Backseat">
-                <div className="row mumble">
+                <div className="row sidepanel-content">
                     <div className="col-3">
                         <img className="ml-3 pr-2" src={`https://image.eveonline.com/Character/${this.getAccountIcoId()}_64.jpg`} />
                     </div>
@@ -130,7 +130,7 @@ export class Boss extends Component {
         return this.props.pilot || null;
     }
 
-    setBoss(id) {
+    set(id) {
         $.ajax({
             type: 'put',
             url: `${baseUri}/${this.props.fleetId}/boss`,
@@ -138,7 +138,7 @@ export class Boss extends Component {
         }).done(() => {
             this.props.u();
         }).fail((err) => {
-            console.error(`React/FleetSettings {Boss@setComms} - Error setting the fleet boss for this fleet`, err.responseText);
+            console.error(`React/FleetSettings {Boss@set} - Error setting the fleet boss `, err.responseText);
         });
     }
 
@@ -146,13 +146,13 @@ export class Boss extends Component {
         let pilots;
         if (this.props.pilots) {
             pilots = this.props.pilots.map((pilot) => {
-                return <a className="dropdown-item" role="presentation" onClick={this.setBoss.bind(this, pilot.id)}>{pilot.name}</a>
+                return <a className="dropdown-item" role="presentation" onClick={this.set.bind(this, pilot.id)}>{pilot.name}</a>
             });
         }
 
         return (
             <SideSection title="Fleet Commander">
-                <div className="row mumble">
+                <div className="row sidepanel-content">
                     <div className="col-3">
                         <img className="ml-3 pr-2" src={`https://image.eveonline.com/Character/${(this.getPilot()) ? this.getPilot().id : 0}_64.jpg`} />
                     </div>
@@ -174,7 +174,7 @@ export class Boss extends Component {
 
 export class Mumble extends Component {
 
-    getComms() {
+    get() {
         return this.props.channel || null;
     }
 
@@ -182,7 +182,7 @@ export class Mumble extends Component {
         return this.props.options || null;
     }
 
-    setComms(i) {
+    set(i) {
         $.ajax({
             type: 'put',
             url: `${baseUri}/${this.props.fleetId}/comms`,
@@ -190,7 +190,7 @@ export class Mumble extends Component {
         }).done(() => {
             this.props.u();
         }).fail((err) => {
-            console.error(`React/FleetSettings {Mumble@setComms} - Error setting the comms channel for this fleet`, err.responseText);
+            console.error(`React/FleetSettings {Mumble@set} - Error setting the comms channel for this fleet`, err.responseText);
         });
     }
 
@@ -200,13 +200,13 @@ export class Mumble extends Component {
         let commOptions;
         if (this.getCommOptions()) {
             commOptions = this.getCommOptions().map((channel) => {
-                return <a className="dropdown-item" role="presentation" onClick={this.setComms.bind(this, channel.id)}>{channel.linkText}</a>;
+                return <a className="dropdown-item" role="presentation" onClick={this.set.bind(this, channel.id)}>{channel.linkText}</a>;
             });
         }
 
         return (
             <SideSection title="Mumble">
-                <MumbleLink commChannel={this.getComms()} />
+                <MumbleLink commChannel={this.get()} />
 
                 <div className="dropdown pt-2">
                     <button class="btn btn-dark mx-auto dropdown-toggle" data-toggle="dropdown" aria-expanded="false" type="button">Select Comms....</button>
@@ -221,7 +221,7 @@ export class Mumble extends Component {
 
 export class Status extends Component {
 
-    handleCheckboxChange() {
+    handleChange() {
         $.ajax({
             type: 'put',
             url: `${baseUri}/${this.props.fleetId}/status`,
@@ -229,7 +229,7 @@ export class Status extends Component {
         }).done(() => {
             this.props.u();
         }).fail((err) => {
-            console.error(`React/FleetSettings {Status@handleCheckboxChange} - Error updating fleet status`, err.responseText);
+            console.error(`React/FleetSettings {Status@handleChange} - Error updating fleet status`, err.responseText);
         });
     }
 
@@ -237,7 +237,7 @@ export class Status extends Component {
         return (
             <SideSection title="Fleet Status">
                 <label class="switch">
-                    <input type="checkbox" id="togBtn" defaultChecked={this.props.public} onChange={this.handleCheckboxChange.bind(this)} />
+                    <input type="checkbox" id="togBtn" defaultChecked={this.props.public} onChange={this.handleChange.bind(this)} />
                     <div class="slider round">
                         <span class="on">Listed</span>
                         <span class="off">Not Listed</span>
@@ -250,7 +250,7 @@ export class Status extends Component {
 
 export class Type extends Component {
 
-    setType(i) {
+    set(i) {
         $.ajax({
             type: 'put',
             url: `${baseUri}/${this.props.fleetId}/type`,
@@ -258,7 +258,7 @@ export class Type extends Component {
         }).done(() => {
             this.props.u();
         }).fail((err) => {
-            console.error(`React/FleetSettings {Type@setType} - Error setting the type for this fleet`, err.responseText);
+            console.error(`React/FleetSettings {Type@set} - Error setting the fleet type `, err.responseText);
         });
     }
 
@@ -266,13 +266,13 @@ export class Type extends Component {
         let fleetTypes;
         if (this.props.options) {
             fleetTypes = this.props.options.map((type) => {
-                return <a className="dropdown-item" role="presentation" onClick={this.setType.bind(this, type)}>{type}</a>;
+                return <a className="dropdown-item" role="presentation" onClick={this.set.bind(this, type)}>{type}</a>;
             });
         }
 
         return (
             <SideSection title="Fleet Type">
-                <span className="mumble">
+                <span className="sidepanel-content">
                     <i className="far fa-location pr-4"></i>
                     {this.props.type}
                 </span>

@@ -33,7 +33,7 @@ export class MumbleLink extends Component {
 
     render() {
         return (
-            <span className="mumble">
+            <span className="sidepanel-content">
                 <i className="fas fa-headset pr-4"></i>
                 <a className="xmpp" href={this.createMumbleUrl()}>{this.mumbleLink()}</a>
             </span>

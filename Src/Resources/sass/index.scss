@@ -93,8 +93,13 @@ button.close:hover, button.close:active {
     background-color: #DC7325;
 }
 
-.mumble{
-    font-size: x-large;
+.dropdown-toggle {
+    width: 160px;
+    text-align: left;
+}
+
+.sidepanel-content {
+    font-size: large;
 }
 
 i.clear {

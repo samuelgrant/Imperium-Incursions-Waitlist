@@ -40,7 +40,7 @@ export class SideSection extends Component {
     render() {
         return (
             <div className="col-12 pt-2 pb-3">
-                <h4 className="font-alpha">{this.getTitle()}</h4>
+                <h5 className="font-alpha">{this.getTitle()}</h5>
 
                 {this.props.children}
             </div>
