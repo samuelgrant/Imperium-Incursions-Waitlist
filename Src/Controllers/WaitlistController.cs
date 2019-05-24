@@ -1,6 +1,7 @@
 ﻿
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
 using System;
 using System.Collections.Generic;
@@ -27,6 +28,45 @@ namespace Imperium_Incursions_Waitlist.Controllers
         }
 
         [HttpGet]
+        [Produces("application/json")]
+        public IActionResult Fleets()
+        {
+            try
+            {
+                if (User.IsInRole("Commander") || User.IsInRole("Leadership"))
+                {
+                    return Ok(_Db.Fleets.Where(c => c.ClosedAt == null)
+                        .Select(c => new {
+                            c.Id,
+                            c.Type,
+                            c.MemberCount,
+                            c.SystemId,
+                            comms = new { c.CommChannel.LinkText, c.CommChannel.Url },
+                            fc = new { c.BossPilot.Id, c.BossPilot.Name }
+                        }).ToList());
+                }
+                else
+                {
+                    return Ok(_Db.Fleets.Where(c => c.ClosedAt == null)
+                        .Select(c => new {
+                            c.Id,
+                            c.Type,
+                            c.MemberCount,
+                            c.SystemId,
+                            comms = new { c.CommChannel.LinkText, c.CommChannel.Url },
+                            fc = new { c.BossPilot.Id, c.BossPilot.Name }
+                        }).ToList());
+                }
+            }
+            catch (Exception ex)
+            {
+                _Logger.LogError("Error getting fleets {0}", ex.Message);
+                return BadRequest(ex);
+            }
+        }
+
+        [HttpGet]
+        [Route("/api/v1/fc-settings")]
         [Produces("application/json")]
         public IActionResult FcSettings()
         {

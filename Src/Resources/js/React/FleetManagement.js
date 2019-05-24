@@ -42,7 +42,7 @@ export default class Index extends Component {
     getFcSettings() {
         $.ajax({
             type: 'get',
-            url: `/waitlist/fcsettings`,
+            url: `/api/v1/fc-settings`,
             async: false
         }).done((settings) => {
             this.setState({ fcOptions: settings });

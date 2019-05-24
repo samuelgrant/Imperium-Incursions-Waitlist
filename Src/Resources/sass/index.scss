@@ -102,6 +102,37 @@ button.close:hover, button.close:active {
     font-size: large;
 }
 
+.side-panel span i {
+    padding-right: 1.5rem;
+}
+
 i.clear {
     font-size: medium;
+}
+
+.fleet-info  .card-body {
+    padding: 0px;
+}
+
+.fleet-info .card-body .row, .fleet-info .card-body .row .xmpp{
+    padding: 1.25rem;
+    font-size: x-large;
+}
+
+.fleet-info .card-body .row i{
+    padding-right: 15px;
+}
+
+.btn-group.special {
+    display: flex;
+}
+
+.special .btn {
+    flex: 1
+}
+
+@media(min-width: 1200px){
+    .container {
+        min-width: 1640px;
+    }
 }

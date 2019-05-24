@@ -206,7 +206,9 @@ export class Mumble extends Component {
 
         return (
             <SideSection title="Mumble">
-                <MumbleLink commChannel={this.get()} />
+                <span className="sidepanel-content">
+                    <MumbleLink commChannel={this.get()} />
+                </span>
 
                 <div className="dropdown pt-2">
                     <button class="btn btn-dark mx-auto dropdown-toggle" data-toggle="dropdown" aria-expanded="false" type="button">Select Comms....</button>
@@ -273,7 +275,7 @@ export class Type extends Component {
         return (
             <SideSection title="Fleet Type">
                 <span className="sidepanel-content">
-                    <i className="far fa-location pr-4"></i>
+                    <i className="far fa-location"></i>
                     {this.props.type}
                 </span>
 

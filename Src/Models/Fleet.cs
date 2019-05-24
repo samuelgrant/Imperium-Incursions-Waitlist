@@ -2,6 +2,7 @@
 using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
 using System.Linq;
 using System.Threading.Tasks;
 
@@ -45,5 +46,17 @@ namespace Imperium_Incursions_Waitlist.Models
         public Account BackseatAccount { get; set; }
 
         public ICollection<FleetAssignment> FleetAssignments { get; set; }
+
+        [NotMapped]
+        public string MemberCount => GetOngridCount();
+
+        /// <summary>
+        /// Returns the number of pilots in the fleet who are not cynos
+        /// </summary>
+        /// <returns>Number of pilots in the fleet</returns>
+        public string GetOngridCount()
+        {
+            return "0 / 60";
+        }
     }
 }

@@ -58,9 +58,10 @@ namespace Imperium_Incursions_Waitlist.Controllers
         [Produces("application/json")]
         public IActionResult Backseat(int id)
         {
-            Fleet fleet = _Db.Fleets.Find(id);
+            var fleet = _Db.Fleets.Where(c => c.Id == id && c.ClosedAt == null).FirstOrDefault();
             if (fleet == null)
-                return BadRequest("Fleet not found or you do not have access to it.");
+                // Fleet not found
+                return NotFound("Fleet not found.");
 
             Account account = _Db.Accounts.Find(int.Parse(User.FindFirst("Id").Value));
             if (account == null)
@@ -90,7 +91,10 @@ namespace Imperium_Incursions_Waitlist.Controllers
         [Produces("application/json")]
         public IActionResult ClearBackseat(int id)
         {
-            Fleet fleet = _Db.Fleets.Find(id);
+            var fleet = _Db.Fleets.Where(c => c.Id == id && c.ClosedAt == null).FirstOrDefault();
+            if (fleet == null)
+                // Fleet not found
+                return NotFound("Fleet not found.");
 
             try
             {
@@ -118,15 +122,16 @@ namespace Imperium_Incursions_Waitlist.Controllers
         [Produces("application/json")]
         public IActionResult Boss(IFormCollection request, int id)
         {
+            var fleet = _Db.Fleets.Where(c => c.Id == id && c.ClosedAt == null).FirstOrDefault();
+            if (fleet == null)
+                // Fleet not found
+                return NotFound("Fleet not found.");
+
             int bossId = int.Parse(request["pilotId"]);
             var pilot = _Db.Pilots.Where(c => c.Id == bossId && c.AccountId == int.Parse(User.FindFirst("Id").Value)).FirstOrDefault();
             if (pilot == null)
                 return BadRequest("The pilot was not found, or you do not have permission to complete this request.");
-            
-            var fleet = _Db.Fleets.Where(c => c.Id == id && c.ClosedAt == null).FirstOrDefault();
-            if (fleet == null)
-                // Cannot write changes to a fleet that is not open.
-                return NotFound("Fleet not found.");
+
 
             try
             {
@@ -152,12 +157,12 @@ namespace Imperium_Incursions_Waitlist.Controllers
         [Produces("application/json")]
         public IActionResult Comms(IFormCollection request, int id)
         {
-            int commsId = int.Parse(request["commsId"].ToString());
-
             var fleet = _Db.Fleets.Where(c => c.Id == id && c.ClosedAt == null).FirstOrDefault();
             if (fleet == null)
-                // Cannot write changes to a fleet that is not open.
+                // Fleet not found
                 return NotFound("Fleet not found.");
+
+            int commsId = int.Parse(request["commsId"].ToString());
 
             CommChannel comm = _Db.CommChannels.Find(commsId);
             if (comm == null)
@@ -190,7 +195,7 @@ namespace Imperium_Incursions_Waitlist.Controllers
         {
             var fleet = _Db.Fleets.Where(c => c.Id == id && c.ClosedAt == null).FirstOrDefault();
             if (fleet == null)
-                // Cannot write changes to a fleet that is not open.
+                // Fleet not found
                 return NotFound("Fleet not found.");
 
             try
@@ -220,7 +225,7 @@ namespace Imperium_Incursions_Waitlist.Controllers
         {
             var fleet = _Db.Fleets.Where(c => c.Id == id && c.ClosedAt == null).FirstOrDefault();
             if (fleet == null)
-                // Cannot write changes to a fleet that is not open.
+                // Fleet not found
                 return NotFound("Fleet not found.");
 
             try
@@ -309,6 +314,10 @@ namespace Imperium_Incursions_Waitlist.Controllers
         public IActionResult Close(int id)
         {
             var fleet = _Db.Fleets.Where(c => c.Id == id && c.ClosedAt == null).FirstOrDefault();
+            if (fleet == null)
+                // Fleet not found
+                return NotFound("Fleet not found.");
+
             fleet.ClosedAt = DateTime.UtcNow;
 
             _Db.SaveChanges();
