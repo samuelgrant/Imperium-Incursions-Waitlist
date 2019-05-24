@@ -14,8 +14,6 @@ namespace Imperium_Incursions_Waitlist.Models
         public long EveFleetId { get; set; }
 
         [JsonIgnore]
-        public int BossId { get; set; }
-        [JsonIgnore]
         public int BackseatId { get; set; }
         [JsonIgnore]
         public int CommChannelId { get; set; }

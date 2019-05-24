@@ -4,7 +4,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 
 namespace Imperium_Incursions_Waitlist.Migrations
 {
-    public partial class AddedModels : Migration
+    public partial class patch : Migration
     {
         protected override void Up(MigrationBuilder migrationBuilder)
         {
@@ -135,7 +135,6 @@ namespace Imperium_Incursions_Waitlist.Migrations
                     Id = table.Column<int>(nullable: false)
                         .Annotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn),
                     EveFleetId = table.Column<long>(nullable: false),
-                    BossId = table.Column<int>(nullable: false),
                     BackseatId = table.Column<int>(nullable: false),
                     CommChannelId = table.Column<int>(nullable: false),
                     SystemId = table.Column<int>(nullable: true),

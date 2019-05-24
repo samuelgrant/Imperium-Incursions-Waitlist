@@ -166,8 +166,6 @@ namespace Imperium_Incursions_Waitlist.Migrations
 
                     b.Property<int>("BackseatId");
 
-                    b.Property<int>("BossId");
-
                     b.Property<int?>("BossPilotId");
 
                     b.Property<DateTime?>("ClosedAt");

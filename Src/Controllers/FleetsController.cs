@@ -42,7 +42,10 @@ namespace Imperium_Incursions_Waitlist.Controllers
         {
 
             var Fleet = _Db.Fleets.Include(i => i.BossPilot)
-                                  .Include(i => i.CommChannel).Where(c => c.Id == id && c.ClosedAt == null).FirstOrDefault();
+                                  .Include(i => i.CommChannel)
+                                  .Include(i => i.BackseatAccount)
+                                    .ThenInclude(i => i.Pilots)
+                                  .Where(c => c.Id == id && c.ClosedAt == null).FirstOrDefault();
             if (Fleet == null)
                 return NotFound($"Fleet {id} not found.");
 
@@ -50,12 +53,100 @@ namespace Imperium_Incursions_Waitlist.Controllers
             return Ok(Fleet);
         }
 
+        [HttpPut]
+        [Route("/fleets/{id}/backseat")]
+        [Produces("application/json")]
+        public IActionResult Backseat(int id)
+        {
+            Fleet fleet = _Db.Fleets.Find(id);
+            if (fleet == null)
+                return BadRequest("Fleet not found or you do not have access to it.");
+
+            Account account = _Db.Accounts.Find(int.Parse(User.FindFirst("Id").Value));
+            if (account == null)
+                return BadRequest("Account not found.");
+
+            try
+            {
+                fleet.BackseatAccount = account;
+                _Db.SaveChanges();
+                return Ok();
+            }
+            catch (Exception ex)
+            {
+                _Logger.LogError("Cannot set the fleet backseat (Fleet ID: {0}) {1} {2}", fleet.Id, account.Name, ex.Message);
+                return BadRequest("Error setting the backseat.");
+            }
+            
+        }
+
         /// <summary>
-        /// Sets the fleet comms for the fleet
+        /// Unsets the backseat FC
+        /// </summary>
+        /// <param name="id"></param>
+        /// <returns></returns>
+        [HttpDelete]
+        [Route("/fleets/{id}/backseat")]
+        [Produces("application/json")]
+        public IActionResult ClearBackseat(int id)
+        {
+            Fleet fleet = _Db.Fleets.Find(id);
+
+            try
+            {
+                fleet.BackseatAccount = null;
+                _Db.SaveChanges();
+
+                return Ok();
+            }
+            catch (Exception ex)
+            {
+                _Logger.LogError("Cannot clear the fleet backseat (Fleet ID: {0})  {1}.", fleet.Id, ex.Message);
+                return BadRequest("Error clearing the backseat.");
+            }
+        }
+
+
+
+        /// <summary>
+        /// Sets the fleet boss (FC with star in game)
         /// </summary>
         /// <param name="request"></param>
         /// <param name="id"></param>
-        /// <returns></returns>
+        [HttpPut]
+        [Route("/fleets/{id}/boss")]
+        [Produces("application/json")]
+        public IActionResult Boss(IFormCollection request, int id)
+        {
+            int bossId = int.Parse(request["pilotId"]);
+            var pilot = _Db.Pilots.Where(c => c.Id == bossId && c.AccountId == int.Parse(User.FindFirst("Id").Value)).FirstOrDefault();
+            if (pilot == null)
+                return BadRequest("The pilot was not found, or you do not have permission to complete this request.");
+            
+            var fleet = _Db.Fleets.Where(c => c.Id == id && c.ClosedAt == null).FirstOrDefault();
+            if (fleet == null)
+                // Cannot write changes to a fleet that is not open.
+                return NotFound("Fleet not found.");
+
+            try
+            {
+                fleet.BossPilot = pilot;
+                _Db.SaveChanges();
+
+                return Ok();
+            }
+            catch (Exception ex)
+            {
+                _Logger.LogError("Cannot change the fleet boss (Fleet ID: {0}) to {1} {2}.", fleet.Id, pilot.Name, ex.Message);
+                return BadRequest("Error setting fleet boss.");
+            }
+        }
+
+        /// <summary>
+        /// Sets the fleet comms.
+        /// </summary>
+        /// <param name="request"></param>
+        /// <param name="id"></param>
         [HttpPut]
         [Route("/fleets/{id}/comms")]
         [Produces("application/json")]
@@ -85,6 +176,13 @@ namespace Imperium_Incursions_Waitlist.Controllers
                 return BadRequest("Error setting fleet comms.");
             }
         }
+
+        /// <summary>
+        /// Sets the fleet status.
+        /// </summary>
+        /// <param name="request"></param>
+        /// <param name="id"></param>
+        /// <returns></returns>
         [HttpPut]
         [Route("/fleets/{id}/status")]
         [Produces("application/json")]
@@ -109,6 +207,12 @@ namespace Imperium_Incursions_Waitlist.Controllers
             }
         }
 
+        /// <summary>
+        /// Sets the fleet type.
+        /// </summary>
+        /// <param name="request"></param>
+        /// <param name="id"></param>
+        /// <returns></returns>
         [HttpPut]
         [Route("/fleets/{id}/type")]
         [Produces("application/json")]
@@ -155,6 +259,10 @@ namespace Imperium_Incursions_Waitlist.Controllers
             }
 
             int bossId = int.Parse(request["fleetBoss"].ToString());
+            Pilot pilot = _Db.Pilots.Where(c => c.Id == bossId  && c.AccountId == int.Parse(User.FindFirst("Id").Value)).FirstOrDefault();
+            if (pilot == null)
+                return NotFound("Pilot not found, or you do not have access to it.");
+
             string fleetType = request["FleetType"].ToString();
 
             //Is there an active fleet with this ID? IF yes redirect to that fleet else continue
@@ -180,7 +288,7 @@ namespace Imperium_Incursions_Waitlist.Controllers
             Fleet newFleet = new Fleet
             {
                 EveFleetId = fleetId,
-                BossId = bossId,
+                BossPilot = pilot,
                 CommChannelId = comms.Id,
                 IsPublic = false,
                 Type = fleetType,

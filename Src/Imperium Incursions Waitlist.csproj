@@ -19,6 +19,8 @@
     <Compile Remove="Migrations\20190414033827_InitialMigration.Designer.cs" />
     <Compile Remove="Migrations\20190521053944_Add Models.cs" />
     <Compile Remove="Migrations\20190521053944_Add Models.Designer.cs" />
+    <Compile Remove="Migrations\20190522094936_Added Models.cs" />
+    <Compile Remove="Migrations\20190522094936_Added Models.Designer.cs" />
   </ItemGroup>
 
   <ItemGroup>

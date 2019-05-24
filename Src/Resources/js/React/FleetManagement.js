@@ -2,9 +2,7 @@
 import { render } from 'react-dom';
 import Alert from './Components/Alert';
 import { SidePanel, SideSection, SidePanelButton } from './Components/SidePanel';
-import { XmppLink } from './Components/CommLinks';
-import { Pilot } from './Components/EsiUi';
-import { BtnClose, BtnClear, BtnInvAll, BtnInvFaxes, Mumble, Status, Type } from './Components/FleetSettings';
+import { BtnClose, BtnClear, BtnInvAll, BtnInvFaxes, Backseat, Boss, Mumble, Status, Type } from './Components/FleetSettings';
 
 const baseUri = "/fleets";
 
@@ -70,22 +68,7 @@ export default class Index extends Component {
                     If no fleets are listed, the waitlist will show as offline.
                 </Alert>
             );
-        }
-
-        let boss_myPilots;
-        if (this.state.fcOptions) {
-            boss_myPilots = this.state.fcOptions.pilots.map((pilot) => {
-                return <a className="dropdown-item" role="presentation">{pilot.name}</a>
-            });
-        }
-
-        let backSeat_myPilots;
-        if (this.state.fcOptions) {
-            backSeat_myPilots = this.state.fcOptions.pilots.map((pilot) => {
-                return <a className="dropdown-item" role="presentation">{pilot.name}</a>
-            });
-        }
-        
+        }      
 
         return (
             <div className="container">
@@ -95,44 +78,14 @@ export default class Index extends Component {
 
                 <SidePanel id="fleetSettings" title="Fleet Settings">
                     <div className="row">
-                        <SideSection title="Fleet Commander">
-                            <div className="row mumble">
-                                <div className="col-3">
-                                    <img className="ml-3 pr-2" src={`https://image.eveonline.com/Character/${96304094}_64.jpg`} />
-                                </div> 
-                                <div className="col-9">
-                                    <Pilot pilot={(this.state.fleet) ? this.state.fleet.bossPilot : null} />
-                                
+                        <Boss pilot={(this.state.fleet) ? this.state.fleet.bossPilot : null}
+                            pilots={(this.getSettings()) ? this.getSettings().pilots : null}
+                            u={this.getData.bind(this)}
+                            fleetId={this.state.fleetId} />
 
-                                    <div className="dropdown">
-                                        <button class="btn btn-dark dropdown-toggle" data-toggle="dropdown" aria-expanded="false" type="button">I'm the Boss....</button>
-                                        <div class="dropdown-menu" role="menu">
-                                            {boss_myPilots}
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                        </SideSection>
-
-                        <SideSection title="Backseat">
-                            <div className="row mumble">
-                                <div className="col-3">
-                                    <img className="ml-3 pr-2" src={`https://image.eveonline.com/Character/${96304094}_64.jpg`} />
-                                </div>
-                                <div className="col-9">
-                                    <XmppLink AuthName={(this.state.fleet) ? this.state.fleet.bossPilot.name : null} />
-                                    <i className="fas fa-times-circle clear"></i>
-
-
-                                    <div className="dropdown">
-                                        <button class="btn btn-dark dropdown-toggle" data-toggle="dropdown" aria-expanded="false" type="button">I'm the Backseat....</button>
-                                        <div class="dropdown-menu" role="menu">
-                                            {backSeat_myPilots}
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                        </SideSection>
+                        <Backseat account={(this.state.fleet)? this.state.fleet.backseatAccount : null}
+                            u={this.getData.bind(this)}
+                            fleetId={this.state.fleetId} />
 
                         <Mumble channel={(this.getFleetSettings()) ? this.getFleetSettings().commChannel : null}
                             options={(this.getSettings()) ? this.getSettings().comms : null}

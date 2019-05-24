@@ -10,8 +10,8 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace Imperium_Incursions_Waitlist.Migrations
 {
     [DbContext(typeof(WaitlistDataContext))]
-    [Migration("20190522094936_Added Models")]
-    partial class AddedModels
+    [Migration("20190524042645_patch")]
+    partial class patch
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
@@ -167,8 +167,6 @@ namespace Imperium_Incursions_Waitlist.Migrations
                     b.Property<int?>("BackseatAccountId");
 
                     b.Property<int>("BackseatId");
-
-                    b.Property<int>("BossId");
 
                     b.Property<int?>("BossPilotId");
 

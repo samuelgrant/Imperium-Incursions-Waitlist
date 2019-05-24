@@ -1,6 +1,7 @@
 ﻿import React, { Component } from 'react';
 import { SideSection } from './SidePanel';
-import { MumbleLink } from './CommLinks';
+import { MumbleLink, XmppLink } from './CommLinks';
+import { Pilot } from './EsiUi';
 
 const baseUri = "/fleets";
 
@@ -72,6 +73,104 @@ export class BtnInvFaxes extends Component {
 }
 
 /** Fleet Settings Options */
+
+export class Backseat extends Component {
+    getAccountIcoId() {
+        if (this.props.account && this.props.account.pilots)
+            return this.props.account.pilots[0].id;
+
+        return 0;
+    }
+
+    set() {
+        $.ajax({
+            type: 'put',
+            url: `${baseUri}/${this.props.fleetId}/backseat`,
+        }).done(() => {
+            this.props.u();
+        }).fail((err) => {
+            console.error(`React/FleetSettings {Backseat@set} - Error setting the backseat for this fleet`, err.responseText);
+        });
+    }
+
+    clear() {
+        $.ajax({
+            type: 'delete',
+            url: `${baseUri}/${this.props.fleetId}/backseat`,
+        }).done(() => {
+            this.props.u();
+        }).fail((err) => {
+            console.error(`React/FleetSettings {Backseat@clear} - Error clearing the backseat for this fleet`, err.responseText);
+        });
+    }
+
+    render() {
+        return (
+            <SideSection title="Backseat">
+                <div className="row mumble">
+                    <div className="col-3">
+                        <img className="ml-3 pr-2" src={`https://image.eveonline.com/Character/${this.getAccountIcoId()}_64.jpg`} />
+                    </div>
+                    <div className="col-9">
+                        <XmppLink AuthName={ (this.props.account) ? this.props.account.name : null } />
+
+                        <div className="d-block">
+                            <button className="btn btn-dark mr-2" onClick={this.set.bind(this)}>I'm the backseat....</button>
+                            <i className="fas fa-times-circle clear" onClick={this.clear.bind(this)}></i>
+                        </div>
+                    </div>
+                </div>
+            </SideSection>    
+        );
+    }
+}
+
+export class Boss extends Component {
+    getPilot() {
+        return this.props.pilot || null;
+    }
+
+    setBoss(id) {
+        $.ajax({
+            type: 'put',
+            url: `${baseUri}/${this.props.fleetId}/boss`,
+            data: { pilotId: id }
+        }).done(() => {
+            this.props.u();
+        }).fail((err) => {
+            console.error(`React/FleetSettings {Boss@setComms} - Error setting the fleet boss for this fleet`, err.responseText);
+        });
+    }
+
+    render() {
+        let pilots;
+        if (this.props.pilots) {
+            pilots = this.props.pilots.map((pilot) => {
+                return <a className="dropdown-item" role="presentation" onClick={this.setBoss.bind(this, pilot.id)}>{pilot.name}</a>
+            });
+        }
+
+        return (
+            <SideSection title="Fleet Commander">
+                <div className="row mumble">
+                    <div className="col-3">
+                        <img className="ml-3 pr-2" src={`https://image.eveonline.com/Character/${(this.getPilot()) ? this.getPilot().id : 0}_64.jpg`} />
+                    </div>
+                    <div className="col-9">
+                        <Pilot pilot={this.getPilot()} />
+
+                        <div className="dropdown">
+                            <button class="btn btn-dark dropdown-toggle" data-toggle="dropdown" aria-expanded="false" type="button">I'm the Boss....</button>
+                            <div class="dropdown-menu" role="menu">
+                                {pilots}
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </SideSection>    
+        );
+    }
+}
 
 export class Mumble extends Component {
 
