@@ -27,6 +27,7 @@ export default class Index extends Component {
         $.ajax({
             type: 'get',
             url: `/waitlist/fleets`,
+            async: false
         }).done((fleets) => {
             this.setState({ fleets: fleets });
         }).fail((err) => {
