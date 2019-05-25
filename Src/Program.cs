@@ -33,7 +33,7 @@ namespace Imperium_Incursions_Waitlist
                     }
                     catch (Exception ex)
                     {
-                        logger.LogDebugFormat("Error seeding accounts table: {0}", ex.Message);
+                        logger.LogDebugFormat("Error seeding database tables: {0}", ex.Message);
                     }
                 }
             }

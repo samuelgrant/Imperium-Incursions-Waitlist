@@ -10,8 +10,8 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace Imperium_Incursions_Waitlist.Migrations
 {
     [DbContext(typeof(WaitlistDataContext))]
-    [Migration("20190521053944_Add Models")]
-    partial class AddModels
+    [Migration("20190524042645_patch")]
+    partial class patch
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
@@ -168,21 +168,21 @@ namespace Imperium_Incursions_Waitlist.Migrations
 
                     b.Property<int>("BackseatId");
 
-                    b.Property<int>("BossId");
-
                     b.Property<int?>("BossPilotId");
+
+                    b.Property<DateTime?>("ClosedAt");
 
                     b.Property<int>("CommChannelId");
 
                     b.Property<DateTime>("CreatedAt");
 
-                    b.Property<int>("EveFleetId");
+                    b.Property<long>("EveFleetId");
 
                     b.Property<bool>("IsPublic");
 
                     b.Property<int?>("SystemId");
 
-                    b.Property<int>("Type");
+                    b.Property<string>("Type");
 
                     b.Property<DateTime?>("UpdatedAt");
 

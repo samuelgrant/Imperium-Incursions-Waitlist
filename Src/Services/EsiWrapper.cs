@@ -8,6 +8,7 @@ using ESI.NET.Models.Corporation;
 using Microsoft.Extensions.Options;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Hosting;
+using DotNetEnv;
 
 namespace Imperium_Incursions_Waitlist.Services
 {
@@ -24,11 +25,16 @@ namespace Imperium_Incursions_Waitlist.Services
             {
                 try
                 {
+                    Env.Load();
+
                     IOptions<EsiConfig> options = Options.Create<EsiConfig>(new EsiConfig()
                     {
                         EsiUrl = "https://esi.evetech.net/",
                         DataSource = DataSource.Tranquility,
-                        UserAgent = "Imperium Incursions Waitlist. Contact Caitlin Viliana"
+                        UserAgent = "Imperium Incursions Waitlist. Contact Caitlin Viliana",
+                        ClientId = Env.GetString("eve_clientID"),
+                        SecretKey = Env.GetString("eve_clientSecret"),
+                        AuthVersion = AuthVersion.v2
                     });
 
                     s_client = new EsiClient(options);
@@ -40,26 +46,11 @@ namespace Imperium_Incursions_Waitlist.Services
             }
         }
 
-        /// <summary>
-        /// Requests a character's information through ESI
-        /// route /character/{character_id}/
-        /// </summary>
-        /// <param name="character_id">Target character's ID</param>
-        /// <see cref="ESI.NET.Models.Character"/>
-        /// <returns>ESI Character Model</returns>
-        public static async Task<Information> GetPilot(int character_id)
+        public static EsiClient GetEsiClient()
         {
             EnsureInit();
 
-            EsiResponse<Information> Character_response = await s_client.Character.Information(character_id);
-
-            if (Character_response.StatusCode != HttpStatusCode.OK)
-            {
-                s_Log.LogError("{0} error searching API '{1}': {2}", Character_response.StatusCode, Character_response.Endpoint, Character_response.Message);
-                return null;
-            }
-
-            return Character_response.Data;
+            return s_client;
         }
 
         /// <summary>

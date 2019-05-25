@@ -14,7 +14,6 @@ namespace Imperium_Incursions_Waitlist.Services
     public static class Util
     {
         static readonly char[] padding = { '=' };
-
         /// <summary>
         /// Generates a random string.
         /// </summary>

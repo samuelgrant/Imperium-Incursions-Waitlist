@@ -5,6 +5,11 @@
 /// </summary>
 public static class LoggerExtensions
 {
+    public static long GetEsiId(this string x)
+    {
+        return long.Parse(x.Split('/')[5]);
+    }
+
     public static void LogDebugFormat(this ILogger log, string entry, params object[] args)
     {
         log.LogDebug(string.Format(entry, args));

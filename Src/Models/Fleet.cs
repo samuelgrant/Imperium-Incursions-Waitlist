@@ -1,34 +1,29 @@
-﻿using System;
+﻿using Newtonsoft.Json;
+using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
 using System.Linq;
 using System.Threading.Tasks;
 
 namespace Imperium_Incursions_Waitlist.Models
 {
-    public enum FleetType
-    {
-        // Put fleet types here - can shift enum to a different file if needed
-    }
-
-
     public class Fleet
     {
         public int Id { get; set; }
 
-        public int EveFleetId { get; set; }
+        public long EveFleetId { get; set; }
 
-        public int BossId { get; set; }
-
+        [JsonIgnore]
         public int BackseatId { get; set; }
-
+        [JsonIgnore]
         public int CommChannelId { get; set; }
 
         public int? SystemId { get; set; }
 
         public bool IsPublic { get; set; }
 
-        public FleetType Type { get; set; }
+        public string Type { get; set; }
 
         [Display(Name = "Created At"), DataType(DataType.Date)]
         [DisplayFormat(DataFormatString = "{0:dd-MM-yyyy}")]
@@ -37,6 +32,10 @@ namespace Imperium_Incursions_Waitlist.Models
         [Display(Name = "Updated At"), DataType(DataType.Date)]
         [DisplayFormat(DataFormatString = "{0:dd-MM-yyyy}")]
         public DateTime? UpdatedAt { get; set; }
+
+        [Display(Name = "Closed At"), DataType(DataType.Date)]
+        [DisplayFormat(DataFormatString = "{0:dd-MM-yyyy}")]
+        public DateTime? ClosedAt { get; set; }
 
         // Navigation properties
 
@@ -47,5 +46,37 @@ namespace Imperium_Incursions_Waitlist.Models
         public Account BackseatAccount { get; set; }
 
         public ICollection<FleetAssignment> FleetAssignments { get; set; }
+
+        [NotMapped]
+        public string MemberCount => GetOngridCount();
+
+        /// <summary>
+        /// Returns the number of pilots in the fleet who are not cynos
+        /// </summary>
+        /// <returns>Number of pilots in the fleet</returns>
+        public string GetOngridCount()
+        {
+            int denominator = 0;
+
+
+            if(Type == FleetType.Mothership.ToString())
+            {
+                denominator = 120;
+            }
+            else if(Type == FleetType.Headquarters.ToString())
+            {
+                denominator = 60;
+            }
+            else if(Type == FleetType.Assaults.ToString())
+            {
+                denominator = 30;
+            }
+            else if(Type == FleetType.Vanguards.ToString())
+            {
+                denominator = 15;
+            }
+            
+            return $"0 / {denominator}";
+        }
     }
 }

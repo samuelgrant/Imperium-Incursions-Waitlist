@@ -17,6 +17,10 @@
     <Compile Remove="Migrations\20190414001454_UpdatedBansModel.Designer.cs" />
     <Compile Remove="Migrations\20190414033827_InitialMigration.cs" />
     <Compile Remove="Migrations\20190414033827_InitialMigration.Designer.cs" />
+    <Compile Remove="Migrations\20190521053944_Add Models.cs" />
+    <Compile Remove="Migrations\20190521053944_Add Models.Designer.cs" />
+    <Compile Remove="Migrations\20190522094936_Added Models.cs" />
+    <Compile Remove="Migrations\20190522094936_Added Models.Designer.cs" />
   </ItemGroup>
 
   <ItemGroup>
@@ -27,7 +31,6 @@
 
   <ItemGroup>
     <PackageReference Include="DotNetEnv" Version="1.2.0" />
-    <PackageReference Include="ESI.NET" Version="2.13.13" />
     <PackageReference Include="Microsoft.AspNetCore.App" />
     <PackageReference Include="Microsoft.AspNetCore.Authentication.OpenIdConnect" Version="2.2.0" />
     <PackageReference Include="Microsoft.AspNetCore.Razor.Design" Version="2.2.0" PrivateAssets="All" />
@@ -45,6 +48,13 @@
     <Folder Include="Data\" />
     <Folder Include="Logs\" />
     <Folder Include="wwwroot\dist\" />
+  </ItemGroup>
+
+
+  <ItemGroup>
+    <Reference Include="ESI.NET">
+      <HintPath>..\..\ESINET\ESI.NET\bin\Debug\netcoreapp2.0\ESI.NET.dll</HintPath>
+    </Reference>
   </ItemGroup>
 
 </Project>

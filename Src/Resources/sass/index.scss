@@ -9,9 +9,11 @@
 /* Theme */
 @import 'Theme.scss';
 @import 'fonts.scss';
+@import 'FormControl.scss';
 
 /* Custom Styles */
 @import 'PilotSelect.scss';
+@import 'SideBar.scss';
 
 .bg-defuse, .side-panel {
     background-color: #111315;
@@ -30,26 +32,10 @@
     padding: 1px 10px 10px 10px;
 }
 
-.form-control {
-    background-color: hsla(0,0%,100%,.14);
-    border-radius: 3px;
-    border-color: white;
-}
-
-/* For Firefox */
-input[type='number'] {
-    -moz-appearance: textfield;
-}
-/* Webkit browsers like Safari and Chrome */
-input[type=number]::-webkit-inner-spin-button,
-input[type=number]::-webkit-outer-spin-button {
-    -webkit-appearance: none;
-    margin: 0;
-}
-
 body {
     background-image: linear-gradient( #1113157d, #1113157d ), 
         url(/images/main_dark.png);
+    background-size: cover;
 }
 
 
@@ -74,4 +60,82 @@ body {
     display: inline-block;
     margin-bottom: .5rem;
     padding: 0px .25rem 0px .25rem;
+}
+
+// Buttons
+button.close{
+    color: whitesmoke;
+}
+
+button.close:hover, button.close:active {
+    color: white;
+}
+
+.btn {
+    color: white;
+    border-radius: 0;
+    font-family: "Arial Unicode MS";
+}
+
+.btn-success {
+    background-color: #38C63D;
+}
+
+.btn-danger {
+    background-color: #C92E2E;
+}
+
+.btn-dark {
+    background-color: #090A0A;
+}
+
+.btn-warning {
+    background-color: #DC7325;
+}
+
+.sidepanel-content {
+    font-size: large;
+}
+
+.side-panel span i {
+    padding-right: 1.5rem;
+}
+
+i.clear {
+    font-size: medium;
+}
+
+i {
+    padding-right: 15px;
+}
+
+.btn-sm i {
+    padding-right: 5px;
+}
+
+.fleet-info  .card-body {
+    padding: 0px;
+}
+
+.fleet-info .card-body .xmpp {
+    margin-left: -15px;
+}
+
+.fleet-info .card-body .row, .fleet-info .card-body .row .xmpp{
+    padding: 1.25rem;
+    font-size: x-large;
+}
+
+.btn-group.special {
+    display: flex;
+}
+
+.special .btn {
+    flex: 1
+}
+
+@media(min-width: 1200px){
+    .container {
+        min-width: 1640px;
+    }
 }
