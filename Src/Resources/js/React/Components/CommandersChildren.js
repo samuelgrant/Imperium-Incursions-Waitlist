@@ -29,7 +29,7 @@ export class UserRow extends Component {
 
         let pilot_id = 0;
         if (this.props.user && this.props.user.pilots[0])
-            pilot_id = this.props.user.pilots[0].id;
+            pilot_id = this.props.user.pilots[0].characterID;
 
         return `https://imageserver.eveonline.com/Character/${pilot_id}_32.jpg`;
     }
@@ -64,7 +64,7 @@ export class ManageInfo extends Component {
 
         let pilot_id = 0;
         if (this.props.details && this.props.details.pilots[0])
-            pilot_id = this.props.details.pilots[0].id;
+            pilot_id = this.props.details.pilots[0].characterID;
 
         return `https://imageserver.eveonline.com/Character/${pilot_id}_128.jpg`;
     }
@@ -88,11 +88,6 @@ export class ManageInfo extends Component {
     }
 
     render() {
-
-        let fcName;
-        if (this.inputNewFc() && this.props.details)
-            fcName = this.props.details.name;
-
         // Text: Account search
         let accountSearch = <Input ref={this.AccountName} id="lookup_account" type="text" classOverride="form-control account-lookup" name="name" required="true" handleChange={this.handleChange.bind(this)} key={null} />
         if (!this.inputNewFc())
@@ -133,7 +128,7 @@ export class ManageInfo extends Component {
             pilotList = this.props.details.pilots.map((pilot) => {
                 return (
                     <span className="pilot">
-                        <img src={`https://imageserver.eveonline.com/Character/${pilot.id}_32.jpg`} alt="Pilot Avatar" />
+                        <img src={`https://imageserver.eveonline.com/Character/${pilot.characterID}_32.jpg`} alt="Pilot Avatar" />
                         <Pilot pilot={pilot} />
                     </span>
                 )

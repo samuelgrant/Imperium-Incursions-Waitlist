@@ -80,7 +80,7 @@ namespace Imperium_Incursions_Waitlist.Data
             modelBuilder.Entity<Pilot>()
                     .HasOne<Corporation>("Corporation")
                     .WithMany("Pilots")
-                    .HasForeignKey("CorporationId")
+                    .HasForeignKey("CorporationID")
                     .OnDelete(DeleteBehavior.Restrict);
 
             // Configuring account roles m-m relationship

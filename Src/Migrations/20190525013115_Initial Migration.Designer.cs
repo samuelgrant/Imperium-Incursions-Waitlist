@@ -10,8 +10,8 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace Imperium_Incursions_Waitlist.Migrations
 {
     [DbContext(typeof(WaitlistDataContext))]
-    [Migration("20190524042645_patch")]
-    partial class patch
+    [Migration("20190525013115_Initial Migration")]
+    partial class InitialMigration
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
@@ -168,7 +168,7 @@ namespace Imperium_Incursions_Waitlist.Migrations
 
                     b.Property<int>("BackseatId");
 
-                    b.Property<int?>("BossPilotId");
+                    b.Property<int?>("BossPilotCharacterID");
 
                     b.Property<DateTime?>("ClosedAt");
 
@@ -190,7 +190,7 @@ namespace Imperium_Incursions_Waitlist.Migrations
 
                     b.HasIndex("BackseatAccountId");
 
-                    b.HasIndex("BossPilotId");
+                    b.HasIndex("BossPilotCharacterID");
 
                     b.HasIndex("CommChannelId");
 
@@ -267,26 +267,28 @@ namespace Imperium_Incursions_Waitlist.Migrations
 
             modelBuilder.Entity("Imperium_Incursions_Waitlist.Models.Pilot", b =>
                 {
-                    b.Property<int>("Id");
+                    b.Property<int>("CharacterID");
 
                     b.Property<int>("AccountId");
 
-                    b.Property<long>("CorporationId");
-
-                    b.Property<string>("ESIToken");
-
-                    b.Property<string>("Name")
+                    b.Property<string>("CharacterName")
                         .IsRequired();
+
+                    b.Property<long>("CorporationID");
+
+                    b.Property<string>("RefreshToken");
 
                     b.Property<DateTime>("RegisteredAt");
 
+                    b.Property<string>("Token");
+
                     b.Property<DateTime?>("UpdatedAt");
 
-                    b.HasKey("Id");
+                    b.HasKey("CharacterID");
 
                     b.HasIndex("AccountId");
 
-                    b.HasIndex("CorporationId");
+                    b.HasIndex("CorporationID");
 
                     b.ToTable("Pilots");
                 });
@@ -493,7 +495,7 @@ namespace Imperium_Incursions_Waitlist.Migrations
 
                     b.HasOne("Imperium_Incursions_Waitlist.Models.Pilot", "BossPilot")
                         .WithMany("OwnedFleets")
-                        .HasForeignKey("BossPilotId");
+                        .HasForeignKey("BossPilotCharacterID");
 
                     b.HasOne("Imperium_Incursions_Waitlist.Models.CommChannel", "CommChannel")
                         .WithMany("Fleets")
@@ -541,7 +543,7 @@ namespace Imperium_Incursions_Waitlist.Migrations
 
                     b.HasOne("Imperium_Incursions_Waitlist.Models.Corporation", "Corporation")
                         .WithMany("Pilots")
-                        .HasForeignKey("CorporationId")
+                        .HasForeignKey("CorporationID")
                         .OnDelete(DeleteBehavior.Restrict);
                 });
 

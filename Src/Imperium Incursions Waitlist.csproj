@@ -17,10 +17,14 @@
     <Compile Remove="Migrations\20190414001454_UpdatedBansModel.Designer.cs" />
     <Compile Remove="Migrations\20190414033827_InitialMigration.cs" />
     <Compile Remove="Migrations\20190414033827_InitialMigration.Designer.cs" />
+    <Compile Remove="Migrations\20190503120827_Initial Migration.cs" />
+    <Compile Remove="Migrations\20190503120827_Initial Migration.Designer.cs" />
     <Compile Remove="Migrations\20190521053944_Add Models.cs" />
     <Compile Remove="Migrations\20190521053944_Add Models.Designer.cs" />
     <Compile Remove="Migrations\20190522094936_Added Models.cs" />
     <Compile Remove="Migrations\20190522094936_Added Models.Designer.cs" />
+    <Compile Remove="Migrations\20190524042645_patch.cs" />
+    <Compile Remove="Migrations\20190524042645_patch.Designer.cs" />
   </ItemGroup>
 
   <ItemGroup>
