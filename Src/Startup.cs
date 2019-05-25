@@ -73,6 +73,9 @@ namespace Imperium_Incursions_Waitlist
                     options.AccessDeniedPath = "/";
                 });
 
+            services.AddSingleton<Microsoft.Extensions.Hosting.IHostedService, CorporationService>();
+            services.AddSingleton<Microsoft.Extensions.Hosting.IHostedService, AllianceService>();
+
             services.AddSingleton<IHttpContextAccessor, HttpContextAccessor>();
         }
 
