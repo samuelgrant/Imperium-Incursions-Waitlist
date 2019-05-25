@@ -3,12 +3,10 @@ using System.Threading.Tasks;
 using System.Net;
 using ESI.NET;
 using ESI.NET.Enumerations;
-using ESI.NET.Models.Character;
-using ESI.NET.Models.Corporation;
 using Microsoft.Extensions.Options;
 using Microsoft.Extensions.Logging;
-using Microsoft.Extensions.Hosting;
 using DotNetEnv;
+using ESI.NET.Models.SSO;
 
 namespace Imperium_Incursions_Waitlist.Services
 {
@@ -46,11 +44,29 @@ namespace Imperium_Incursions_Waitlist.Services
             }
         }
 
+        /// <summary>
+        /// Returns an ESI Client
+        /// </summary>
+        /// <returns></returns>
         public static EsiClient GetEsiClient()
         {
             EnsureInit();
 
             return s_client;
+        }
+
+        public static void ShowInfo(AuthorizedCharacterData pilot, int target_id)
+        {
+            try
+            {
+                EsiClient x = GetEsiClient();
+                x.SetCharacterData(pilot);
+                x.UserInterface.Information(target_id);
+            } 
+            catch(Exception ex)
+            {
+                Console.Beep();
+            }
         }
 
         /// <summary>
@@ -72,7 +88,6 @@ namespace Imperium_Incursions_Waitlist.Services
             }
 
             return Corporation_response.Data;
-
         }
 
         /// <summary>

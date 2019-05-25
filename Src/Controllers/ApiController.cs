@@ -7,6 +7,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 using ESI.NET.Models.SSO;
 using Imperium_Incursions_Waitlist.Models;
+using Imperium_Incursions_Waitlist.Services;
 
 namespace Imperium_Incursions_Waitlist.Controllers.Auth
 {
@@ -24,14 +25,16 @@ namespace Imperium_Incursions_Waitlist.Controllers.Auth
 
         [HttpPost]
         [Route("/api/esi-ui/show-info")]
-        public IActionResult ShowInfo(IFormCollection request)
+        public async Task<IActionResult> ShowInfo(IFormCollection request)
         {
             int target_id = int.Parse(request["target_id"].ToString());
-            Pilot pilot = _Db.Pilots.Find(int.Parse(User.FindFirst("Id").Value));
+            Pilot pilot = _Db.Pilots.Find(int.Parse(Request.Cookies["prefPilot"].Split(':')[0]));
+            await pilot.UpdateToken();
+            
 
-            // Get Authorised character data --- Probably a pilot method that returns an authorized character object and updates the refresh token for nextime
+            EsiWrapper.ShowInfo((AuthorizedCharacterData)pilot, target_id);
 
-            // Call the ESI wrapper and supplies the authorised character data and target ID to make the call
+            await _Db.SaveChangesAsync();
 
             return Ok();
         }
