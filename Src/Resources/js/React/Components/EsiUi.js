@@ -5,7 +5,15 @@ const baseUri = "/api/v1/ui/"
 export class Pilot extends Component {
 
     apiCall(id) {
-        console.error(`(501) Open pilot window in game: ${id}`);
+        $.ajax({
+            type: 'post',
+            url: `/api/esi-ui/show-info`,
+            data: { target_id: id }
+        }).done((fleets) => {
+            this.setState({ fleets: fleets });
+        }).fail((err) => {
+            console.error(`React/EsiUi {Pilot@apiCall} - Error requesting ESI UI Showinfo`, err.responseText);
+        })  
     }
 
     getId() {
@@ -21,6 +29,7 @@ export class Pilot extends Component {
 
         return "";
     }
+    target_id
 
     render() {
         return (<a onClick={this.apiCall.bind(this, this.getId())}>{this.getName()}</a>)
@@ -30,7 +39,15 @@ export class Pilot extends Component {
 export class Corporation extends Component {
 
     apiCall(id) {
-        console.error(`(501) Open corp window in game: ${id}`);
+        $.ajax({
+            type: 'post',
+            url: `/api/esi-ui/show-info`,
+            data: { target_id: id }
+        }).done((fleets) => {
+            this.setState({ fleets: fleets });
+        }).fail((err) => {
+            console.error(`React/EsiUi {Corporation@apiCall} - Error requesting ESI UI Showinfo`, err.responseText);
+        })  
     }
 
     getId() {
@@ -55,7 +72,15 @@ export class Corporation extends Component {
 export class Alliance extends Component {
 
     apiCall(id) {
-        console.error(`(501) Open alliance window in game: ${id}`);
+        $.ajax({
+            type: 'post',
+            url: `/api/esi-ui/show-info`,
+            data: { target_id: id }
+        }).done((fleets) => {
+            this.setState({ fleets: fleets });
+        }).fail((err) => {
+            console.error(`React/EsiUi {Alliance@apiCall} - Error requesting ESI UI Showinfo`, err.responseText);
+        })  
     }
 
     getId() {
