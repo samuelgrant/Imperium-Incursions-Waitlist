@@ -54,7 +54,7 @@ namespace Imperium_Incursions_Waitlist.Controllers.Auth
             if (pilot == null)
                 return BadRequest();
 
-            if (!pilot.BelongsToAccount(int.Parse(User.FindFirst("id").Value)))
+            if (!pilot.BelongsToAccount(User.AccountId()))
                 return Unauthorized();
             
             CookieOptions options = new CookieOptions

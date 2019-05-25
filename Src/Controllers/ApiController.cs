@@ -28,9 +28,9 @@ namespace Imperium_Incursions_Waitlist.Controllers.Auth
         public async Task<IActionResult> ShowInfo(IFormCollection request)
         {
             int target_id = int.Parse(request["target_id"].ToString());
-            Pilot pilot = _Db.Pilots.Find(int.Parse(Request.Cookies["prefPilot"].Split(':')[0]));
+            Pilot pilot = _Db.Pilots.Find(Request.Cookies.PreferredPilotId());
             await pilot.UpdateToken();
-            
+
             EsiWrapper.ShowInfo((AuthorizedCharacterData)pilot, target_id);
 
             await _Db.SaveChangesAsync();
@@ -43,7 +43,7 @@ namespace Imperium_Incursions_Waitlist.Controllers.Auth
         public async Task<IActionResult> SetDestination(IFormCollection request)
         {
             int target_id = int.Parse(request["target_id"].ToString());
-            Pilot pilot = _Db.Pilots.Find(int.Parse(Request.Cookies["prefPilot"].Split(':')[0]));
+            Pilot pilot = _Db.Pilots.Find(Request.Cookies.PreferredPilotId());
             await pilot.UpdateToken();
 
             EsiWrapper.SetDestination((AuthorizedCharacterData)pilot, target_id);

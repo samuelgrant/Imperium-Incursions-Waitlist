@@ -80,7 +80,7 @@ namespace Imperium_Incursions_Waitlist.Controllers
                                                                            .Select(v => v.ToString())
                                                                            .ToList();
 
-                var PilotResults = _Db.Pilots.Where(a => a.AccountId == int.Parse(User.FindFirst("Id").Value) && a.ESIValid).Select(c => new { c.CharacterID, c.CharacterName }).ToList();
+                var PilotResults = _Db.Pilots.Where(a => a.AccountId == User.AccountId() && a.ESIValid).Select(c => new { c.CharacterID, c.CharacterName }).ToList();
 
                 List<FleetBoss> pilotTuple = new List<FleetBoss>();
 

@@ -61,7 +61,7 @@ namespace Imperium_Incursions_Waitlist.Controllers
             // Verify a code and state query parameter was returned.
             if (code == null || state == null)
             {
-                _Logger.LogWarningFormat("Eve Callback Error: One or more of the query parameters are missing. State: {0}. Code: {1}", state, code);
+                _Logger.LogWarning("Eve Callback Error: One or more of the query parameters are missing. State: {0}. Code: {1}", state, code);
                 return StatusCode(452);
             }
 
@@ -94,7 +94,7 @@ namespace Imperium_Incursions_Waitlist.Controllers
                 pilot = new Pilot()
                 {
                     CharacterID = n_pilot.CharacterID,
-                    AccountId = int.Parse(User.FindFirst("id").Value),
+                    AccountId = User.AccountId(),
                     CharacterName = n_pilot.CharacterName,
                     CorporationID = corporation_id,
                     RefreshToken = n_pilot.RefreshToken,
@@ -106,7 +106,7 @@ namespace Imperium_Incursions_Waitlist.Controllers
                 _Db.Add(pilot);
                 await _Db.SaveChangesAsync();
 
-                _Logger.LogDebugFormat("{0} has linked the pilot {1} to their account.", User.FindFirst("name").Value, pilot.CharacterName);
+                _Logger.LogDebug("{0} has linked the pilot {1} to their account.", User.FindFirst("name").Value, pilot.CharacterName);
 
                 //TODO: alert user that it worked
                 return Redirect("/pilot-select");
@@ -114,7 +114,7 @@ namespace Imperium_Incursions_Waitlist.Controllers
             else if (!pilot.IsLinked() || pilot.BelongsToAccount(int.Parse(User.FindFirst("id").Value)))
             {
                 // Update the pilot information - This may include a new account if it was unlinked.
-                pilot.AccountId = int.Parse(User.FindFirst("id").Value);
+                pilot.AccountId = User.AccountId();
                 pilot.CharacterName = n_pilot.CharacterName;
                 pilot.CorporationID = corporation_id;
                 pilot.RefreshToken = n_pilot.RefreshToken;
@@ -124,14 +124,14 @@ namespace Imperium_Incursions_Waitlist.Controllers
                 _Db.Update(pilot);
                 await _Db.SaveChangesAsync();
 
-                _Logger.LogDebugFormat("{0} has updated the pilot {1} that is linked to their account.", User.FindFirst("name").Value, pilot.CharacterName);
+                _Logger.LogDebug("{0} has updated the pilot {1} that is linked to their account.", User.FindFirst("name").Value, pilot.CharacterName);
 
                 //TODO: alert user that it worked
                 return Redirect("/pilot-select");
             }
 
             //TODO: alert user that it failed
-            _Logger.LogDebugFormat("{0} has tried to link {1} to their account, however it is linked to someone else’s account.");
+            _Logger.LogDebug("{0} has tried to link {1} to their account, however it is linked to someone else’s account.");
             return Redirect("/pilot-select");
         }
     }

@@ -1,10 +1,12 @@
-﻿using Microsoft.IdentityModel.Protocols;
+﻿using Microsoft.AspNetCore.Http;
+using Microsoft.IdentityModel.Protocols;
 using Microsoft.IdentityModel.Protocols.OpenIdConnect;
 using Microsoft.IdentityModel.Tokens;
 using System;
 using System.Collections.Generic;
 using System.IdentityModel.Tokens.Jwt;
 using System.Linq;
+using System.Security.Claims;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
@@ -83,7 +85,7 @@ namespace Imperium_Incursions_Waitlist.Services
             }
             catch (Exception ex)
             {
-                s_Log.LogWarningFormat("Error validating JWT Token {0}", ex.Message);
+                s_Log.LogWarning("Error validating JWT Token {0}", ex.Message);
                 return null;
             };
 
@@ -93,7 +95,7 @@ namespace Imperium_Incursions_Waitlist.Services
 
             if (jwt == null)
             {
-                s_Log.LogWarningFormat("Authentication failed a JWT was not found");
+                s_Log.LogWarning("Authentication failed a JWT was not found");
                 return null;
             }
 

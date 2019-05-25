@@ -57,7 +57,7 @@ namespace Imperium_Incursions_Waitlist.Controllers
             if (request["reason"] == "" || request["name"] == "")
                 return BadRequest();
 
-            int AdminId = int.Parse(User.FindFirst("id").Value);
+            int AdminId = User.AccountId();
             var BannedAccount = _Db.Accounts.FirstOrDefault(c => c.Name == request["name"]);
 
             if (BannedAccount == null)
@@ -122,7 +122,7 @@ namespace Imperium_Incursions_Waitlist.Controllers
                 currentBan.Reason = request["reason"];
                 //Expires at is disabled until I can spend enough time to use a proper Jquery date picker
                 currentBan.ExpiresAt = null;//Ban.BanExpiryDate(request["expires_at"]),
-                currentBan.UpdatedByAdminId = int.Parse(User.FindFirst("id").Value);
+                currentBan.UpdatedByAdminId = User.AccountId();
                 currentBan.UpdatedAt = DateTime.UtcNow;
 
                 _Logger.LogInformation("{0} is updating the ban against {1}", User.FindFirst("name").Value, currentBan.BannedAccount.Name);
