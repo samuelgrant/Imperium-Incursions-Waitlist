@@ -1,14 +1,13 @@
 ﻿using System;
-using System.IdentityModel.Tokens.Jwt;
-using System.Net;
 using DotNetEnv;
+using ESI.NET.Enumerations;
+using ESI.NET.Models.SSO;
 using Imperium_Incursions_Waitlist.Models;
 using Imperium_Incursions_Waitlist.Services;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
-using Newtonsoft.Json;
 
 namespace Imperium_Incursions_Waitlist.Controllers
 {
@@ -77,50 +76,29 @@ namespace Imperium_Incursions_Waitlist.Controllers
             // Clear the state session
             HttpContext.Session.Remove("state");
 
-            string access_token;
-            string refresh_token;
 
-            //Get the authorization code
-            using (WebClient http = new WebClient())
-            {
-                string credentials = Util.Base64Encode(Env.GetString("eve_clientID") + ":" + Env.GetString("eve_clientSecret"));
+            ESI.NET.EsiClient s_client = EsiWrapper.GetEsiClient();
 
-                http.Headers.Add("Authorization", "Basic " + credentials);
-                http.Headers.Add("Content-Type", "application/x-www-form-urlencoded");
-                http.Headers.Add("Host", "login.eveonline.com");
+            SsoToken token = await s_client.SSO.GetToken(GrantType.AuthorizationCode, code);
+            AuthorizedCharacterData n_pilot = await s_client.SSO.Verify(token);
 
-                var response = http.UploadString("https://login.eveonline.com/v2/oauth/token", "POST", string.Format("grant_type={0}&code={1}",
-                    "authorization_code",
-                    code
-                ));
 
-                // Get the JWT Access token & Refresh Token
-                var model = JsonConvert.DeserializeObject<dynamic>(response);
-                access_token = model["access_token"].Value;
-                refresh_token = model["refresh_token"].Value;
-            }
-
-            // Get vars from the access token
-            var account = new JwtSecurityToken(jwtEncodedString: access_token).Payload;
-
-            // Do we have a record of this pilot?
-            string character_id = account["sub"].ToString().Split(':')[2];
-            var x = await EsiWrapper.GetPilot(int.Parse(character_id));
-            long corporation_id = x.CorporationId;
+            long corporation_id = (long)n_pilot.CorporationID;
 
             Corporation.EnsureInDatabase(corporation_id, _Db);
 
-            var pilot = await _Db.Pilots.FindAsync(int.Parse(character_id));
+            var pilot = await _Db.Pilots.FindAsync(n_pilot.CharacterID);
             if(pilot == null)
             {
                 // User doesn't exist, create a new account
                 pilot = new Pilot()
                 {
-                    Id = int.Parse(character_id),
+                    CharacterID = n_pilot.CharacterID,
                     AccountId = int.Parse(User.FindFirst("id").Value),
-                    Name = account["name"].ToString(),
-                    CorporationId = corporation_id,
-                    ESIToken = refresh_token,
+                    CharacterName = n_pilot.CharacterName,
+                    CorporationID = corporation_id,
+                    RefreshToken = n_pilot.RefreshToken,
+                    Token = n_pilot.Token,
                     UpdatedAt = DateTime.UtcNow,
                     RegisteredAt = DateTime.UtcNow,
                 };
@@ -128,31 +106,32 @@ namespace Imperium_Incursions_Waitlist.Controllers
                 _Db.Add(pilot);
                 await _Db.SaveChangesAsync();
 
-                _Logger.LogDebugFormat("{0} has linked the pilot {1} to their account.", User.FindFirst("name").Value, pilot.Name);
+                _Logger.LogDebugFormat("{0} has linked the pilot {1} to their account.", User.FindFirst("name").Value, pilot.CharacterName);
 
                 //TODO: alert user that it worked
                 return Redirect("/pilot-select");
             }
-            else if (!pilot.IsLinked() || pilot.AccountId == int.Parse(User.FindFirst("id").Value))
+            else if (!pilot.IsLinked() || pilot.BelongsToAccount(int.Parse(User.FindFirst("id").Value)))
             {
-                await EsiWrapper.GetPilot(pilot.Id);
+                // Update the pilot information - This may include a new account if it was unlinked.
                 pilot.AccountId = int.Parse(User.FindFirst("id").Value);
-                pilot.Name = account["name"].ToString();
-                pilot.CorporationId = corporation_id;
-                pilot.ESIToken = refresh_token;
+                pilot.CharacterName = n_pilot.CharacterName;
+                pilot.CorporationID = corporation_id;
+                pilot.RefreshToken = n_pilot.RefreshToken;
+                pilot.Token = n_pilot.Token;
                 pilot.UpdatedAt = DateTime.UtcNow;
 
                 _Db.Update(pilot);
                 await _Db.SaveChangesAsync();
 
-                _Logger.LogDebugFormat("{0} has updated the pilot {1} that is linked to their account.", User.FindFirst("name").Value, pilot.Name);
+                _Logger.LogDebugFormat("{0} has updated the pilot {1} that is linked to their account.", User.FindFirst("name").Value, pilot.CharacterName);
 
                 //TODO: alert user that it worked
                 return Redirect("/pilot-select");
             }
 
-            _Logger.LogDebugFormat("{0} has tried to link {1} to their account, however it is linked to someone else’s account.");
             //TODO: alert user that it failed
+            _Logger.LogDebugFormat("{0} has tried to link {1} to their account, however it is linked to someone else’s account.");
             return Redirect("/pilot-select");
         }
     }

@@ -35,7 +35,7 @@ namespace Imperium_Incursions_Waitlist.Controllers.Auth
         public IActionResult Pilots()
         {
             var userID = User.FindFirst("id").Value;
-            var pilots = _Db.Pilots.Where(p => p.AccountId == int.Parse(userID)).OrderBy(s => s.Name);
+            var pilots = _Db.Pilots.Where(p => p.AccountId == int.Parse(userID)).OrderBy(s => s.CharacterName);
 
             if (pilots == null)
                 return NotFound();
@@ -62,7 +62,7 @@ namespace Imperium_Incursions_Waitlist.Controllers.Auth
                 IsEssential = true   
             };
 
-            Response.Cookies.Append("prefPilot", pilot.Id + ":" + pilot.Name, options);
+            Response.Cookies.Append("prefPilot", pilot.CharacterID + ":" + pilot.CharacterName, options);
 
             return Ok();
         }

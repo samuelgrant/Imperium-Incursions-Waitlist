@@ -42,7 +42,7 @@ namespace Imperium_Incursions_Waitlist.Controllers
                             c.MemberCount,
                             c.SystemId,
                             comms = new { c.CommChannel.LinkText, c.CommChannel.Url },
-                            fc = new { c.BossPilot.Id, c.BossPilot.Name }
+                            fc = new { c.BossPilot.CharacterID, c.BossPilot.CharacterName }
                         }).ToList());
                 }
                 else
@@ -54,7 +54,7 @@ namespace Imperium_Incursions_Waitlist.Controllers
                             c.MemberCount,
                             c.SystemId,
                             comms = new { c.CommChannel.LinkText, c.CommChannel.Url },
-                            fc = new { c.BossPilot.Id, c.BossPilot.Name }
+                            fc = new { c.BossPilot.CharacterID, c.BossPilot.CharacterName }
                         }).ToList());
                 }
             }
@@ -80,15 +80,15 @@ namespace Imperium_Incursions_Waitlist.Controllers
                                                                            .Select(v => v.ToString())
                                                                            .ToList();
 
-                var PilotResults = _Db.Pilots.Where(a => a.AccountId == int.Parse(User.FindFirst("Id").Value) && a.ESIValid).Select(c => new { c.Id, c.Name }).ToList();
+                var PilotResults = _Db.Pilots.Where(a => a.AccountId == int.Parse(User.FindFirst("Id").Value) && a.ESIValid).Select(c => new { c.CharacterID, c.CharacterName }).ToList();
 
                 List<FleetBoss> pilotTuple = new List<FleetBoss>();
 
                 foreach (var p in PilotResults)
                     pilotTuple.Add(
                         new FleetBoss{
-                            Id = p.Id,
-                            Name = p.Name
+                            Id = p.CharacterID,
+                            Name = p.CharacterName
                         }
                     );
 

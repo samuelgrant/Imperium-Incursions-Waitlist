@@ -26,11 +26,11 @@ namespace Imperium_Incursions_Waitlist.Controllers
                 var pilots = from p in _Db.Pilots select p;
                 if (!String.IsNullOrEmpty(q))
                 {
-                    pilots = pilots.Where(s => s.Name.Contains(q));
+                    pilots = pilots.Where(s => s.CharacterName.Contains(q));
                 }
 
                 foreach (var p in pilots)
-                    results.Add(p.Name);
+                    results.Add(p.CharacterName);
             }
 
             if(filter.ToLower() != "pilot")

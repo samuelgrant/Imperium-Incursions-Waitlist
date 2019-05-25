@@ -128,7 +128,7 @@ namespace Imperium_Incursions_Waitlist.Controllers
                 return NotFound("Fleet not found.");
 
             int bossId = int.Parse(request["pilotId"]);
-            var pilot = _Db.Pilots.Where(c => c.Id == bossId && c.AccountId == int.Parse(User.FindFirst("Id").Value)).FirstOrDefault();
+            var pilot = _Db.Pilots.Where(c => c.CharacterID == bossId && c.AccountId == int.Parse(User.FindFirst("Id").Value)).FirstOrDefault();
             if (pilot == null)
                 return BadRequest("The pilot was not found, or you do not have permission to complete this request.");
 
@@ -142,7 +142,7 @@ namespace Imperium_Incursions_Waitlist.Controllers
             }
             catch (Exception ex)
             {
-                _Logger.LogError("Cannot change the fleet boss (Fleet ID: {0}) to {1} {2}.", fleet.Id, pilot.Name, ex.Message);
+                _Logger.LogError("Cannot change the fleet boss (Fleet ID: {0}) to {1} {2}.", fleet.Id, pilot.CharacterName, ex.Message);
                 return BadRequest("Error setting fleet boss.");
             }
         }
@@ -264,7 +264,7 @@ namespace Imperium_Incursions_Waitlist.Controllers
             }
 
             int bossId = int.Parse(request["fleetBoss"].ToString());
-            Pilot pilot = _Db.Pilots.Where(c => c.Id == bossId  && c.AccountId == int.Parse(User.FindFirst("Id").Value)).FirstOrDefault();
+            Pilot pilot = _Db.Pilots.Where(c => c.CharacterID == bossId  && c.AccountId == int.Parse(User.FindFirst("Id").Value)).FirstOrDefault();
             if (pilot == null)
                 return NotFound("Pilot not found, or you do not have access to it.");
 

@@ -11,28 +11,33 @@ namespace Imperium_Incursions_Waitlist.Models
 {
     public class Pilot
     {
+        [Key]
         [DatabaseGenerated(DatabaseGeneratedOption.None)]
-        public int Id { get; set; }
+        public int CharacterID { get; set; }
 
         // EF Core recognizes this as FK automatically
         public int AccountId { get; set; }
 
         [Required]
-        public string Name { get; set; }
+        public string CharacterName { get; set; }
 
         [Display(Name = "Corporation ID")]
         [JsonIgnore]
         [ForeignKey("Corporation")]
-        public long CorporationId { get; set; }
+        public long CorporationID { get; set; }
 
-        [Display(Name = "ESI Token")]
+        [Display(Name = "Refresh Token")]
         [JsonIgnore]
-        public string ESIToken { get; set; }
+        public string RefreshToken { get; set; }
+
+        [Display(Name = "Access Token")]
+        [JsonIgnore]
+        public string Token { get; set; }
 
         [NotMapped]
         public bool ESIValid
         {
-            get => ESIToken != null;
+            get => RefreshToken != null;
         }
 
         [Display(Name = "Registered At"), DataType(DataType.Date)]
