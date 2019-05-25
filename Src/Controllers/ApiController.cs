@@ -13,8 +13,8 @@ namespace Imperium_Incursions_Waitlist.Controllers.Auth
 {
     public class ApiController : Controller
     {
-        private Data.WaitlistDataContext _Db;
-        private ILogger _Logger;
+        private readonly Data.WaitlistDataContext _Db;
+        private readonly ILogger _Logger;
 
         public ApiController(Data.WaitlistDataContext db, ILogger<ApiController> logger)
         {
@@ -31,8 +31,22 @@ namespace Imperium_Incursions_Waitlist.Controllers.Auth
             Pilot pilot = _Db.Pilots.Find(int.Parse(Request.Cookies["prefPilot"].Split(':')[0]));
             await pilot.UpdateToken();
             
-
             EsiWrapper.ShowInfo((AuthorizedCharacterData)pilot, target_id);
+
+            await _Db.SaveChangesAsync();
+
+            return Ok();
+        }
+
+        [HttpPost]
+        [Route("/api/esi-ui/destination")]
+        public async Task<IActionResult> SetDestination(IFormCollection request)
+        {
+            int target_id = int.Parse(request["target_id"].ToString());
+            Pilot pilot = _Db.Pilots.Find(int.Parse(Request.Cookies["prefPilot"].Split(':')[0]));
+            await pilot.UpdateToken();
+
+            EsiWrapper.SetDestination((AuthorizedCharacterData)pilot, target_id);
 
             await _Db.SaveChangesAsync();
 

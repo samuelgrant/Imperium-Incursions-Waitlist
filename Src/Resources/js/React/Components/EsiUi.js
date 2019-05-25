@@ -9,8 +9,6 @@ export class Pilot extends Component {
             type: 'post',
             url: `/api/esi-ui/show-info`,
             data: { target_id: id }
-        }).done((fleets) => {
-            this.setState({ fleets: fleets });
         }).fail((err) => {
             console.error(`React/EsiUi {Pilot@apiCall} - Error requesting ESI UI Showinfo`, err.responseText);
         })  
@@ -43,8 +41,6 @@ export class Corporation extends Component {
             type: 'post',
             url: `/api/esi-ui/show-info`,
             data: { target_id: id }
-        }).done((fleets) => {
-            this.setState({ fleets: fleets });
         }).fail((err) => {
             console.error(`React/EsiUi {Corporation@apiCall} - Error requesting ESI UI Showinfo`, err.responseText);
         })  
@@ -76,8 +72,6 @@ export class Alliance extends Component {
             type: 'post',
             url: `/api/esi-ui/show-info`,
             data: { target_id: id }
-        }).done((fleets) => {
-            this.setState({ fleets: fleets });
         }).fail((err) => {
             console.error(`React/EsiUi {Alliance@apiCall} - Error requesting ESI UI Showinfo`, err.responseText);
         })  
@@ -105,7 +99,13 @@ export class Alliance extends Component {
 export class Destination extends Component {
 
     apiCall(id) {
-        console.error(`(501) Set destination to system: ${id}`);
+        $.ajax({
+            type: 'post',
+            url: `/api/esi-ui/destination`,
+            data: { target_id: id }
+        }).fail((err) => {
+            console.error(`React/EsiUi {Destination@apiCall} - Error requesting ESI UI Set Destination`, err.responseText);
+        }) 
     }
 
     getId() {

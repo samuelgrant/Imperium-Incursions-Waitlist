@@ -55,6 +55,36 @@ namespace Imperium_Incursions_Waitlist.Services
             return s_client;
         }
 
+        /// <summary>
+        /// Sets a new autopilot destination in game.
+        /// </summary>
+        /// <param name="pilot">Pilot explicit cast as AuthorizedCharacterData</param>
+        /// <param name="system_id">ID of the target solar system.</param>
+        /// <see cref="ESI.NET.Models.Universe.SolarSystem"/>
+        public static void SetDestination(AuthorizedCharacterData pilot, int system_id)
+        {
+            try
+            {
+                EsiClient x = GetEsiClient();
+                x.SetCharacterData(pilot);
+                x.UserInterface.Waypoint(system_id, true, true);
+            }
+            catch(Exception ex)
+            {
+                Console.Beep();
+            }
+        }
+
+        /// <summary>
+        /// Opens the Show Info window for a Character, Corporation or Alliance in game.
+        /// </summary>
+        /// <param name="pilot">Pilot explicit cast as AuthorizedCharacterData</param>
+        /// <param name="target_id"></param>
+        /// <see cref="Models.Pilot"/>
+        /// <seealso cref="AuthorizedCharacterData"/>
+        /// <seealso cref="ESI.NET.Models.Character"/>
+        /// <seealso cref="ESI.NET.Models.Corporation"/>
+        /// <seealso cref="ESI.NET.Models.Alliance"/>
         public static void ShowInfo(AuthorizedCharacterData pilot, int target_id)
         {
             try
