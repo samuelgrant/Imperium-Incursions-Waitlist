@@ -15,10 +15,15 @@ namespace Imperium_Incursions_Waitlist.Models
         public long EveFleetId { get; set; }
 
         [JsonIgnore]
-        public int BackseatId { get; set; }
+        public int? BossPilotId { get; set; }
+
         [JsonIgnore]
         public int CommChannelId { get; set; }
 
+        [JsonIgnore]
+        public int? ErrorCount { get; set; }
+
+        [JsonIgnore]
         public int? SystemId { get; set; }
 
         public bool IsPublic { get; set; }
@@ -46,6 +51,8 @@ namespace Imperium_Incursions_Waitlist.Models
         public Account BackseatAccount { get; set; }
 
         public ICollection<FleetAssignment> FleetAssignments { get; set; }
+
+        public StarSystem System { get; set; }
 
         [NotMapped]
         public string MemberCount => GetOngridCount();

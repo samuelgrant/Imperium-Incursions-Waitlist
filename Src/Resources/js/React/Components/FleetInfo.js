@@ -1,5 +1,5 @@
 ﻿import React, { Component } from 'react';
-import { Pilot } from './EsiUi';
+import { Pilot, Destination } from './EsiUi';
 import { MumbleLink } from './CommLinks';
 
 export default class FleetInfo extends Component {
@@ -21,7 +21,7 @@ export default class FleetInfo extends Component {
                             </div>
 
                             <div className="col-lg-6 col-md-12">
-                                {this.props.fleet.systemId}
+                                <Destination system={this.props.fleet.system} />
                             </div>
                         </div>
                         

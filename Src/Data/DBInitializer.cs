@@ -1,7 +1,8 @@
 ﻿using System;
+using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using Imperium_Incursions_Waitlist.Models;
-
 
 namespace Imperium_Incursions_Waitlist.Data
 {
@@ -11,7 +12,7 @@ namespace Imperium_Incursions_Waitlist.Data
         /// Seeds the database for development purposes.
         /// </summary>
         /// <param name="context"></param>
-        public static void Initialize(WaitlistDataContext context)
+        public static async System.Threading.Tasks.Task Initialize(WaitlistDataContext context)
         {
             // Check for existing account records
             if (!context.Accounts.Any())
@@ -54,6 +55,13 @@ namespace Imperium_Incursions_Waitlist.Data
 
                 foreach (CommChannel channel in CommChannels)
                     context.CommChannels.Add(channel);
+            }
+
+            // Seeds solar systems from the SDE
+            if (!context.Systems.Any())
+            {
+                var systems = Newtonsoft.Json.JsonConvert.DeserializeObject<List<StarSystem>>(File.ReadAllText("Data" + Path.DirectorySeparatorChar + "Systems.json"));
+                context.Systems.AddRange(systems);
             }
 
             context.SaveChanges();

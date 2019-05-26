@@ -55,7 +55,7 @@ namespace Imperium_Incursions_Waitlist.Services
             return s_client;
         }
 
-        public static async Task<ESI.NET.Models.Location.Location> GetSystemAsync(AuthorizedCharacterData pilot)
+        public static async Task<ESI.NET.Models.Location.Location> GetSystem(AuthorizedCharacterData pilot)
         {
             EsiClient x = GetEsiClient();
             x.SetCharacterData(pilot);
@@ -69,6 +69,21 @@ namespace Imperium_Incursions_Waitlist.Services
 
 
             return Location_response.Data;
+        }
+
+        public static async Task<ESI.NET.Models.Universe.SolarSystem> GetSystemInformation(int SystemId)
+        {
+            EnsureInit();
+
+            EsiResponse<ESI.NET.Models.Universe.SolarSystem> SystemInfo_response = await s_client.Universe.System(SystemId);
+
+            if(SystemInfo_response.StatusCode != HttpStatusCode.OK)
+            {
+                s_Log.LogError("{0} error searching API '{1}': {2}", SystemInfo_response.StatusCode, SystemInfo_response.Endpoint, SystemInfo_response.Message);
+                return null;
+            }
+
+            return SystemInfo_response.Data;
         }
 
         /// <summary>
@@ -89,6 +104,21 @@ namespace Imperium_Incursions_Waitlist.Services
             }
 
             return Location_response.Data.Online;
+        }
+
+        public static async Task<int[]> GetAllSystemIds()
+        {
+            EnsureInit();
+
+            EsiResponse<int[]> SystemsArray_response = await s_client.Universe.Systems();
+
+            if (SystemsArray_response.StatusCode != HttpStatusCode.OK)
+            {
+                s_Log.LogError("{0} error searching API '{1}': {2}", SystemsArray_response.StatusCode, SystemsArray_response.Endpoint, SystemsArray_response.Message);
+                return null;
+            }
+
+            return SystemsArray_response.Data;
         }
 
         /// <summary>

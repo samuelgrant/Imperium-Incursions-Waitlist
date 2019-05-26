@@ -4,7 +4,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 
 namespace Imperium_Incursions_Waitlist.Migrations
 {
-    public partial class IntialMigration : Migration
+    public partial class InitialMigration : Migration
     {
         protected override void Up(MigrationBuilder migrationBuilder)
         {
@@ -101,6 +101,18 @@ namespace Imperium_Incursions_Waitlist.Migrations
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_Skills", x => x.Id);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "Systems",
+                columns: table => new
+                {
+                    Id = table.Column<int>(nullable: false),
+                    Name = table.Column<string>(nullable: true)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Systems", x => x.Id);
                 });
 
             migrationBuilder.CreateTable(
@@ -312,15 +324,15 @@ namespace Imperium_Incursions_Waitlist.Migrations
                     Id = table.Column<int>(nullable: false)
                         .Annotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn),
                     EveFleetId = table.Column<long>(nullable: false),
-                    BackseatId = table.Column<int>(nullable: false),
+                    BossPilotId = table.Column<int>(nullable: true),
                     CommChannelId = table.Column<int>(nullable: false),
+                    ErrorCount = table.Column<int>(nullable: true),
                     SystemId = table.Column<int>(nullable: true),
                     IsPublic = table.Column<bool>(nullable: false),
                     Type = table.Column<string>(nullable: true),
                     CreatedAt = table.Column<DateTime>(nullable: false),
                     UpdatedAt = table.Column<DateTime>(nullable: true),
                     ClosedAt = table.Column<DateTime>(nullable: true),
-                    BossPilotCharacterID = table.Column<int>(nullable: true),
                     BackseatAccountId = table.Column<int>(nullable: true)
                 },
                 constraints: table =>
@@ -333,8 +345,8 @@ namespace Imperium_Incursions_Waitlist.Migrations
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Restrict);
                     table.ForeignKey(
-                        name: "FK_Fleets_Pilots_BossPilotCharacterID",
-                        column: x => x.BossPilotCharacterID,
+                        name: "FK_Fleets_Pilots_BossPilotId",
+                        column: x => x.BossPilotId,
                         principalTable: "Pilots",
                         principalColumn: "CharacterID",
                         onDelete: ReferentialAction.Restrict);
@@ -344,6 +356,12 @@ namespace Imperium_Incursions_Waitlist.Migrations
                         principalTable: "CommChannels",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
+                    table.ForeignKey(
+                        name: "FK_Fleets_Systems_SystemId",
+                        column: x => x.SystemId,
+                        principalTable: "Systems",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Restrict);
                 });
 
             migrationBuilder.CreateTable(
@@ -558,14 +576,19 @@ namespace Imperium_Incursions_Waitlist.Migrations
                 column: "BackseatAccountId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_Fleets_BossPilotCharacterID",
+                name: "IX_Fleets_BossPilotId",
                 table: "Fleets",
-                column: "BossPilotCharacterID");
+                column: "BossPilotId");
 
             migrationBuilder.CreateIndex(
                 name: "IX_Fleets_CommChannelId",
                 table: "Fleets",
                 column: "CommChannelId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Fleets_SystemId",
+                table: "Fleets",
+                column: "SystemId");
 
             migrationBuilder.CreateIndex(
                 name: "IX_Notes_AdminId",
@@ -669,6 +692,9 @@ namespace Imperium_Incursions_Waitlist.Migrations
 
             migrationBuilder.DropTable(
                 name: "CommChannels");
+
+            migrationBuilder.DropTable(
+                name: "Systems");
 
             migrationBuilder.DropTable(
                 name: "ShipTypes");

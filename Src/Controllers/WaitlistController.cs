@@ -6,14 +6,15 @@ using Microsoft.Extensions.Logging;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using Imperium_Incursions_Waitlist.Data;
 
 namespace Imperium_Incursions_Waitlist.Controllers
 {
     [Authorize]
     public class WaitlistController : Controller
     {
-        private Data.WaitlistDataContext _Db;
-        private ILogger _Logger;
+        private readonly WaitlistDataContext _Db;
+        private readonly ILogger _Logger;
 
         public WaitlistController(Data.WaitlistDataContext db, ILogger<CommandersController> logger)
         {
@@ -42,7 +43,8 @@ namespace Imperium_Incursions_Waitlist.Controllers
                             c.MemberCount,
                             c.SystemId,
                             comms = new { c.CommChannel.LinkText, c.CommChannel.Url },
-                            fc = new { c.BossPilot.CharacterID, c.BossPilot.CharacterName }
+                            fc = (c.BossPilot != null) ? new { c.BossPilot.CharacterID, c.BossPilot.CharacterName } : null,
+                            system = (c.System != null) ? new {c.System.Id, c.System.Name} : null
                         }).ToList());
                 }
                 else
@@ -54,14 +56,15 @@ namespace Imperium_Incursions_Waitlist.Controllers
                             c.MemberCount,
                             c.SystemId,
                             comms = new { c.CommChannel.LinkText, c.CommChannel.Url },
-                            fc = new { c.BossPilot.CharacterID, c.BossPilot.CharacterName }
+                            fc = (c.BossPilot != null) ? new { c.BossPilot.CharacterID, c.BossPilot.CharacterName } : null,
+                            system = (c.System != null) ? new { c.System.Id, c.System.Name } : null
                         }).ToList());
                 }
             }
             catch (Exception ex)
             {
                 _Logger.LogError("Error getting fleets {0}", ex.Message);
-                return BadRequest(ex);
+                return BadRequest(ex.Message);
             }
         }
 

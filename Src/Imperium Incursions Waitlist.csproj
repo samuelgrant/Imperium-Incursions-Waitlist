@@ -37,6 +37,18 @@
     <Compile Remove="Migrations\20190526040112_Initial Migration.Designer.cs" />
     <Compile Remove="Migrations\20190526045736_Inital Migration.cs" />
     <Compile Remove="Migrations\20190526045736_Inital Migration.Designer.cs" />
+    <Compile Remove="Migrations\20190526050026_Intial Migration.cs" />
+    <Compile Remove="Migrations\20190526050026_Intial Migration.Designer.cs" />
+    <Compile Remove="Migrations\20190526051435_Fleets Patch.cs" />
+    <Compile Remove="Migrations\20190526051435_Fleets Patch.Designer.cs" />
+    <Compile Remove="Migrations\20190526053418_Fleets alter 2.cs" />
+    <Compile Remove="Migrations\20190526053418_Fleets alter 2.Designer.cs" />
+    <Compile Remove="Migrations\20190526070931_Star Systems.cs" />
+    <Compile Remove="Migrations\20190526070931_Star Systems.Designer.cs" />
+    <Compile Remove="Migrations\20190526072612_SystemsPatch.cs" />
+    <Compile Remove="Migrations\20190526072612_SystemsPatch.Designer.cs" />
+    <Compile Remove="Migrations\20190526110702_Patch 3.cs" />
+    <Compile Remove="Migrations\20190526110702_Patch 3.Designer.cs" />
   </ItemGroup>
 
   <ItemGroup>
@@ -61,7 +73,6 @@
 
 
   <ItemGroup>
-    <Folder Include="Data\" />
     <Folder Include="Logs\" />
     <Folder Include="wwwroot\dist\" />
   </ItemGroup>

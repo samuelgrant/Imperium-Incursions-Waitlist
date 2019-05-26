@@ -25,6 +25,7 @@ namespace Imperium_Incursions_Waitlist.Data
         public DbSet<SelectedFit> SelectedFits { get; set; }
         public DbSet<SelectedRole> SelectedRoles { get; set; }
         public DbSet<WaitingPilot> WaitingPilots { get; set; }
+        public DbSet<StarSystem> Systems { get; set; }
 
         public WaitlistDataContext(DbContextOptions<WaitlistDataContext> options) : base(options)
         {

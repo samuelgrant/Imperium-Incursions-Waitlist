@@ -76,6 +76,7 @@ namespace Imperium_Incursions_Waitlist
             services.AddSingleton<Microsoft.Extensions.Hosting.IHostedService, CorporationService>();
             services.AddSingleton<Microsoft.Extensions.Hosting.IHostedService, AllianceService>();
             services.AddSingleton<Microsoft.Extensions.Hosting.IHostedService, WaitlistService>();
+            services.AddSingleton<Microsoft.Extensions.Hosting.IHostedService, FleetService>();
 
             services.AddSingleton<IHttpContextAccessor, HttpContextAccessor>();
         }

@@ -39,22 +39,28 @@ public class WaitlistService : IHostedService
 
     private async void DoWork(object state)
     {
-        _logger.LogInformation("Background Service Started: updating corporations.");
+        _logger.LogInformation("Background Service Started: updating waitlist.");
+
         List<WaitingPilot> waitlist = _Db.WaitingPilots.Where(c => c.RemovedByAccount == null).ToList();
         foreach (WaitingPilot waiting_pilot in waitlist)
         {
             Pilot pilot = _Db.Pilots.Find(waiting_pilot.PilotId);
 
+            // Update pilot system
             await pilot.UpdateToken();
-            var System = await EsiWrapper.GetSystemAsync((AuthorizedCharacterData)pilot);
+            var System = await EsiWrapper.GetSystem((AuthorizedCharacterData)pilot);
             waiting_pilot.SystemId = System?.SolarSystemId;
 
+            // Update pilot online/offline
             await pilot.UpdateToken();
             waiting_pilot.IsOffline = !await EsiWrapper.IsOnlineAsync((AuthorizedCharacterData)pilot);
+
+            // Touch the updated at timestamp
+            waiting_pilot.UpdatedAt = DateTime.UtcNow;
         }
 
         _Db.SaveChanges();
-        _logger.LogInformation("Background Service Completed: corporations updated.");
+        _logger.LogInformation("Background Service Completed: waitlist updated.");
     }
 
     public Task StopAsync(CancellationToken cancellationToken)

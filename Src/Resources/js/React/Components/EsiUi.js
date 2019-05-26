@@ -109,11 +109,11 @@ export class Destination extends Component {
     }
 
     getId() {
-        return this.props.system.id || -1;
+        return (this.props.system) ? this.props.system.id : "";
     }
 
     getName() {
-        return this.props.system.name || "";
+        return (this.props.system) ? this.props.system.name : "";
     }
 
     render() {

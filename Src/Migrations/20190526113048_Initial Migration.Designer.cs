@@ -10,8 +10,8 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace Imperium_Incursions_Waitlist.Migrations
 {
     [DbContext(typeof(WaitlistDataContext))]
-    [Migration("20190526050026_Intial Migration")]
-    partial class IntialMigration
+    [Migration("20190526113048_Initial Migration")]
+    partial class InitialMigration
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
@@ -166,15 +166,15 @@ namespace Imperium_Incursions_Waitlist.Migrations
 
                     b.Property<int?>("BackseatAccountId");
 
-                    b.Property<int>("BackseatId");
-
-                    b.Property<int?>("BossPilotCharacterID");
+                    b.Property<int?>("BossPilotId");
 
                     b.Property<DateTime?>("ClosedAt");
 
                     b.Property<int>("CommChannelId");
 
                     b.Property<DateTime>("CreatedAt");
+
+                    b.Property<int?>("ErrorCount");
 
                     b.Property<long>("EveFleetId");
 
@@ -190,9 +190,11 @@ namespace Imperium_Incursions_Waitlist.Migrations
 
                     b.HasIndex("BackseatAccountId");
 
-                    b.HasIndex("BossPilotCharacterID");
+                    b.HasIndex("BossPilotId");
 
                     b.HasIndex("CommChannelId");
+
+                    b.HasIndex("SystemId");
 
                     b.ToTable("Fleets");
                 });
@@ -437,6 +439,17 @@ namespace Imperium_Incursions_Waitlist.Migrations
                     b.ToTable("Skills");
                 });
 
+            modelBuilder.Entity("Imperium_Incursions_Waitlist.Models.StarSystem", b =>
+                {
+                    b.Property<int>("Id");
+
+                    b.Property<string>("Name");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("Systems");
+                });
+
             modelBuilder.Entity("Imperium_Incursions_Waitlist.Models.WaitingPilot", b =>
                 {
                     b.Property<int>("Id")
@@ -525,12 +538,16 @@ namespace Imperium_Incursions_Waitlist.Migrations
 
                     b.HasOne("Imperium_Incursions_Waitlist.Models.Pilot", "BossPilot")
                         .WithMany("OwnedFleets")
-                        .HasForeignKey("BossPilotCharacterID");
+                        .HasForeignKey("BossPilotId");
 
                     b.HasOne("Imperium_Incursions_Waitlist.Models.CommChannel", "CommChannel")
                         .WithMany("Fleets")
                         .HasForeignKey("CommChannelId")
                         .OnDelete(DeleteBehavior.Cascade);
+
+                    b.HasOne("Imperium_Incursions_Waitlist.Models.StarSystem", "System")
+                        .WithMany()
+                        .HasForeignKey("SystemId");
                 });
 
             modelBuilder.Entity("Imperium_Incursions_Waitlist.Models.FleetAssignment", b =>
