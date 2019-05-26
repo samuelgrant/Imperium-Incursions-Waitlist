@@ -227,11 +227,39 @@ namespace Imperium_Incursions_Waitlist.Migrations
                         .ValueGeneratedOnAdd()
                         .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
+                    b.Property<bool>("Avaliable");
+
                     b.Property<string>("Name");
 
                     b.HasKey("Id");
 
                     b.ToTable("FleetRoles");
+
+                    b.HasData(
+                        new
+                        {
+                            Id = 1,
+                            Avaliable = true,
+                            Name = "TTT"
+                        },
+                        new
+                        {
+                            Id = 2,
+                            Avaliable = true,
+                            Name = "AAA"
+                        },
+                        new
+                        {
+                            Id = 3,
+                            Avaliable = true,
+                            Name = "DDD"
+                        },
+                        new
+                        {
+                            Id = 4,
+                            Avaliable = true,
+                            Name = "MTAC"
+                        });
                 });
 
             modelBuilder.Entity("Imperium_Incursions_Waitlist.Models.Note", b =>
@@ -417,11 +445,13 @@ namespace Imperium_Incursions_Waitlist.Migrations
 
                     b.Property<bool>("NewPilot");
 
+                    b.Property<DateTime?>("OfflineAt");
+
                     b.Property<int>("PilotId");
 
                     b.Property<int?>("RemovedByAccountId");
 
-                    b.Property<int>("SystemId");
+                    b.Property<int?>("SystemId");
 
                     b.Property<DateTime?>("UpdatedAt");
 

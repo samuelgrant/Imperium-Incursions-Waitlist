@@ -11,6 +11,7 @@ namespace Imperium_Incursions_Waitlist.Models
 
         public string Name { get; set; }
 
+        public bool Avaliable { get; set; }
         // Navigation properties
 
         public ICollection<SelectedRole> SelectedRoles { get; set; }

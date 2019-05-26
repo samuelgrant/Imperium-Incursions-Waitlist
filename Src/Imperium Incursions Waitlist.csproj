@@ -25,6 +25,18 @@
     <Compile Remove="Migrations\20190522094936_Added Models.Designer.cs" />
     <Compile Remove="Migrations\20190524042645_patch.cs" />
     <Compile Remove="Migrations\20190524042645_patch.Designer.cs" />
+    <Compile Remove="Migrations\20190525013115_Initial Migration.cs" />
+    <Compile Remove="Migrations\20190525013115_Initial Migration.Designer.cs" />
+    <Compile Remove="Migrations\20190526012258_Adds OfflineAt to WaitingPilots.cs" />
+    <Compile Remove="Migrations\20190526012258_Adds OfflineAt to WaitingPilots.Designer.cs" />
+    <Compile Remove="Migrations\20190526014745_WaitingMembers Patch.cs" />
+    <Compile Remove="Migrations\20190526014745_WaitingMembers Patch.Designer.cs" />
+    <Compile Remove="Migrations\20190526034733_Waiting Pilots.cs" />
+    <Compile Remove="Migrations\20190526034733_Waiting Pilots.Designer.cs" />
+    <Compile Remove="Migrations\20190526040112_Initial Migration.cs" />
+    <Compile Remove="Migrations\20190526040112_Initial Migration.Designer.cs" />
+    <Compile Remove="Migrations\20190526045736_Inital Migration.cs" />
+    <Compile Remove="Migrations\20190526045736_Inital Migration.Designer.cs" />
   </ItemGroup>
 
   <ItemGroup>

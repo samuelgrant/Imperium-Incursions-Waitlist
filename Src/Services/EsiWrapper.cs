@@ -55,6 +55,42 @@ namespace Imperium_Incursions_Waitlist.Services
             return s_client;
         }
 
+        public static async Task<ESI.NET.Models.Location.Location> GetSystemAsync(AuthorizedCharacterData pilot)
+        {
+            EsiClient x = GetEsiClient();
+            x.SetCharacterData(pilot);
+            EsiResponse<ESI.NET.Models.Location.Location> Location_response = await x.Location.Location();
+
+            if(Location_response.StatusCode != HttpStatusCode.OK)
+            {
+                s_Log.LogError("{0} error searching API '{1}': {2}", Location_response.StatusCode, Location_response.Endpoint, Location_response.Message);
+                return null;
+            }
+
+
+            return Location_response.Data;
+        }
+
+        /// <summary>
+        /// Checks ESI to see if the pilot is online.
+        /// </summary>
+        /// <param name="pilot">Pilot explicit cast as AuthorizedCharacterData</param>
+        /// <returns>Bool</returns>
+        public static async Task<bool> IsOnlineAsync(AuthorizedCharacterData pilot)
+        {
+            EsiClient x = GetEsiClient();
+            x.SetCharacterData(pilot);
+            EsiResponse<ESI.NET.Models.Location.Activity> Location_response = await x.Location.Online();
+
+            if (Location_response.StatusCode != HttpStatusCode.OK)
+            {
+                s_Log.LogError("{0} error searching API '{1}': {2}", Location_response.StatusCode, Location_response.Endpoint, Location_response.Message);
+                return true;
+            }
+
+            return Location_response.Data.Online;
+        }
+
         /// <summary>
         /// Sets a new autopilot destination in game.
         /// </summary>
