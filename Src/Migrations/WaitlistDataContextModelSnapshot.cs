@@ -199,11 +199,13 @@ namespace Imperium_Incursions_Waitlist.Migrations
 
             modelBuilder.Entity("Imperium_Incursions_Waitlist.Models.FleetAssignment", b =>
                 {
-                    b.Property<int>("WaitingPilotId");
+                    b.Property<int?>("WaitingPilotId");
 
                     b.Property<int>("FleetId");
 
                     b.Property<DateTime>("CreatedAt");
+
+                    b.Property<int>("CurrentShipId");
 
                     b.Property<DateTime?>("DeletedAt");
 

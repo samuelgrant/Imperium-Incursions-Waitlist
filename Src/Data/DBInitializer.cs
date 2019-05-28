@@ -36,19 +36,19 @@ namespace Imperium_Incursions_Waitlist.Data
                 var CommChannels = new CommChannel[]
                 {
                     new CommChannel {
-                        LinkText = "Incursions -> Fleet A",
+                        LinkText = "Inc -> Fleet A",
                         Url = "mumble://mumble.goonfleet.com/Squads%20and%20SIGs/Incursions/Fleet%20A?title=Goonfleet&version=1.2.0"
                     },
                     new CommChannel {
-                        LinkText = "Incursions -> Fleet B",
+                        LinkText = "Inc -> Fleet B",
                         Url = "mumble://mumble.goonfleet.com/Squads%20and%20SIGs/Incursions/Fleet%20B?title=Goonfleet&version=1.2.0"
                     },
                     new CommChannel {
-                        LinkText = "Incursions -> Fleet C",
+                        LinkText = "Inc -> Fleet C",
                         Url = "mumble://mumble.goonfleet.com/Squads%20and%20SIGs/Incursions/Fleet%20C?title=Goonfleet&version=1.2.0"
                     },
                     new CommChannel {
-                        LinkText = "Incursions -> Fleet D",
+                        LinkText = "Inc -> Fleet D",
                         Url = "mumble://mumble.goonfleet.com/Squads%20and%20SIGs/Incursions/Fleet%20D?title=Goonfleet&version=1.2.0"
                     }
                 };

@@ -29,9 +29,10 @@ export default class Index extends Component {
             url: `/waitlist/fleets`,
             async: false
         }).done((fleets) => {
+            console.log(fleets);
             this.setState({ fleets: fleets });
         }).fail((err) => {
-            console.error(`React/Index {Index@getFleets} - Error getting the available fleets`, err.responseText);
+            console.error(`React/Index {Index@getFleets} - Error getting the available fleets`, err);
         })  
     }
 

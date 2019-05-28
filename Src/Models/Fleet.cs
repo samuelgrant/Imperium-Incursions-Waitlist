@@ -54,36 +54,51 @@ namespace Imperium_Incursions_Waitlist.Models
 
         public StarSystem System { get; set; }
 
-        [NotMapped]
-        public string MemberCount => GetOngridCount();
+        /// <summary>
+        /// Returns the number of pilots allowed on grid. 
+        ///  This is based on the fleet type selected by the FC.
+        /// </summary>
+        /// <returns>int</returns>
+        public int GetFleetTypeMax()
+        {
+            if (Type == FleetType.Mothership.ToString())
+            {
+                return 120;
+            }
+            else if (Type == FleetType.Headquarters.ToString())
+            {
+                return 60;
+            }
+            else if (Type == FleetType.Assaults.ToString())
+            {
+                return 30;
+            }
+            else if (Type == FleetType.Vanguards.ToString())
+            {
+                return 15;
+            }
+
+            return 0;
+        }
 
         /// <summary>
-        /// Returns the number of pilots in the fleet who are not cynos
+        /// Returns the number of "on grid" pilots. 
+        /// An on grid pilot is any pilot in fleet who is not marked as an exit cyno.
         /// </summary>
-        /// <returns>Number of pilots in the fleet</returns>
-        public string GetOngridCount()
+        /// <param name="FleetPilots">
+        /// Must be passed in manually by the controller method
+        ///  as this property cannot be found inside the fleet object.
+        /// </param>
+        /// <returns>int FleetPilots</returns>
+        public int GetOngridCount(List<FleetAssignment> FleetPilots)
         {
-            int denominator = 0;
+            int onGrid = 0;
 
+            foreach (FleetAssignment x in FleetPilots)
+                if (!x.IsExitCyno && x.DeletedAt == null)
+                    onGrid++;
 
-            if(Type == FleetType.Mothership.ToString())
-            {
-                denominator = 120;
-            }
-            else if(Type == FleetType.Headquarters.ToString())
-            {
-                denominator = 60;
-            }
-            else if(Type == FleetType.Assaults.ToString())
-            {
-                denominator = 30;
-            }
-            else if(Type == FleetType.Vanguards.ToString())
-            {
-                denominator = 15;
-            }
-            
-            return $"0 / {denominator}";
+            return onGrid;
         }
     }
 }

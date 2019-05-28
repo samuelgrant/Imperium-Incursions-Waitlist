@@ -65,7 +65,7 @@ export class SidePanelButton extends Component {
 
     render() {
         return (
-            <button className="btn btn-dark" onClick={this.openNav.bind(this, this.getId())}>{this.getTitle()}</button>
+            <button className="btn btn-dark mx-1" onClick={this.openNav.bind(this, this.getId())}>{this.getTitle()}</button>
         );
     }
 }

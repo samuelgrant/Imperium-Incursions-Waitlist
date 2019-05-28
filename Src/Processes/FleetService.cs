@@ -48,16 +48,54 @@ public class FleetService : IHostedService
 
             try
             {
+                // Update fleet location based on the Fleet Boss
                 await pilot.UpdateToken();
                 var System = await EsiWrapper.GetSystem((AuthorizedCharacterData)pilot);
                 fleet.SystemId = System?.SolarSystemId;
                 fleet.ErrorCount = null;
 
+                // Update the pilots in fleet
+                await pilot.UpdateToken();
+                long fleetId = (long)fleet.EveFleetId;
+                List<FleetAssignment> current_members = _Db.FleetAssignments.Where(c => c.FleetId == fleet.Id && c.DeletedAt == null).Include( c => c.WaitingPilot).ToList();
+                Dictionary<int, FleetAssignment> knownMembers = current_members.ToDictionary(x => x.WaitingPilot.PilotId, x => x);
+                List<ESI.NET.Models.Fleets.Member> esiMembers = await EsiWrapper.GetFleetMembers((AuthorizedCharacterData)pilot, fleetId);
+                
+                if(esiMembers != null)
+                {
+                    foreach(var fleetMember in esiMembers)
+                    {
+                        // If we know about the fleet member update their info
+                        if (knownMembers.ContainsKey(fleetMember.CharacterId))
+                        {
+                            knownMembers[fleetMember.CharacterId].CurrentShipId = fleetMember.ShipTypeId;
+                            knownMembers[fleetMember.CharacterId].TakesFleetWarp = fleetMember.TakesFleetWarp;
+                            knownMembers[fleetMember.CharacterId].UpdatedAt = DateTime.UtcNow;
+                        }
+                        else
+                        {
+                            // Otherwise they're new, let's add them to our fleet assignments
+                            var waitlistId = CheckWaitlistForPilot(fleetMember.CharacterId, fleet);
+                            _Db.FleetAssignments.Add(new FleetAssignment
+                            {
+                                WaitingPilotId = (waitlistId != null) ? waitlistId : null,
+                                FleetId = fleet.Id,
+                                IsExitCyno = false,
+                                CurrentShipId = fleetMember.ShipTypeId,
+                                TakesFleetWarp = fleetMember.TakesFleetWarp,
+                                CreatedAt = DateTime.UtcNow,
+                                UpdatedAt = DateTime.UtcNow
+                            });
+                        }
+                    }
 
-                // Update fleet assignments table
-                    // Add new members
-                        // Remove pilots in fleet from Waitlist
-                    // Remove (soft delete) members who've left for more than two minutes
+                    // Delete pilots who have not been reported through ESI for more than 2 minutes.
+                    current_members = _Db.FleetAssignments.Where(c => c.FleetId == fleet.Id).ToList();
+                    foreach(FleetAssignment member in current_members)
+                        if (member.UpdatedAt.Value.AddMinutes(1) < DateTime.UtcNow)
+                            member.DeletedAt = DateTime.UtcNow;
+                    
+                }
             }
             catch (Exception ex)
             {
@@ -85,6 +123,36 @@ public class FleetService : IHostedService
 
         _Db.SaveChanges();
         _logger.LogInformation("Background Service Completed: fleets updated.");
+    }
+
+    private int? CheckWaitlistForPilot(int characterId, Fleet fleet)
+    {
+        WaitingPilot x = _Db.WaitingPilots.Where(c => c.PilotId == characterId && c.RemovedByAccountId == null).FirstOrDefault();
+
+        if(x == null)
+        {
+            // Create a waiting pilot!
+            WaitingPilot waitlistPilot = new WaitingPilot
+            {
+                RemovedByAccountId = fleet.BossPilot.AccountId,
+                PilotId = characterId,
+                FleetAssignment = null,
+                SystemId = null,
+                IsOffline = false,
+                CreatedAt = DateTime.UtcNow,
+                UpdatedAt = DateTime.UtcNow
+            };
+
+            _Db.Add(waitlistPilot);
+            _Db.SaveChanges();
+            //Return that waiting pilot
+            return waitlistPilot.Id;
+        }
+
+        x.RemovedByAccountId = fleet.BossPilot.AccountId;
+        x.UpdatedAt = DateTime.UtcNow;
+
+        return x.Id;
     }
 
     public Task StopAsync(CancellationToken cancellationToken)

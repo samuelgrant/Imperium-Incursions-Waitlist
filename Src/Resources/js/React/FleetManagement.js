@@ -61,6 +61,10 @@ export default class Index extends Component {
         return this.state.fcOptions || null;
     }
 
+    hasFleetBoss() {
+        return this.state.fleet && this.state.fleet.bossPilot;
+    }
+
     render() {
         let fleetPrivate;
         if (!this.isPublic()) {
@@ -70,13 +74,35 @@ export default class Index extends Component {
                     If no fleets are listed, the waitlist will show as offline.
                 </Alert>
             );
-        }      
+        }
+
+        let noFleetBoss;
+        if (!this.hasFleetBoss()) {
+            noFleetBoss = (
+                <Alert type="danger">
+                    <span className="font-weight-bold">No Fleet Boss: </span>
+                    Until you set a new fleet boss all ESI functions will be disabled for this fleet.
+                </Alert>
+            );
+        }
 
         return (
             <div className="container">
                 {fleetPrivate}
-                <SidePanelButton id="fleetSettings" title="Fleet Settings" />
-                <SidePanelButton id="fleetCynos" title="Fleet Cynos" />
+                {noFleetBoss}
+
+                <div className="row">
+                    <div className="col-lg-8 col-sm-12">
+                        Waitlist Goes Here
+                    </div>
+
+                    <div className="col-lg-4 col-sm-12">        
+                        <SidePanelButton id="fleetSettings" title="Fleet Settings" />
+                        <SidePanelButton id="fleetCynos" title="Fleet Cynos" />
+
+                        Fleet at a Glance Goes Here
+                    </div>
+                </div>
 
                 <SidePanel id="fleetSettings" title="Fleet Settings">
                     <div className="row">

@@ -37,24 +37,30 @@ namespace Imperium_Incursions_Waitlist.Controllers
                 if (User.IsInRole("Commander") || User.IsInRole("Leadership"))
                 {
                     return Ok(_Db.Fleets.Where(c => c.ClosedAt == null)
-                        .Select(c => new {
+                        .Include(c => c.FleetAssignments)
+                        .Select(c => new
+                        {
                             c.Id,
                             c.Type,
-                            c.MemberCount,
+                            Members = new { onGrid = c.GetOngridCount(c.FleetAssignments.ToList()), max = c.GetFleetTypeMax() },
                             c.SystemId,
+                            c.FleetAssignments,
                             comms = new { c.CommChannel.LinkText, c.CommChannel.Url },
                             fc = (c.BossPilot != null) ? new { c.BossPilot.CharacterID, c.BossPilot.CharacterName } : null,
-                            system = (c.System != null) ? new {c.System.Id, c.System.Name} : null
+                            system = (c.System != null) ? new { c.System.Id, c.System.Name } : null
                         }).ToList());
                 }
                 else
                 {
                     return Ok(_Db.Fleets.Where(c => c.ClosedAt == null && c.IsPublic)
-                        .Select(c => new {
+                        .Include(c => c.FleetAssignments)
+                        .Select(c => new
+                        {
                             c.Id,
                             c.Type,
-                            c.MemberCount,
+                            Members = new { onGrid = c.GetOngridCount(c.FleetAssignments.ToList()), max = c.GetFleetTypeMax() },
                             c.SystemId,
+                            c.FleetAssignments,
                             comms = new { c.CommChannel.LinkText, c.CommChannel.Url },
                             fc = (c.BossPilot != null) ? new { c.BossPilot.CharacterID, c.BossPilot.CharacterName } : null,
                             system = (c.System != null) ? new { c.System.Id, c.System.Name } : null

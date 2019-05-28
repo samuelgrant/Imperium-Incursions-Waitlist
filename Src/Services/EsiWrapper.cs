@@ -7,6 +7,7 @@ using Microsoft.Extensions.Options;
 using Microsoft.Extensions.Logging;
 using DotNetEnv;
 using ESI.NET.Models.SSO;
+using System.Collections.Generic;
 
 namespace Imperium_Incursions_Waitlist.Services
 {
@@ -69,6 +70,22 @@ namespace Imperium_Incursions_Waitlist.Services
 
 
             return Location_response.Data;
+        }
+
+        public static async Task<List<ESI.NET.Models.Fleets.Member>> GetFleetMembers(AuthorizedCharacterData pilot, long fleet_id)
+        {
+            EsiClient esi = GetEsiClient();
+            esi.SetCharacterData(pilot);
+
+            EsiResponse<System.Collections.Generic.List<ESI.NET.Models.Fleets.Member>> FleetMembers_response = await esi.Fleets.Members(fleet_id);
+
+            if(FleetMembers_response.StatusCode != HttpStatusCode.OK)
+            {
+                s_Log.LogError("{0} error searching API '{1}': {2}", FleetMembers_response.StatusCode, FleetMembers_response.Endpoint, FleetMembers_response.Message);
+                return null;
+            }
+
+            return FleetMembers_response.Data;
         }
 
         public static async Task<ESI.NET.Models.Universe.SolarSystem> GetSystemInformation(int SystemId)

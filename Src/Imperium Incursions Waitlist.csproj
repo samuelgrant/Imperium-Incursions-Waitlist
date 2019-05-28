@@ -49,6 +49,12 @@
     <Compile Remove="Migrations\20190526072612_SystemsPatch.Designer.cs" />
     <Compile Remove="Migrations\20190526110702_Patch 3.cs" />
     <Compile Remove="Migrations\20190526110702_Patch 3.Designer.cs" />
+    <Compile Remove="Migrations\20190526113048_Initial Migration.cs" />
+    <Compile Remove="Migrations\20190526113048_Initial Migration.Designer.cs" />
+    <Compile Remove="Migrations\20190526214402_Initial Migration.cs" />
+    <Compile Remove="Migrations\20190526214402_Initial Migration.Designer.cs" />
+    <Compile Remove="Migrations\20190528090732_Tracking shiptype Id.cs" />
+    <Compile Remove="Migrations\20190528090732_Tracking shiptype Id.Designer.cs" />
   </ItemGroup>
 
   <ItemGroup>
@@ -65,7 +71,7 @@
     <PackageReference Include="Microsoft.AspNetCore.Session" Version="2.2.0" />
     <PackageReference Include="Microsoft.Extensions.Caching.Memory" Version="2.2.0" />
     <PackageReference Include="Microsoft.VisualStudio.Web.CodeGeneration.Design" Version="2.2.3" />
-    <PackageReference Include="Newtonsoft.Json" Version="12.0.1" />
+    <PackageReference Include="Newtonsoft.Json" Version="12.0.2" />
     <PackageReference Include="Pomelo.EntityFrameworkCore.MySql" Version="2.2.0" />
     <PackageReference Include="System.Configuration.ConfigurationManager" Version="4.5.0" />
     <PackageReference Include="Webpack" Version="4.0.0" />

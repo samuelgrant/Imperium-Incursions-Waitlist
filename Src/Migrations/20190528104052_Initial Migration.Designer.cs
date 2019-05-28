@@ -10,7 +10,7 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace Imperium_Incursions_Waitlist.Migrations
 {
     [DbContext(typeof(WaitlistDataContext))]
-    [Migration("20190526113048_Initial Migration")]
+    [Migration("20190528104052_Initial Migration")]
     partial class InitialMigration
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -201,11 +201,13 @@ namespace Imperium_Incursions_Waitlist.Migrations
 
             modelBuilder.Entity("Imperium_Incursions_Waitlist.Models.FleetAssignment", b =>
                 {
-                    b.Property<int>("WaitingPilotId");
+                    b.Property<int?>("WaitingPilotId");
 
                     b.Property<int>("FleetId");
 
                     b.Property<DateTime>("CreatedAt");
+
+                    b.Property<int>("CurrentShipId");
 
                     b.Property<DateTime?>("DeletedAt");
 
