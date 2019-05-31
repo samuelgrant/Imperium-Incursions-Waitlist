@@ -1,5 +1,5 @@
 ﻿import React, { Component } from 'react';
-import { Pilot } from './EsiUi';
+import { Pilot, Destination } from './EsiUi';
 import { MumbleLink } from './CommLinks';
 
 export default class FleetInfo extends Component {
@@ -21,14 +21,15 @@ export default class FleetInfo extends Component {
                             </div>
 
                             <div className="col-lg-6 col-md-12">
-                                {this.props.fleet.systemId}
+                                <i className="fas fa-map-marker-alt"></i>
+                                <Destination system={this.props.fleet.system} />
                             </div>
                         </div>
                         
                         <div className="row">
                             <div className="col-lg-6 col-md-12">
                                 <i className="fas fa-users"></i> 
-                                {this.props.fleet.memberCount}
+                                {`${this.props.fleet.members.onGrid} / ${this.props.fleet.members.max}`}
                             </div>
 
                             <div className="col-lg-6 col-md-12">

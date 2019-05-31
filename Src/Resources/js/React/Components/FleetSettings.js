@@ -77,7 +77,7 @@ export class BtnInvFaxes extends Component {
 export class Backseat extends Component {
     getAccountIcoId() {
         if (this.props.account && this.props.account.pilots)
-            return this.props.account.pilots[0].id;
+            return this.props.account.pilots[0].characterID;
 
         return 0;
     }
@@ -89,7 +89,7 @@ export class Backseat extends Component {
         }).done(() => {
             this.props.u();
         }).fail((err) => {
-            console.error(`React/FleetSettings {Backseat@set} - Error setting the flet backseat `, err.responseText);
+            console.error(`React/FleetSettings {Backseat@set} - Error setting the fleet backseat `, err.responseText);
         });
     }
 
@@ -154,7 +154,7 @@ export class Boss extends Component {
             <SideSection title="Fleet Commander">
                 <div className="row sidepanel-content">
                     <div className="col-3">
-                        <img className="ml-3 pr-2" src={`https://image.eveonline.com/Character/${(this.getPilot()) ? this.getPilot().id : 0}_64.jpg`} />
+                        <img className="ml-3 pr-2" src={`https://image.eveonline.com/Character/${(this.getPilot()) ? this.getPilot().characterID : 0}_64.jpg`} />
                     </div>
                     <div className="col-9">
                         <Pilot pilot={this.getPilot()} />

@@ -89,6 +89,10 @@ button.close:hover, button.close:active {
     background-color: #090A0A;
 }
 
+.btn-dark:hover{
+    background-color: #000000;
+}
+
 .btn-warning {
     background-color: #DC7325;
 }
@@ -107,6 +111,10 @@ i.clear {
 
 i {
     padding-right: 15px;
+}
+
+.btn i {
+    padding-right: 5px;
 }
 
 .btn-sm i {

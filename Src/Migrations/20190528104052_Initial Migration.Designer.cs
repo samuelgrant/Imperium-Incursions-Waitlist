@@ -10,8 +10,8 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace Imperium_Incursions_Waitlist.Migrations
 {
     [DbContext(typeof(WaitlistDataContext))]
-    [Migration("20190524042645_patch")]
-    partial class patch
+    [Migration("20190528104052_Initial Migration")]
+    partial class InitialMigration
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
@@ -166,8 +166,6 @@ namespace Imperium_Incursions_Waitlist.Migrations
 
                     b.Property<int?>("BackseatAccountId");
 
-                    b.Property<int>("BackseatId");
-
                     b.Property<int?>("BossPilotId");
 
                     b.Property<DateTime?>("ClosedAt");
@@ -175,6 +173,8 @@ namespace Imperium_Incursions_Waitlist.Migrations
                     b.Property<int>("CommChannelId");
 
                     b.Property<DateTime>("CreatedAt");
+
+                    b.Property<int?>("ErrorCount");
 
                     b.Property<long>("EveFleetId");
 
@@ -194,16 +194,20 @@ namespace Imperium_Incursions_Waitlist.Migrations
 
                     b.HasIndex("CommChannelId");
 
+                    b.HasIndex("SystemId");
+
                     b.ToTable("Fleets");
                 });
 
             modelBuilder.Entity("Imperium_Incursions_Waitlist.Models.FleetAssignment", b =>
                 {
-                    b.Property<int>("WaitingPilotId");
+                    b.Property<int?>("WaitingPilotId");
 
                     b.Property<int>("FleetId");
 
                     b.Property<DateTime>("CreatedAt");
+
+                    b.Property<int>("CurrentShipId");
 
                     b.Property<DateTime?>("DeletedAt");
 
@@ -229,11 +233,39 @@ namespace Imperium_Incursions_Waitlist.Migrations
                         .ValueGeneratedOnAdd()
                         .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
+                    b.Property<bool>("Avaliable");
+
                     b.Property<string>("Name");
 
                     b.HasKey("Id");
 
                     b.ToTable("FleetRoles");
+
+                    b.HasData(
+                        new
+                        {
+                            Id = 1,
+                            Avaliable = true,
+                            Name = "TTT"
+                        },
+                        new
+                        {
+                            Id = 2,
+                            Avaliable = true,
+                            Name = "AAA"
+                        },
+                        new
+                        {
+                            Id = 3,
+                            Avaliable = true,
+                            Name = "DDD"
+                        },
+                        new
+                        {
+                            Id = 4,
+                            Avaliable = true,
+                            Name = "MTAC"
+                        });
                 });
 
             modelBuilder.Entity("Imperium_Incursions_Waitlist.Models.Note", b =>
@@ -267,26 +299,28 @@ namespace Imperium_Incursions_Waitlist.Migrations
 
             modelBuilder.Entity("Imperium_Incursions_Waitlist.Models.Pilot", b =>
                 {
-                    b.Property<int>("Id");
+                    b.Property<int>("CharacterID");
 
                     b.Property<int>("AccountId");
 
-                    b.Property<long>("CorporationId");
-
-                    b.Property<string>("ESIToken");
-
-                    b.Property<string>("Name")
+                    b.Property<string>("CharacterName")
                         .IsRequired();
+
+                    b.Property<long>("CorporationID");
+
+                    b.Property<string>("RefreshToken");
 
                     b.Property<DateTime>("RegisteredAt");
 
+                    b.Property<string>("Token");
+
                     b.Property<DateTime?>("UpdatedAt");
 
-                    b.HasKey("Id");
+                    b.HasKey("CharacterID");
 
                     b.HasIndex("AccountId");
 
-                    b.HasIndex("CorporationId");
+                    b.HasIndex("CorporationID");
 
                     b.ToTable("Pilots");
                 });
@@ -407,6 +441,17 @@ namespace Imperium_Incursions_Waitlist.Migrations
                     b.ToTable("Skills");
                 });
 
+            modelBuilder.Entity("Imperium_Incursions_Waitlist.Models.StarSystem", b =>
+                {
+                    b.Property<int>("Id");
+
+                    b.Property<string>("Name");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("Systems");
+                });
+
             modelBuilder.Entity("Imperium_Incursions_Waitlist.Models.WaitingPilot", b =>
                 {
                     b.Property<int>("Id")
@@ -417,11 +462,13 @@ namespace Imperium_Incursions_Waitlist.Migrations
 
                     b.Property<bool>("NewPilot");
 
+                    b.Property<DateTime?>("OfflineAt");
+
                     b.Property<int>("PilotId");
 
                     b.Property<int?>("RemovedByAccountId");
 
-                    b.Property<int>("SystemId");
+                    b.Property<int?>("SystemId");
 
                     b.Property<DateTime?>("UpdatedAt");
 
@@ -499,6 +546,10 @@ namespace Imperium_Incursions_Waitlist.Migrations
                         .WithMany("Fleets")
                         .HasForeignKey("CommChannelId")
                         .OnDelete(DeleteBehavior.Cascade);
+
+                    b.HasOne("Imperium_Incursions_Waitlist.Models.StarSystem", "System")
+                        .WithMany()
+                        .HasForeignKey("SystemId");
                 });
 
             modelBuilder.Entity("Imperium_Incursions_Waitlist.Models.FleetAssignment", b =>
@@ -541,7 +592,7 @@ namespace Imperium_Incursions_Waitlist.Migrations
 
                     b.HasOne("Imperium_Incursions_Waitlist.Models.Corporation", "Corporation")
                         .WithMany("Pilots")
-                        .HasForeignKey("CorporationId")
+                        .HasForeignKey("CorporationID")
                         .OnDelete(DeleteBehavior.Restrict);
                 });
 

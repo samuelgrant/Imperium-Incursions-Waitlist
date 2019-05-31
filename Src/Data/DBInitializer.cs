@@ -1,7 +1,8 @@
 ﻿using System;
+using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using Imperium_Incursions_Waitlist.Models;
-
 
 namespace Imperium_Incursions_Waitlist.Data
 {
@@ -11,7 +12,7 @@ namespace Imperium_Incursions_Waitlist.Data
         /// Seeds the database for development purposes.
         /// </summary>
         /// <param name="context"></param>
-        public static void Initialize(WaitlistDataContext context)
+        public static async System.Threading.Tasks.Task Initialize(WaitlistDataContext context)
         {
             // Check for existing account records
             if (!context.Accounts.Any())
@@ -35,25 +36,32 @@ namespace Imperium_Incursions_Waitlist.Data
                 var CommChannels = new CommChannel[]
                 {
                     new CommChannel {
-                        LinkText = "Incursions -> Fleet A",
+                        LinkText = "Inc -> Fleet A",
                         Url = "mumble://mumble.goonfleet.com/Squads%20and%20SIGs/Incursions/Fleet%20A?title=Goonfleet&version=1.2.0"
                     },
                     new CommChannel {
-                        LinkText = "Incursions -> Fleet B",
+                        LinkText = "Inc -> Fleet B",
                         Url = "mumble://mumble.goonfleet.com/Squads%20and%20SIGs/Incursions/Fleet%20B?title=Goonfleet&version=1.2.0"
                     },
                     new CommChannel {
-                        LinkText = "Incursions -> Fleet C",
+                        LinkText = "Inc -> Fleet C",
                         Url = "mumble://mumble.goonfleet.com/Squads%20and%20SIGs/Incursions/Fleet%20C?title=Goonfleet&version=1.2.0"
                     },
                     new CommChannel {
-                        LinkText = "Incursions -> Fleet D",
+                        LinkText = "Inc -> Fleet D",
                         Url = "mumble://mumble.goonfleet.com/Squads%20and%20SIGs/Incursions/Fleet%20D?title=Goonfleet&version=1.2.0"
                     }
                 };
 
                 foreach (CommChannel channel in CommChannels)
                     context.CommChannels.Add(channel);
+            }
+
+            // Seeds solar systems from the SDE
+            if (!context.Systems.Any())
+            {
+                var systems = Newtonsoft.Json.JsonConvert.DeserializeObject<List<StarSystem>>(File.ReadAllText("Data" + Path.DirectorySeparatorChar + "Systems.json"));
+                context.Systems.AddRange(systems);
             }
 
             context.SaveChanges();

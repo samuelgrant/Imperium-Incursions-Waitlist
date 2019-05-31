@@ -1,21 +1,19 @@
-﻿using System;
+﻿using Newtonsoft.Json;
+using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
 using System.Linq;
 using System.Threading.Tasks;
 
 namespace Imperium_Incursions_Waitlist.Models
 {
-    public class FleetRole
+    public class StarSystem
     {
+        [DatabaseGenerated(DatabaseGeneratedOption.None)]
         public int Id { get; set; }
 
-        [Required]
+        [Display(Name = "System Name")]
         public string Name { get; set; }
-
-        public bool Avaliable { get; set; }
-        // Navigation properties
-
-        public ICollection<SelectedRole> SelectedRoles { get; set; }
     }
 }

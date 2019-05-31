@@ -8,9 +8,11 @@ namespace Imperium_Incursions_Waitlist.Models
 {
     public class FleetAssignment
     {
-        public int WaitingPilotId { get; set; }
+        public int? WaitingPilotId { get; set; }
 
         public int FleetId { get; set; }
+
+        public int CurrentShipId { get; set; }
 
         public bool IsExitCyno { get; set; }
 

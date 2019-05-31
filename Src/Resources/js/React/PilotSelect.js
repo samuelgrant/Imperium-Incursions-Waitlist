@@ -69,11 +69,11 @@ export default class PilotSelect extends Component {
 export class LoginCard extends Component {
 
     getPilotId() {
-        return (!!this.props.pilot && !!this.props.pilot.id) ? this.props.pilot.id : 0
+        return (!!this.props.pilot) ? this.props.pilot.characterID : 0
     }
 
     getPilotName() {
-        return (!!this.props.pilot && !!this.props.pilot.name) ? this.props.pilot.name : ""
+        return (!!this.props.pilot) ? this.props.pilot.characterName : ""
     }
 
     isEsiVaild() {

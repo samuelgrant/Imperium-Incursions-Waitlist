@@ -83,7 +83,7 @@ namespace Imperium_Incursions_Waitlist.Controllers
                 return NotFound("Account not found.");
 
             // Stops a user from changing their own role
-            if (account.Id == int.Parse(User.FindFirst("Id").Value))
+            if (account.Id == User.AccountId())
                 return Unauthorized("You are not allowed to add your own groups");
 
             // Role doesn't exist
@@ -126,7 +126,7 @@ namespace Imperium_Incursions_Waitlist.Controllers
             if (accountId == 0 || roleId == 0)
                 return BadRequest("Invalid role or account ID provided");
 
-            if (accountId == int.Parse(User.FindFirst("Id").Value))
+            if (accountId == User.AccountId())
                 return Unauthorized("You are not allowed to remove your own groups");
             
 

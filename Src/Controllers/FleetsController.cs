@@ -63,7 +63,7 @@ namespace Imperium_Incursions_Waitlist.Controllers
                 // Fleet not found
                 return NotFound("Fleet not found.");
 
-            Account account = _Db.Accounts.Find(int.Parse(User.FindFirst("Id").Value));
+            Account account = _Db.Accounts.Find(User.AccountId());
             if (account == null)
                 return BadRequest("Account not found.");
 

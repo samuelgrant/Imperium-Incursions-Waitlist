@@ -7,13 +7,14 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 using ESI.NET.Models.SSO;
 using Imperium_Incursions_Waitlist.Models;
+using Imperium_Incursions_Waitlist.Services;
 
 namespace Imperium_Incursions_Waitlist.Controllers.Auth
 {
     public class ApiController : Controller
     {
-        private Data.WaitlistDataContext _Db;
-        private ILogger _Logger;
+        private readonly Data.WaitlistDataContext _Db;
+        private readonly ILogger _Logger;
 
         public ApiController(Data.WaitlistDataContext db, ILogger<ApiController> logger)
         {
@@ -24,14 +25,30 @@ namespace Imperium_Incursions_Waitlist.Controllers.Auth
 
         [HttpPost]
         [Route("/api/esi-ui/show-info")]
-        public IActionResult ShowInfo(IFormCollection request)
+        public async Task<IActionResult> ShowInfo(IFormCollection request)
         {
             int target_id = int.Parse(request["target_id"].ToString());
-            Pilot pilot = _Db.Pilots.Find(int.Parse(User.FindFirst("Id").Value));
+            Pilot pilot = _Db.Pilots.Find(Request.Cookies.PreferredPilotId());
+            await pilot.UpdateToken();
 
-            // Get Authorised character data --- Probably a pilot method that returns an authorized character object and updates the refresh token for nextime
+            EsiWrapper.ShowInfo((AuthorizedCharacterData)pilot, target_id);
 
-            // Call the ESI wrapper and supplies the authorised character data and target ID to make the call
+            await _Db.SaveChangesAsync();
+
+            return Ok();
+        }
+
+        [HttpPost]
+        [Route("/api/esi-ui/destination")]
+        public async Task<IActionResult> SetDestination(IFormCollection request)
+        {
+            int target_id = int.Parse(request["target_id"].ToString());
+            Pilot pilot = _Db.Pilots.Find(Request.Cookies.PreferredPilotId());
+            await pilot.UpdateToken();
+
+            EsiWrapper.SetDestination((AuthorizedCharacterData)pilot, target_id);
+
+            await _Db.SaveChangesAsync();
 
             return Ok();
         }

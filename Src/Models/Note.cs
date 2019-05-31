@@ -16,6 +16,7 @@ namespace Imperium_Incursions_Waitlist.Models
 
         public int UpdatedByAdminId { get; set; }
 
+        [Required]
         public string Message { get; set; }
 
         [Display(Name = "Created At"), DataType(DataType.Date)]

@@ -47,7 +47,7 @@ export default class UserManagement extends Component {
 
     addGroup(role_id) {
         
-        let account_id = (this.state.users[this.state.userIndex]) ? this.state.users[this.state.userIndex].id : null;
+        let account_id = (this.state.users[this.state.userIndex]) ? this.state.users[this.state.userIndex].characterID : null;
         let account_name = this.state.userInput;            
 
         $.ajax({
@@ -58,7 +58,7 @@ export default class UserManagement extends Component {
                 "account_id": account_id,
                 "account_name": account_name
             }
-        }).done((result) => {
+        }).done(() => {
             let x = this.state.userIndex;
             this.getData();
             this.setUserIndex(x);

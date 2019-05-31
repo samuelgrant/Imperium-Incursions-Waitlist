@@ -76,7 +76,7 @@ namespace Imperium_Incursions_Waitlist.Controllers
             // Verify a code and state query parameter was returned.
             if (code == null || state == null)
             {
-                _Logger.LogWarningFormat("GICE Callback Error: One or more of the query parameters are missing. State: {0}. Code: {1}", state, code);
+                _Logger.LogWarning("GICE Callback Error: One or more of the query parameters are missing. State: {0}. Code: {1}", state, code);
                 return StatusCode(452);
             }
 
@@ -111,7 +111,7 @@ namespace Imperium_Incursions_Waitlist.Controllers
             Dictionary<string, string> user = await Util.JwtVerify("https://esi.goonfleet.com/", "https://esi.goonfleet.com/", access_token);
             if(user.Count == 0)
             {
-                _Logger.LogWarningFormat("GICE Callback Error: The JwtVerify method failed.");
+                _Logger.LogWarning("GICE Callback Error: The JwtVerify method failed.");
                 return StatusCode(452);
             }
 
@@ -146,7 +146,7 @@ namespace Imperium_Incursions_Waitlist.Controllers
 
             // Attempt to log the user in
             await LoginUserUsingId(waitlist_account.Id);
-            _Logger.LogDebugFormat("{0} has logged in.", user["name"]);
+            _Logger.LogDebug("{0} has logged in.", user["name"]);
 
             return Redirect("~/pilot-select");            
         }
@@ -154,7 +154,7 @@ namespace Imperium_Incursions_Waitlist.Controllers
         [Authorize]
         public async Task<string> Logout()
         {
-            _Logger.LogDebugFormat("{0} has logged out.", User.FindFirst("name").Value);
+            _Logger.LogDebug("{0} has logged out.", User.FindFirst("name").Value);
 
             // Log the user out of our application
             await HttpContext.SignOutAsync();

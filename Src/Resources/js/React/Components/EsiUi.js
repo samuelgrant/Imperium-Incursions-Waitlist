@@ -9,8 +9,6 @@ export class Pilot extends Component {
             type: 'post',
             url: `/api/esi-ui/show-info`,
             data: { target_id: id }
-        }).done((fleets) => {
-            this.setState({ fleets: fleets });
         }).fail((err) => {
             console.error(`React/EsiUi {Pilot@apiCall} - Error requesting ESI UI Showinfo`, err.responseText);
         })  
@@ -18,14 +16,14 @@ export class Pilot extends Component {
 
     getId() {
         if (this.props.pilot)
-            return this.props.pilot.id;
+            return this.props.pilot.characterID;
 
         return 0;
     }
 
     getName() {
         if (this.props.pilot)
-            return this.props.pilot.name;
+            return this.props.pilot.characterName;
 
         return "";
     }
@@ -43,8 +41,6 @@ export class Corporation extends Component {
             type: 'post',
             url: `/api/esi-ui/show-info`,
             data: { target_id: id }
-        }).done((fleets) => {
-            this.setState({ fleets: fleets });
         }).fail((err) => {
             console.error(`React/EsiUi {Corporation@apiCall} - Error requesting ESI UI Showinfo`, err.responseText);
         })  
@@ -76,8 +72,6 @@ export class Alliance extends Component {
             type: 'post',
             url: `/api/esi-ui/show-info`,
             data: { target_id: id }
-        }).done((fleets) => {
-            this.setState({ fleets: fleets });
         }).fail((err) => {
             console.error(`React/EsiUi {Alliance@apiCall} - Error requesting ESI UI Showinfo`, err.responseText);
         })  
@@ -105,15 +99,21 @@ export class Alliance extends Component {
 export class Destination extends Component {
 
     apiCall(id) {
-        console.error(`(501) Set destination to system: ${id}`);
+        $.ajax({
+            type: 'post',
+            url: `/api/esi-ui/destination`,
+            data: { target_id: id }
+        }).fail((err) => {
+            console.error(`React/EsiUi {Destination@apiCall} - Error requesting ESI UI Set Destination`, err.responseText);
+        }) 
     }
 
     getId() {
-        return this.props.system.id || -1;
+        return (this.props.system) ? this.props.system.id : "";
     }
 
     getName() {
-        return this.props.system.name || "";
+        return (this.props.system) ? this.props.system.name : "";
     }
 
     render() {
