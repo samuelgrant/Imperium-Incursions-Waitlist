@@ -24,6 +24,7 @@ namespace Imperium_Incursions_Waitlist.Models
 
         [JsonIgnore]
         [Display(Name = "Login From IP")]
+        [MaxLength(15)]
         public string LastLoginIP { get; set; }
 
         // Navigation Properties
