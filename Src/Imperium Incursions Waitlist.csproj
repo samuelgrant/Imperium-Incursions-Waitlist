@@ -15,7 +15,6 @@
   <ItemGroup>
     <PackageReference Include="DotNetEnv" Version="1.2.0" />
     <PackageReference Include="Microsoft.AspNetCore.App" />
-    <PackageReference Include="Microsoft.AspNetCore.Authentication.OpenIdConnect" Version="2.2.0" />
     <PackageReference Include="Microsoft.AspNetCore.Razor.Design" Version="2.2.0" PrivateAssets="All" />
     <PackageReference Include="Microsoft.AspNetCore.Session" Version="2.2.0" />
     <PackageReference Include="Microsoft.Extensions.Caching.Memory" Version="2.2.0" />
@@ -35,6 +34,9 @@
   <ItemGroup>
     <Reference Include="ESI.NET">
       <HintPath>..\..\ESINET\ESI.NET\bin\Debug\netcoreapp2.0\ESI.NET.dll</HintPath>
+    </Reference>
+    <Reference Include="GiceSso">
+      <HintPath>..\..\GiceSSO DLL\GiceSSO DLL\bin\Debug\netcoreapp2.2\GiceSso.dll</HintPath>
     </Reference>
   </ItemGroup>
 
