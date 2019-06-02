@@ -13,6 +13,7 @@ import './js/React/Bans';
 import './js/React/Commanders';
 import './js/React/Index';
 import './js/React/FleetManagement';
+import './js/React/FittingsAndSkills';
 
 /* REACT -> Pilot Select Page */
 import './js/React/PilotSelect';

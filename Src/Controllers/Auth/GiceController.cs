@@ -132,15 +132,8 @@ namespace Imperium_Incursions_Waitlist.Controllers
 
             // Attempt to log the user in
             await LoginUserUsingId(waitlist_account.Id);
-<<<<<<< Updated upstream
-<<<<<<< Updated upstream
-            _Logger.LogDebug("{0} has logged in.", user["name"]);
-=======
-            _Logger.LogDebugFormat("{0} has logged in.", ClaimsDict["name"]);
->>>>>>> Stashed changes
-=======
-            _Logger.LogDebugFormat("{0} has logged in.", ClaimsDict["name"]);
->>>>>>> Stashed changes
+
+            _Logger.LogDebug("{0} has logged in.", ClaimsDict["name"]);
 
             return Redirect("~/pilot-select");            
         }

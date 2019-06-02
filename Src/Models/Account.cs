@@ -14,6 +14,13 @@ namespace Imperium_Incursions_Waitlist.Models
         [Required]
         public string Name { get; set; }
 
+        public bool JabberNotifications { get; set; }
+
+        [JsonIgnore]
+        [Display(Name = "Login From IP")]
+        [MaxLength(15)]
+        public string LastLoginIP { get; set; }
+
         [Display(Name ="Registered At"), DataType(DataType.Date)]
         [DisplayFormat(DataFormatString = "{0:dd-MM-yyyy}")]
         public DateTime RegisteredAt { get; set; }
@@ -21,11 +28,6 @@ namespace Imperium_Incursions_Waitlist.Models
         [Display(Name = "Last Login"), DataType(DataType.Date)]
         [DisplayFormat(DataFormatString = "{0:dd-MM-yyyy}")]
         public DateTime? LastLogin { get; set; }
-
-        [JsonIgnore]
-        [Display(Name = "Login From IP")]
-        [MaxLength(15)]
-        public string LastLoginIP { get; set; }
 
         // Navigation Properties
         public ICollection<Pilot> Pilots { get; set; }
