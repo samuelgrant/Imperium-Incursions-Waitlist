@@ -13,7 +13,7 @@ export default class ApplicationSettings extends Component {
         }).done((data) => {
             this.props.forceUpdate();
         }).fail((err) => {
-            console.error(`React/FittingsAndSkills {FittingsSkills@getData} - Error getting the account settings`, err.responseText);
+            console.error(`React/Components/ApplicationSettings {ApplicationSettings@handleCheckboxClick} - Error setting the users jabber settings`, err.responseText);
         })
     }
 

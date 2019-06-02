@@ -2,6 +2,7 @@
 import { render } from 'react-dom';
 import Alert from './Components/Alert';
 import ApplicationSettings from './Components/ApplicationSettings';
+import FittingsManagements from './Components/FittingsManagement';
 
 const baseUri = "/account-settings";
 
@@ -41,7 +42,7 @@ export default class FittingsSkills extends Component {
 
                         <div className="clearfix"></div>
 
-                        <Alert type="alert-primary"><bold>Account Fittings goes here:</bold> This module is coming soon.</Alert>
+                        <FittingsManagements settings={this.state.settings} forceUpdate={this.getData.bind(this)} baseUri={baseUri} />
                     </div>
 
                     <div className="col-lg-6 col-md-12">

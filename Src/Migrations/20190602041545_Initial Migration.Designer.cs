@@ -10,8 +10,8 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace Imperium_Incursions_Waitlist.Migrations
 {
     [DbContext(typeof(WaitlistDataContext))]
-    [Migration("20190601233221_AddsJabberBool")]
-    partial class AddsJabberBool
+    [Migration("20190602041545_Initial Migration")]
+    partial class InitialMigration
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
@@ -148,6 +148,8 @@ namespace Imperium_Incursions_Waitlist.Migrations
                     b.Property<DateTime>("CreatedAt");
 
                     b.Property<DateTime?>("DeletedAt");
+
+                    b.Property<string>("Description");
 
                     b.Property<string>("FittingDNA");
 
@@ -423,9 +425,7 @@ namespace Imperium_Incursions_Waitlist.Migrations
 
             modelBuilder.Entity("Imperium_Incursions_Waitlist.Models.ShipType", b =>
                 {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
+                    b.Property<int>("Id");
 
                     b.Property<string>("Name")
                         .IsRequired();

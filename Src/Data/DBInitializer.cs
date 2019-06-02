@@ -64,6 +64,13 @@ namespace Imperium_Incursions_Waitlist.Data
                 context.Systems.AddRange(systems);
             }
 
+            // Seeds ship types from the SDE -- 2017
+            if(!context.ShipTypes.Any())
+            {
+                var shipTypes = Newtonsoft.Json.JsonConvert.DeserializeObject<List<ShipType>>(File.ReadAllText("Data" + Path.DirectorySeparatorChar + "ShipTypes.json"));
+                context.ShipTypes.AddRange(shipTypes);
+            }
+
             context.SaveChanges();
         }        
     }

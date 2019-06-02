@@ -106,6 +106,40 @@ namespace Imperium_Incursions_Waitlist.Services
             }
 
             return Claims;
-        } 
+        }
+
+        /// <summary>
+        /// Parses a Fit DNA Url and returns a fit strut with a typeId, dna and description
+        /// </summary>
+        /// <param name="fitUrl">Fit URL from in game chat. **USE A TRYCATCH around this call**</param>
+        /// <returns>
+        /// <see cref="Models.FitDna"/>
+        /// </returns>
+        public static Models.FitDna ParseFitDna(string fitUrl)
+        {
+
+            // If > comes before < then the user also submitted their name
+            // Let's remove their name as we don't care about it.
+            if(fitUrl.IndexOf('>') < fitUrl.IndexOf('<'))
+                fitUrl = fitUrl.Substring(fitUrl.IndexOf('>') + 1);
+
+            // Index 0 is the start of the URL
+            int ship_typeId = int.Parse(fitUrl.Split(':')[1]);
+
+            // Get the Fit DNA
+            string fit_dna = ":";
+            for (int i = 2; i < fitUrl.Split(':').Length - 2; i++)
+                fit_dna = $"{fit_dna}{fitUrl.Split(':')[i]}:";
+
+            // Get the fit Descrption
+            int descriptionStartIndex = fitUrl.IndexOf("::") + 3;
+            string fit_description = fitUrl.Substring(descriptionStartIndex, (fitUrl.IndexOf("</")) - descriptionStartIndex);
+            return new Models.FitDna
+            {
+                ship_typeId = ship_typeId,
+                dna = fit_dna,
+                description = fit_description
+            };
+        }
     }
 }

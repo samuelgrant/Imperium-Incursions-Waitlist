@@ -147,6 +147,8 @@ namespace Imperium_Incursions_Waitlist.Migrations
 
                     b.Property<DateTime?>("DeletedAt");
 
+                    b.Property<string>("Description");
+
                     b.Property<string>("FittingDNA");
 
                     b.Property<bool>("IsShipScan");
@@ -421,9 +423,7 @@ namespace Imperium_Incursions_Waitlist.Migrations
 
             modelBuilder.Entity("Imperium_Incursions_Waitlist.Models.ShipType", b =>
                 {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
+                    b.Property<int>("Id");
 
                     b.Property<string>("Name")
                         .IsRequired();

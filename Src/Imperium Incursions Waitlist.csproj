@@ -7,8 +7,18 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <Compile Remove="Migrations\20190528104052_Initial Migration.cs" />
+    <Compile Remove="Migrations\20190528104052_Initial Migration.Designer.cs" />
     <Compile Remove="Migrations\20190531030121_RequireNonNullStringFields.cs" />
     <Compile Remove="Migrations\20190531030121_RequireNonNullStringFields.Designer.cs" />
+    <Compile Remove="Migrations\20190531031131_RequireNonNullStringFields.cs" />
+    <Compile Remove="Migrations\20190531031131_RequireNonNullStringFields.Designer.cs" />
+    <Compile Remove="Migrations\20190601233221_AddsJabberBool.cs" />
+    <Compile Remove="Migrations\20190601233221_AddsJabberBool.Designer.cs" />
+    <Compile Remove="Migrations\20190602022152_Adds fit description field.cs" />
+    <Compile Remove="Migrations\20190602022152_Adds fit description field.Designer.cs" />
+    <Compile Remove="Migrations\20190602041323_ShipType IDs.cs" />
+    <Compile Remove="Migrations\20190602041323_ShipType IDs.Designer.cs" />
   </ItemGroup>
 
 
