@@ -71,6 +71,13 @@ namespace Imperium_Incursions_Waitlist.Data
                 context.ShipTypes.AddRange(shipTypes);
             }
 
+            // Seed module items from the SDE -- June 2018
+            if (!context.Modules.Any())
+            {
+                var modules = Newtonsoft.Json.JsonConvert.DeserializeObject<List<ModuleItem>>(File.ReadAllText("Data" + Path.DirectorySeparatorChar + "Modules.json"));
+                context.Modules.AddRange(modules);
+            }
+
             context.SaveChanges();
         }        
     }
