@@ -7,11 +7,6 @@ using System.Threading.Tasks;
 
 namespace Imperium_Incursions_Waitlist.Models
 {
-    public enum Queue
-    {
-        // Todo: Put queue types here (may move to another file if needed)
-    }
-
     public class ShipType
     {
         [DatabaseGenerated(DatabaseGeneratedOption.None)]

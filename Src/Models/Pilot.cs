@@ -87,7 +87,7 @@ namespace Imperium_Incursions_Waitlist.Models
         /// <returns></returns>
         public bool BelongsToAccount(int accountId) => AccountId == accountId;
 
-        public async System.Threading.Tasks.Task UpdateToken()
+        public async Task UpdateToken()
         {
             EsiClient s_client = EsiWrapper.GetEsiClient();
 

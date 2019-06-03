@@ -23,7 +23,9 @@ public class AllianceService : IHostedService
         _logger = logger;
     }
 
+#pragma warning disable CS1998 // Async method lacks 'await' operators and will run synchronously
     public async Task StartAsync(CancellationToken cancellationToken)
+#pragma warning restore CS1998 // Async method lacks 'await' operators and will run synchronously
     {
         // Create a new scope to retrieve scoped services
         var scope = _serviceProvider.CreateScope();

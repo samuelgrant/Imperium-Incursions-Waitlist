@@ -2,6 +2,7 @@
 using System.Threading.Tasks;
 using System.Net;
 using ESI.NET;
+using ESI.NET.Models;
 using ESI.NET.Enumerations;
 using Microsoft.Extensions.Options;
 using Microsoft.Extensions.Logging;
@@ -101,6 +102,21 @@ namespace Imperium_Incursions_Waitlist.Services
             }
 
             return SystemInfo_response.Data;
+        }
+
+        public static async Task<SearchResults> Search(string searchTerm, bool strict, SearchCategory category)
+        {
+            EnsureInit();
+            
+            EsiResponse<SearchResults> Search_response = await s_client.Search.Query(SearchType.Public, searchTerm, category, strict);
+
+            if (Search_response.StatusCode != HttpStatusCode.OK)
+            {
+                s_Log.LogError("{0} error searching API '{1}': {2}", Search_response.StatusCode, Search_response.Endpoint, Search_response.Message);
+                return null;
+            }
+
+            return Search_response.Data;
         }
 
         /// <summary>

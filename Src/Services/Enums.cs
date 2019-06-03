@@ -11,4 +11,14 @@ namespace Imperium_Incursions_Waitlist
         Vanguards,
         Mothership
     };
+
+    public enum Queue
+    {
+        None,
+        DPS,
+        Logi,
+        Capital,
+        Fax,
+        Support
+    };
 }

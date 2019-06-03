@@ -9,21 +9,6 @@ $(window).on('load', function () {
     }, 500);
 });
 
-/*------------------------------------------------
-    Header -- Tmp remoed so the navbar stays dark
--------------------------------------------------*/
-/*
-$(window).on('scroll', function () {
-    var scroll = $(window).scrollTop();
-    if (scroll >= 20) {
-        $('.header').addClass('header--scrolled');
-    } else {
-        $('.header').removeClass('header--scrolled');
-    }
-});
-*/
-
-
 $(document).ready(function () {
     /*------------------------------------------------
         Search
@@ -45,6 +30,21 @@ $(document).ready(function () {
         source: (request, response) => {
             $.ajax({
                 url: `/search?q=${request.term}`,
+                dataType: "json",
+                success: function (data) {
+                    response(data);
+                }
+            });
+        },
+        minLength: 3,
+        delay: 500
+    });
+
+    // Admin settings ship search
+    $("#ship_search").autocomplete({
+        source: (request, response) => {
+            $.ajax({
+                url: `/admin/settings/ships/search?q=${request.term}`,
                 dataType: "json",
                 success: function (data) {
                     response(data);

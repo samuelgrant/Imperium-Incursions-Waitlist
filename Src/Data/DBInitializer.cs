@@ -12,7 +12,7 @@ namespace Imperium_Incursions_Waitlist.Data
         /// Seeds the database for development purposes.
         /// </summary>
         /// <param name="context"></param>
-        public static async System.Threading.Tasks.Task Initialize(WaitlistDataContext context)
+        public static void Initialize(WaitlistDataContext context)
         {
             // Check for existing account records
             if (!context.Accounts.Any())
@@ -65,7 +65,7 @@ namespace Imperium_Incursions_Waitlist.Data
             }
 
             // Seeds ship types from the SDE -- 2017
-            if(!context.ShipTypes.Any())
+            if (!context.ShipTypes.Any())
             {
                 var shipTypes = Newtonsoft.Json.JsonConvert.DeserializeObject<List<ShipType>>(File.ReadAllText("Data" + Path.DirectorySeparatorChar + "ShipTypes.json"));
                 context.ShipTypes.AddRange(shipTypes);
@@ -79,6 +79,6 @@ namespace Imperium_Incursions_Waitlist.Data
             }
 
             context.SaveChanges();
-        }        
+        }
     }
 }
