@@ -3,6 +3,13 @@ import { TextArea } from './FormControls';
 import Modal from './Modal';
 
 export default class FittingsManagement extends Component {
+    constructor(props) {
+        super(props);
+
+        this.state = {
+            key: 0,
+        }
+    }
 
     getFits() {
         return (this.props.settings) ? this.props.settings.fits : null;
@@ -16,7 +23,7 @@ export default class FittingsManagement extends Component {
             url: `${this.props.baseUri}/fit`,
             data: {fitUrl: e.target[0].value}
         }).done(() => {
-            e.reset();
+            this.setState({ key: this.state.key + 1 });
             this.props.forceUpdate();
         }).fail((err) => {
             console.error(`React/Components/FittingsManagement {FittingsManagement@submitNewFit} - Error saving a new fit`, err.responseText);
@@ -36,13 +43,13 @@ export default class FittingsManagement extends Component {
 
     render() {
         let addFitting;
-        if (this.getFits() && this.getFits().length < 5) {//This should only return true if less than 5 fits where the fit creator == account owner >> tldr not a fit scanned by fc
+        if (this.getFits() && this.getFits().length < 5) {
             addFitting = (
-                <form className="form-group" onSubmit={this.submitNewFit.bind(this)}>
+                <form id="newFittingForm" className="form-group" onSubmit={this.submitNewFit.bind(this)}>
                     <label htmlFor="fitDna">Add a new ship</label>
                     <div className="row">
                         <div className="col-9">
-                            <TextArea id="fitDna" required="true" placeholder="[00:25:25] Caitlin Viliana > <url=fitting:17740:26448;1:26402;1:15144;4:3186;8:14512;1:41201;1:33842;2:26322;1:14650;2:4347;2::>Vindicator</url>" />
+                            <TextArea id="fitDna" required="true" placeholder="[00:25:25] Caitlin Viliana > <url=fitting:17740:26448;1:26402;1:15144;4:3186;8:14512;1:41201;1:33842;2:26322;1:14650;2:4347;2::>Vindicator</url>" key={this.state.key}/>
                         </div>
                         <div className="col-3 text-center">
                             <button className="btn btn-success d-block mx-auto mb-2" type="submit">Save Fitting</button>
