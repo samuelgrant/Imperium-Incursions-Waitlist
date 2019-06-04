@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Newtonsoft.Json;
+using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
@@ -29,8 +30,6 @@ namespace Imperium_Incursions_Waitlist.Models
         public DateTime? DeletedAt { get; set; }
 
         // Navigation properties
-
-        public Account Account { get; set; }
 
         public ShipType ShipType { get; set; }
 

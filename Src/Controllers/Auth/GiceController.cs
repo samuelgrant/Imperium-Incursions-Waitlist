@@ -122,6 +122,7 @@ namespace Imperium_Incursions_Waitlist.Controllers
                     Id = gice_id,
                     Name = ClaimsDict["name"],
                     RegisteredAt = DateTime.UtcNow,
+                    JabberNotifications = true,
                     LastLogin = DateTime.UtcNow,
                     LastLoginIP = _RequestorIP.MapToIPv4().ToString()
                 };

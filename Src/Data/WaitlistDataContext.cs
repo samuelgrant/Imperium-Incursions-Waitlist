@@ -166,6 +166,10 @@ namespace Imperium_Incursions_Waitlist.Data
                 .HasForeignKey(wp => wp.RemovedByAccountId)
                 .OnDelete(DeleteBehavior.Restrict);
 
+            modelBuilder.Entity<Account>()
+                .Property(c => c.JabberNotifications)
+                .HasDefaultValue(true);
+
             // Placeholder alliance to assign to corporations that do not belong to an alliance.
             modelBuilder.Entity<Alliance>()
                         .HasData(new { Id = 0, Name = "" });

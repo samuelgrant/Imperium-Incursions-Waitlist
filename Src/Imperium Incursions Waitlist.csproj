@@ -25,6 +25,10 @@
     <Compile Remove="Migrations\20190602120730_Modules table.Designer.cs" />
     <Compile Remove="Migrations\20190603013541_EnumConversionTest.cs" />
     <Compile Remove="Migrations\20190603013541_EnumConversionTest.Designer.cs" />
+    <Compile Remove="Migrations\20190604052450_AccountFits.cs" />
+    <Compile Remove="Migrations\20190604052450_AccountFits.Designer.cs" />
+    <Compile Remove="Migrations\20190604054026_Accounts to Fits.cs" />
+    <Compile Remove="Migrations\20190604054026_Accounts to Fits.Designer.cs" />
   </ItemGroup>
 
 

@@ -3,6 +3,7 @@ using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
+using System.Linq;
 
 namespace Imperium_Incursions_Waitlist.Models
 {
@@ -45,10 +46,17 @@ namespace Imperium_Incursions_Waitlist.Models
         public ICollection<Note> UpdatedNotes { get; set; }
 
         public ICollection<AccountRole> AccountRoles { get; set; }
-
+        [JsonIgnore]
         public ICollection<Fleet> BackseatedFleets { get; set; }
-
+        [JsonIgnore]
         public ICollection<WaitingPilot> RemovedPilots { get; set; }
+        [JsonIgnore]
+        public ICollection<Fit> Fits { get; set; }
+
+        public List<Fit> ActiveFits()
+        {
+            return Fits?.Where(f => f.DeletedAt == null && !f.IsShipScan).ToList();
+        }
 
         // Need a property to return owned fleets (via pilots)
 

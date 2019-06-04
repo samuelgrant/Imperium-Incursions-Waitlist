@@ -11,6 +11,7 @@ using Microsoft.Extensions.DependencyInjection;
 using Imperium_Incursions_Waitlist.Services;
 using ESI.NET.Models.SSO;
 using Microsoft.EntityFrameworkCore;
+using System.ComponentModel;
 
 public class FleetService : IHostedService
 {
@@ -35,9 +36,9 @@ public class FleetService : IHostedService
         // Get the DbContext instance
         _Db = scope.ServiceProvider.GetRequiredService<WaitlistDataContext>();
 
+
         _timer = new Timer(DoWork, null, TimeSpan.Zero,
                   TimeSpan.FromSeconds(20));
-
     }
 
     private async void DoWork(object state)

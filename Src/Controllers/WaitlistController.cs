@@ -8,6 +8,7 @@ using System.Collections.Generic;
 using System.Linq;
 using Imperium_Incursions_Waitlist.Data;
 using System.Net;
+using Imperium_Incursions_Waitlist.Models;
 
 namespace Imperium_Incursions_Waitlist.Controllers
 {
@@ -76,6 +77,27 @@ namespace Imperium_Incursions_Waitlist.Controllers
         }
 
         [HttpGet]
+        [Route("/api/v1/user-settings")]
+        [Produces("application/json")]
+        public IActionResult UserSettings()
+        {
+            Account account = _Db.Accounts.Where(c => c.Id == User.AccountId()).Include(c => c.Pilots).Include(c => c.Fits).FirstOrDefault();
+            // Account not found, user redirected to login
+            if (account == null)
+                return NotFound("We could not load your account, logout and back in.");
+
+            List<FleetRole> roles = _Db.FleetRoles.Where(c => c.Avaliable).ToList();
+
+            //?? ships[]
+            return Ok(new UserSettingsResponse {
+                account = account,
+                avaliableFits = account.ActiveFits(),
+                roles = roles,
+                prefPilot = new PrefPilot { pilotId = Request.Cookies.PreferredPilotId(), Name = Request.Cookies.PreferredPilotName()}
+            });
+        }
+
+        [HttpGet]
         [Route("/api/v1/fc-settings")]
         [Produces("application/json")]
         public IActionResult FcSettings()
@@ -123,6 +145,14 @@ namespace Imperium_Incursions_Waitlist.Controllers
         public List<Models.CommChannel> Comms;
         public List<string> FleetTypes;
         public List<FleetBoss> Pilots;
+        public PrefPilot prefPilot;
+    }
+
+    struct UserSettingsResponse
+    {
+        public Account account;
+        public List<FleetRole> roles;
+        public List<Fit> avaliableFits;
         public PrefPilot prefPilot;
     }
 
