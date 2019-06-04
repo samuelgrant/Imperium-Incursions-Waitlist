@@ -34,7 +34,7 @@ public class BansMiddleware
                     c => c.Id == int.Parse(context.User.FindFirst("Id").Value)
                 );
 
-            if(!account.IsBanned())
+            if(account == null || !account.IsBanned())
             {
                 await _next.Invoke(context);
             }
