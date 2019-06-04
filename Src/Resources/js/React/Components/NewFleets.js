@@ -32,7 +32,12 @@ export class NewFleetModal extends Component {
         let boss;
         if (this.props.options) {
             boss = this.props.options.pilots.map((pilot, index) => {
-                return <option value={pilot.id}>{pilot.name}</option>
+                let selected = false;
+
+                if (this.props.options.prefPilot && this.props.options.prefPilot.pilotId == pilot.id)
+                    selected = true;
+
+                return <option value={pilot.id} selected={selected}>{pilot.name}</option>
             });
         }
 

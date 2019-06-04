@@ -7,6 +7,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using Imperium_Incursions_Waitlist.Data;
+using System.Net;
 
 namespace Imperium_Incursions_Waitlist.Controllers
 {
@@ -107,6 +108,7 @@ namespace Imperium_Incursions_Waitlist.Controllers
                     Comms = CommsChannels,
                     FleetTypes = FleetTypes,
                     Pilots = pilotTuple,
+                    prefPilot = new PrefPilot { pilotId = Request.Cookies.PreferredPilotId(), Name = Request.Cookies.PreferredPilotName() }
                 });
             }
             catch (Exception ex)
@@ -121,6 +123,7 @@ namespace Imperium_Incursions_Waitlist.Controllers
         public List<Models.CommChannel> Comms;
         public List<string> FleetTypes;
         public List<FleetBoss> Pilots;
+        public PrefPilot prefPilot;
     }
 
     struct FleetBoss
@@ -129,4 +132,9 @@ namespace Imperium_Incursions_Waitlist.Controllers
         public string Name;
     }
 
+    struct PrefPilot
+    {
+        public int pilotId;
+        public string Name;
+    }
 }
