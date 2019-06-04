@@ -56,12 +56,27 @@ namespace Imperium_Incursions_Waitlist.Migrations
                 {
                     Id = table.Column<int>(nullable: false)
                         .Annotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn),
+                    Acronym = table.Column<string>(nullable: false),
                     Name = table.Column<string>(nullable: false),
                     Avaliable = table.Column<bool>(nullable: false)
                 },
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_FleetRoles", x => x.Id);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "Modules",
+                columns: table => new
+                {
+                    Id = table.Column<int>(nullable: false),
+                    Name = table.Column<string>(nullable: true),
+                    Slot = table.Column<string>(nullable: true),
+                    GroupId = table.Column<int>(nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Modules", x => x.Id);
                 });
 
             migrationBuilder.CreateTable(
@@ -506,26 +521,6 @@ namespace Imperium_Incursions_Waitlist.Migrations
                 columns: new[] { "Id", "Name" },
                 values: new object[] { 0, "" });
 
-            migrationBuilder.InsertData(
-                table: "FleetRoles",
-                columns: new[] { "Id", "Avaliable", "Name" },
-                values: new object[,]
-                {
-                    { 1, true, "TTT" },
-                    { 2, true, "AAA" },
-                    { 3, true, "DDD" },
-                    { 4, true, "MTAC" }
-                });
-
-            migrationBuilder.InsertData(
-                table: "Roles",
-                columns: new[] { "Id", "Name" },
-                values: new object[,]
-                {
-                    { 1, "Commander" },
-                    { 2, "Leadership" }
-                });
-
             migrationBuilder.CreateIndex(
                 name: "IX_AccountRoles_RoleId",
                 table: "AccountRoles",
@@ -658,6 +653,9 @@ namespace Imperium_Incursions_Waitlist.Migrations
 
             migrationBuilder.DropTable(
                 name: "FleetAssignments");
+
+            migrationBuilder.DropTable(
+                name: "Modules");
 
             migrationBuilder.DropTable(
                 name: "Notes");

@@ -11,6 +11,9 @@ namespace Imperium_Incursions_Waitlist.Models
         public int Id { get; set; }
 
         [Required]
+        public string Acronym { get; set; }
+
+        [Required]
         public string Name { get; set; }
 
         public bool Avaliable { get; set; }

@@ -19,6 +19,10 @@
     <Compile Remove="Migrations\20190602022152_Adds fit description field.Designer.cs" />
     <Compile Remove="Migrations\20190602041323_ShipType IDs.cs" />
     <Compile Remove="Migrations\20190602041323_ShipType IDs.Designer.cs" />
+    <Compile Remove="Migrations\20190602041545_Initial Migration.cs" />
+    <Compile Remove="Migrations\20190602041545_Initial Migration.Designer.cs" />
+    <Compile Remove="Migrations\20190602120730_Modules table.cs" />
+    <Compile Remove="Migrations\20190602120730_Modules table.Designer.cs" />
     <Compile Remove="Migrations\20190603013541_EnumConversionTest.cs" />
     <Compile Remove="Migrations\20190603013541_EnumConversionTest.Designer.cs" />
   </ItemGroup>

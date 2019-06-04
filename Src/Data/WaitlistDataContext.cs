@@ -166,35 +166,9 @@ namespace Imperium_Incursions_Waitlist.Data
                 .HasForeignKey(wp => wp.RemovedByAccountId)
                 .OnDelete(DeleteBehavior.Restrict);
 
-
-
-
-            // Seeding account roles
-            modelBuilder.Entity<Role>()
-                        .HasData(
-                            new Role { Id = 1, Name = "Commander" },
-                            new Role { Id = 2, Name = "Leadership"}
-                        );
-            // Finished seeding account roles
-
-
-            // Placeholder alliance to assign to corporations
-            // that do not belong to an alliance.
+            // Placeholder alliance to assign to corporations that do not belong to an alliance.
             modelBuilder.Entity<Alliance>()
                         .HasData(new { Id = 0, Name = "" });
-            // Finished seeding placeholder alliance
-
-
-            // Fleet Roles that can be selected by pilots
-            modelBuilder.Entity<FleetRole>()
-                .HasData(
-                    new FleetRole { Id = 1, Name = "TTT", Avaliable = true },
-                    new FleetRole { Id = 2, Name = "AAA", Avaliable = true },
-                    new FleetRole { Id = 3, Name = "DDD", Avaliable = true },
-                    new FleetRole { Id = 4, Name = "MTAC", Avaliable = true }
-                );
-            // Finished seeding fleet roles
-
 
             //Enum Conversions
             modelBuilder.Entity<ShipType>().Property(e => e.Queue).HasConversion(x => (int)x, x => (Queue)x);

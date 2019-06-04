@@ -239,6 +239,9 @@ namespace Imperium_Incursions_Waitlist.Migrations
                         .ValueGeneratedOnAdd()
                         .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
+                    b.Property<string>("Acronym")
+                        .IsRequired();
+
                     b.Property<bool>("Avaliable");
 
                     b.Property<string>("Name")
@@ -247,32 +250,6 @@ namespace Imperium_Incursions_Waitlist.Migrations
                     b.HasKey("Id");
 
                     b.ToTable("FleetRoles");
-
-                    b.HasData(
-                        new
-                        {
-                            Id = 1,
-                            Avaliable = true,
-                            Name = "TTT"
-                        },
-                        new
-                        {
-                            Id = 2,
-                            Avaliable = true,
-                            Name = "AAA"
-                        },
-                        new
-                        {
-                            Id = 3,
-                            Avaliable = true,
-                            Name = "DDD"
-                        },
-                        new
-                        {
-                            Id = 4,
-                            Avaliable = true,
-                            Name = "MTAC"
-                        });
                 });
 
             modelBuilder.Entity("Imperium_Incursions_Waitlist.Models.ModuleItem", b =>
@@ -375,18 +352,6 @@ namespace Imperium_Incursions_Waitlist.Migrations
                     b.HasKey("Id");
 
                     b.ToTable("Roles");
-
-                    b.HasData(
-                        new
-                        {
-                            Id = 1,
-                            Name = "Commander"
-                        },
-                        new
-                        {
-                            Id = 2,
-                            Name = "Leadership"
-                        });
                 });
 
             modelBuilder.Entity("Imperium_Incursions_Waitlist.Models.SelectedFit", b =>
