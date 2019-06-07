@@ -34,8 +34,7 @@ namespace Imperium_Incursions_Waitlist.Controllers.Auth
         [Produces("application/json")]
         public IActionResult Pilots()
         {
-            var userID = User.FindFirst("id").Value;
-            var pilots = _Db.Pilots.Where(p => p.AccountId == int.Parse(userID)).OrderBy(s => s.CharacterName);
+            var pilots = _Db.Pilots.Where(p => p.AccountId == User.AccountId()).OrderBy(s => s.CharacterName);
 
             if (pilots == null)
                 return NotFound();
