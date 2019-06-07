@@ -5,6 +5,8 @@ import Alert from './Components/alert';
 import FleetInfo from './Components/FleetInfo';
 import { setInterval } from 'timers';
 import WaitlistUp from './Components/WaitlistUp';
+import WaitingPilot from './Components/WaitingPilots';
+
 
 const baseUri = "/waitlist";
 
@@ -62,6 +64,10 @@ export default class Index extends Component {
         return this.state.fleets && this.state.fleets.length > 0;
     }
 
+    waitingPilots() {
+        return this.state.userOptions ? this.state.userOptions.waitingPilots : null;
+    }
+
     render() {
         let noFleets;
         if (!this.availableFleets()) {
@@ -71,7 +77,7 @@ export default class Index extends Component {
         let fleets;
         if (this.state.fleets) {
             fleets = this.state.fleets.map((fleet, index) => {
-                return <FleetInfo fleet={fleet} key={index} myPilots={(this.state.fcOptions) ? this.state.fcOptions.pilots : null} />
+                return <FleetInfo fleet={fleet} key={index} showFcOptions={this.state.fcOptions ? true : false } myPilots={(this.state.fcOptions) ? this.state.fcOptions.pilots : null} />
             })
         }
 
@@ -96,8 +102,12 @@ export default class Index extends Component {
                 </div>
 
                 <div className="row">
-                    <div className="col-lg-8 col-md-12">
-                        <WaitlistUp options={this.state.userOptions} />
+                    <div className="col-lg-4 col-md-6 col-sm-12">
+                        <WaitlistUp options={this.state.userOptions} baseUri={baseUri} forceUpdate={this.getSettings.bind(this)} />
+                    </div>
+
+                    <div className="col-lg-4 col-md-6 col-sm-12">
+                        <WaitingPilot pilots={this.waitingPilots()} baseUri={baseUri} forceUpdate={this.getSettings.bind(this)} />
                     </div>
 
                     <div className="col-lg-4 col-sm-12">

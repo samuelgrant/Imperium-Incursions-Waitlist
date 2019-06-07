@@ -11,7 +11,7 @@ using Microsoft.Extensions.Logging;
 
 namespace Imperium_Incursions_Waitlist.Controllers
 {
-    [Authorize(Roles = "Commander")]
+    [Authorize(Roles = "Commander,Leadership,Dev")]
     public class FleetsController : Controller
     {
         private Data.WaitlistDataContext _Db;

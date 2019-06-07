@@ -97,6 +97,10 @@ button.close:hover, button.close:active {
     background-color: #DC7325;
 }
 
+.btn-warning.disabled, .btn-warning:disabled {
+    background-color: #dc7325
+}
+
 .sidepanel-content {
     font-size: large;
 }
@@ -127,6 +131,10 @@ i {
 
 .fleet-info .card-body .xmpp {
     margin-left: -15px;
+}
+
+.card-body {
+    background-color: rgba(0, 0, 0, 0.3);
 }
 
 .fleet-info .card-body .row, .fleet-info .card-body .row .xmpp{

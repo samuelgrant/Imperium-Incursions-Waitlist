@@ -2935,7 +2935,8 @@ tbody.collapse.show {
 }
 
 .nav-link:focus, .nav-link:hover {
-    text-decoration: none
+    text-decoration: none;
+    background: none;
 }
 
 .nav-link.disabled {

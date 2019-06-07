@@ -83,6 +83,8 @@ namespace Imperium_Incursions_Waitlist.Services
             if(FleetMembers_response.StatusCode != HttpStatusCode.OK)
             {
                 s_Log.LogError("{0} error searching API '{1}': {2}", FleetMembers_response.StatusCode, FleetMembers_response.Endpoint, FleetMembers_response.Message);
+
+                
                 return null;
             }
 

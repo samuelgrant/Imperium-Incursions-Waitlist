@@ -1,6 +1,7 @@
 ﻿import React, { Component } from 'react';
 import { render } from 'react-dom';
 import Alert from './Components/Alert';
+import Waitlist from './Components/Waitlist';
 import { SidePanel, SideSection, SidePanelButton } from './Components/SidePanel';
 import { BtnClose, BtnClear, BtnInvAll, BtnInvFaxes, Backseat, Boss, Mumble, Status, Type } from './Components/FleetSettings';
 
@@ -21,23 +22,35 @@ export default class Index extends Component {
 
         this.setState({
             fleetId: $("#fleetManagement").data("fleetid")
-        }, () => this.getData());
+        }, () => this.getFleetData());
 
-        setInterval(() => this.getData(), 1000 * 10);
+        setInterval(() => this.getFleetData(), 1000 * 10);
     }
 
     isPublic() {
         return (this.state.fleet) ? this.state.fleet.isPublic : null;
     }
 
-    getData() {
+    getFleetData() {
         $.ajax({
             type: 'get',
-            url: `${baseUri}/${this.state.fleetId}/data`,
+            url: `${baseUri}/${this.state.fleetId}/data`
         }).done((result) => {
             this.setState({ fleet: result });
+            this.getWaitlistData();
         }).fail((err) => {
-            console.error(`React/FleetManagement {FleetManagement@getData} - Error getting fleet information`, err.responseText);
+            console.error(`React/FleetManagement {FleetManagement@getFleetData} - Error getting fleet information`, err.responseText);
+        });
+    }
+
+    getWaitlistData() {
+        $.ajax({
+            type: 'get',
+            url: `/api/v1/waitlist/pilots`
+        }).done((result) => {
+            this.setState({ waitingPilots: result });
+        }).fail((err) => {
+            console.error(`React/FleetManagement {FleetManagement@getWaitlistData} - Error getting fleet information`, err.responseText);
         });
     }
 
@@ -55,6 +68,10 @@ export default class Index extends Component {
 
     getFleetSettings() {
         return this.state.fleet || null;
+    }
+
+    getWaitlist() {
+        return this.state.waitingPilots || null;
     }
 
     getSettings() {
@@ -93,7 +110,7 @@ export default class Index extends Component {
 
                 <div className="row">
                     <div className="col-lg-8 col-sm-12">
-                        Waitlist Goes Here
+                        <Waitlist waitlist={this.getWaitlist()} />
                     </div>
 
                     <div className="col-lg-4 col-sm-12">        
@@ -108,25 +125,25 @@ export default class Index extends Component {
                     <div className="row">
                         <Boss pilot={(this.state.fleet) ? this.state.fleet.bossPilot : null}
                             pilots={(this.getSettings()) ? this.getSettings().pilots : null}
-                            u={this.getData.bind(this)}
+                            u={this.getFleetData.bind(this)}
                             fleetId={this.state.fleetId} />
 
                         <Backseat account={(this.state.fleet)? this.state.fleet.backseatAccount : null}
-                            u={this.getData.bind(this)}
+                            u={this.getFleetData.bind(this)}
                             fleetId={this.state.fleetId} />
 
                         <Mumble channel={(this.getFleetSettings()) ? this.getFleetSettings().commChannel : null}
                             options={(this.getSettings()) ? this.getSettings().comms : null}
-                            u={this.getData.bind(this)}
+                            u={this.getFleetData.bind(this)}
                             fleetId={this.state.fleetId} />
 
                         <Type type={(this.getFleetSettings()) ? this.getFleetSettings().type : ""}
                             options={(this.getSettings()) ? this.getSettings().fleetTypes : null}
-                            u={this.getData.bind(this)}
+                            u={this.getFleetData.bind(this)}
                             fleetId={this.state.fleetId} />
 
                         <Status public={this.isPublic()}
-                            u={this.getData.bind(this)}
+                            u={this.getFleetData.bind(this)}
                             fleetId={this.state.fleetId} />
                     </div>
 
