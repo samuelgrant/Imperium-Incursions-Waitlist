@@ -53,6 +53,11 @@ public class FleetService : IHostedService
             {
                 // Update fleet location based on the Fleet Boss
                 await pilot.UpdateToken();
+                if (!pilot.ESIValid)
+                {
+                    throw new UnauthorizedAccessException("The Fleet Boss's ESI token is no longer valid");
+                }
+
                 var System = await EsiWrapper.GetSystem((AuthorizedCharacterData)pilot);
                 fleet.SystemId = System?.SolarSystemId;
                 fleet.ErrorCount = null;
@@ -92,7 +97,7 @@ public class FleetService : IHostedService
                         }
                     }
 
-                    // Delete pilots who have not been reported through ESI for more than 2 minutes.
+                    // Delete pilots who have not been reported through ESI for more than 1 minutes.
                     current_members = _Db.FleetAssignments.Where(c => c.FleetId == fleet.Id).ToList();
                     foreach(FleetAssignment member in current_members)
                         if (member.UpdatedAt.Value.AddMinutes(1) < DateTime.UtcNow)

@@ -14,8 +14,10 @@ namespace Imperium_Incursions_Waitlist.Models
 
         public int PilotId { get; set; }
 
+        [JsonIgnore]
         public int? SystemId { get; set; }
 
+        [JsonIgnore]
         public int? RemovedByAccountId { get; set; }
 
         public bool NewPilot { get; set; }
@@ -25,10 +27,12 @@ namespace Imperium_Incursions_Waitlist.Models
         [DisplayFormat(DataFormatString = "{0:dd-MM-yyyy}")]
         public DateTime? OfflineAt { get; set; }
 
+        [JsonIgnore]
         [Display(Name = "Created At"), DataType(DataType.Date)]
         [DisplayFormat(DataFormatString = "{0:dd-MM-yyyy}")]
         public DateTime CreatedAt { get; set; }
 
+        [JsonIgnore]
         [Display(Name = "Updated At"), DataType(DataType.Date)]
         [DisplayFormat(DataFormatString = "{0:dd-MM-yyyy}")]
         public DateTime? UpdatedAt { get; set; }
@@ -37,13 +41,26 @@ namespace Imperium_Incursions_Waitlist.Models
 
         public Pilot Pilot { get; set; }
 
+        [JsonIgnore]
         public Account RemovedByAccount { get; set; }
 
+        [JsonIgnore]
         public FleetAssignment FleetAssignment { get; set; }
+
+        public StarSystem System { get; set; }
 
         public ICollection<SelectedRole> SelectedRoles { get; set; }
 
         public ICollection<SelectedFit> SelectedFits { get; set; }
+
+        public string WaitingFor
+        {
+            get
+            {
+                TimeSpan span = (DateTime.UtcNow - CreatedAt);
+                return $"{span.Hours.ToString()}H {span.Minutes.ToString()}M";
+            }
+        }
 
         [NotMapped]
         public bool IsOffline {

@@ -47,6 +47,8 @@ public class WaitlistService : IHostedService
         foreach (WaitingPilot waiting_pilot in waitlist)
         {
             Pilot pilot = _Db.Pilots.Find(waiting_pilot.PilotId);
+            if (!pilot.ESIValid)
+                continue;
 
             // Update pilot system
             await pilot.UpdateToken();
