@@ -1,6 +1,7 @@
 ﻿import React, { Component } from 'react';
 import { XmppLink } from './CommLinks';
 import { Pilot, Destination } from './EsiUi';
+import ReactTooltip from 'react-tooltip'
 
 export default class Waitlist extends Component {
 
@@ -49,8 +50,23 @@ export class FlightStrip extends Component {
             offline = <span className="text-warning fa-status"><i class="fas fa-user-slash"></i> Offline</span>
         }
 
+        let fits;
+        if (this.props.pilot.ships) {
+            fits = this.props.pilot.ships.map((ship) => {
+                return <img className="m-1" data-tip={ship.description} src={`https://image.eveonline.com/Render/${ship.shipTypeId}_32.png`} />;
+            });
+        }
+
+        let roles;
+        if (this.props.pilot.roles) {
+            roles = this.props.pilot.roles.map((role) => {
+                return <button className="btn btn-outline-success btn-sm m-1 active" data-tip={role.name}>{role.acronym.charAt(0)}</button>;
+            });
+        }
+
         return (
             <tr>
+                <ReactTooltip />
                 <td>
                     <img src={`https://image.eveonline.com/Character/${this.props.pilot.pilot.characterID}_64.jpg`} height="50" />
                 </td>
@@ -82,17 +98,10 @@ export class FlightStrip extends Component {
                     <button className="btn btn-warning btn-sm p-1 disabled" type="button"><i className="fas fa-bell"></i></button>
                 </td>
                 <td>
-                    <img className="m-1" src="https://image.eveonline.com/Render/17740_32.png" />
-                    <img className="m-1" src="https://image.eveonline.com/Render/17736_32.png" />
-                    <img className="m-1" src="https://image.eveonline.com/Render/11978_32.png" />
-                    <img className="m-1" src="https://image.eveonline.com/Render/11985_32.png" />
-                    <img className="m-1" src="https://image.eveonline.com/Render/17738_32.png" />
+                    {fits}
                 </td>
                 <td>
-                    <button className="btn btn-outline-success btn-sm m-1" type="button">A</button>
-                    <button className="btn btn-outline-success btn-sm m-1" type="button">D</button>
-                    <button className="btn btn-outline-success btn-sm m-1" type="button">T</button>
-                    <button className="btn btn-outline-success btn-sm m-1" type="button">M</button>
+                    {roles}
                 </td>
                 <td><Destination system={this.props.pilot.system} /></td>
                 <td>{this.props.pilot.waitingFor}</td>

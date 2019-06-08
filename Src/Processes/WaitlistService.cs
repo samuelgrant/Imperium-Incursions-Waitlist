@@ -47,11 +47,11 @@ public class WaitlistService : IHostedService
         foreach (WaitingPilot waiting_pilot in waitlist)
         {
             Pilot pilot = _Db.Pilots.Find(waiting_pilot.PilotId);
+            // Update pilot system
+            await pilot.UpdateToken();
             if (!pilot.ESIValid)
                 continue;
 
-            // Update pilot system
-            await pilot.UpdateToken();
             var System = await EsiWrapper.GetSystem((AuthorizedCharacterData)pilot);
             waiting_pilot.SystemId = System?.SolarSystemId;
 

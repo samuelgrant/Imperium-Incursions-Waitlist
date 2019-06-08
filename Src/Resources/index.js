@@ -1,12 +1,9 @@
 ﻿import _ from 'lodash';
 
 
-
-
 /* JavaScript Core */
 import './js/Libraries/popper.min';
-import './js/Bootstrap/index';
-
+//import './js/Bootstrap/index';
 
 /* React */
 import './js/React/Bans';

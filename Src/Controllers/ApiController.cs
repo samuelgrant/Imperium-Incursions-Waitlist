@@ -63,16 +63,17 @@ namespace Imperium_Incursions_Waitlist.Controllers.Auth
             var waitlist =  _Db.WaitingPilots
                 .Where(c => c.RemovedByAccountId == null)
                 .Include(a => a.SelectedRoles)
+                .ThenInclude(ac => ac.FleetRole)
                 .Include(c => c.SelectedFits)
+                .ThenInclude(ac => ac.Fit)
                 .Select(c => new {
                     c.Id,
                     c.Pilot,
                     account = new{c.Pilot.AccountId, c.Pilot.Account.Name },
                     c.IsOffline,
                     c.NewPilot,
-                    c.SelectedFits,
-                    //?.Fit
-                    roles = c.SelectedRoles,//?.FleetRole
+                    ships = c.SelectedFits.Select(s => new { s.Fit.Id, s.Fit.ShipTypeId, s.Fit.Description }),
+                    roles = c.SelectedRoles.Select(s => new { s.FleetRole.Name, s.FleetRole.Acronym }),
                     system = (c.System != null) ? new { c.System.Id, c.System.Name } : null,
                     altInFleet = "",
                     c.WaitingFor,
