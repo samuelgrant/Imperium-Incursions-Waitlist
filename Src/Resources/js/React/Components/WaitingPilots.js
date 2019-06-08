@@ -1,5 +1,6 @@
 ﻿import React, { Component } from 'react';
 import Card from './Card';
+import { Pilot } from './EsiUi';
 
 export default class WaitingPilot extends Component {
 
@@ -24,7 +25,7 @@ export default class WaitingPilot extends Component {
                 return (
                     <tr>
                         <td><img width="32px" src={`https://image.eveonline.com/Character/${waiting.pilotId}_32.jpg`} /></td>
-                        <td>{waiting.pilot.characterName}</td>
+                        <td><Pilot pilot={waiting.pilot} /></td>
                         <td><buton className="btn btn-danger" onClick={this.removePilot.bind(this, waiting.pilotId)}>Remove <i className="fas fa-user-times"></i></buton></td>
                     </tr>
                 )
