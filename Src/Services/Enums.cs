@@ -1,9 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
-
-namespace Imperium_Incursions_Waitlist
+﻿namespace Imperium_Incursions_Waitlist
 {
     enum FleetType {
         Headquarters,
@@ -20,5 +15,11 @@ namespace Imperium_Incursions_Waitlist
         Capital,
         Fax,
         Support
+    };
+
+    public enum FleetErrorTypes
+    {
+        FleetDead,
+        InvalidBoss
     };
 }

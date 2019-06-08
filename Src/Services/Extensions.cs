@@ -1,5 +1,7 @@
-﻿using Microsoft.AspNetCore.Http;
+﻿using Imperium_Incursions_Waitlist;
+using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Logging;
+using System.Collections.Generic;
 using System.Security.Claims;
 
 /// <summary>
@@ -17,4 +19,16 @@ public static class LoggerExtensions
 
     // Two loggers cannot access LogWarning for some reason so I've put this here.
     public static void LogWarning(this ILogger log, string entry, params object[] args) => log.LogWarning(string.Format(entry, args));
+
+    // Returns an enum representation of why the fleet members api errored
+    public static FleetErrorTypes? ErrorType(this ESI.NET.EsiResponse<List<ESI.NET.Models.Fleets.Member>> x)
+    {
+        if (x.Message.Contains("The specified proxy or server node") && x.Message.Contains("is dead"))
+            return FleetErrorTypes.FleetDead;
+
+        if (x.Message.Contains("The fleet does not exist or you don't have access to it"))
+            return FleetErrorTypes.InvalidBoss;
+
+        return null;
+    }
 }

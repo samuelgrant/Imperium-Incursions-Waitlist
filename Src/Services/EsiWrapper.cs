@@ -84,8 +84,7 @@ namespace Imperium_Incursions_Waitlist.Services
             {
                 s_Log.LogError("{0} error searching API '{1}': {2}", FleetMembers_response.StatusCode, FleetMembers_response.Endpoint, FleetMembers_response.Message);
 
-                
-                return null;
+                throw new Exception(FleetMembers_response.ErrorType().ToString());
             }
 
             return FleetMembers_response.Data;

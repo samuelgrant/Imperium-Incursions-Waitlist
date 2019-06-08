@@ -27,9 +27,9 @@ namespace Imperium_Incursions_Waitlist.Controllers
         public IActionResult Index(int id)
         {
             var fleet = _Db.Fleets.Where(c => c.Id == id && c.ClosedAt == null).FirstOrDefault();
-            if(fleet == null)
+            if (fleet == null)
                 // Fleet not found
-                return NotFound("Fleet not found.");
+                return Redirect("/");
 
             ViewData["fleetId"] = id;
             return View(viewName: "~/Views/FleetManagement.cshtml");
