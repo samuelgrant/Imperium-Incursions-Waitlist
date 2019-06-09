@@ -1,5 +1,7 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using Imperium_Incursions_Waitlist.Models;
+using Newtonsoft.Json;
+using System.Collections.Generic;
 
 namespace Imperium_Incursions_Waitlist.Data
 {
@@ -176,6 +178,8 @@ namespace Imperium_Incursions_Waitlist.Data
 
             //Enum Conversions
             modelBuilder.Entity<ShipType>().Property(e => e.Queue).HasConversion(x => (int)x, x => (Queue)x);
+            // ESI Wings to Database and back to object
+            modelBuilder.Entity<Fleet>().Property(e => e.Wings).HasConversion(x => JsonConvert.SerializeObject(x), x => JsonConvert.DeserializeObject<List<ESI.NET.Models.Fleets.Wing>>(x));
         }
     }
 }
