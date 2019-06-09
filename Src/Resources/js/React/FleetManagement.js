@@ -18,8 +18,6 @@ export default class Index extends Component {
     }
 
     componentDidMount() {
-        this.getFcSettings();
-
         this.setState({
             fleetId: $("#fleetManagement").data("fleetid")
         }, () => this.getFleetData());
@@ -41,6 +39,11 @@ export default class Index extends Component {
         }).fail((err) => {
             console.error(`React/FleetManagement {FleetManagement@getFleetData} - Error getting fleet information`, err.responseText);
         });
+
+        // Remove row highlights
+        $("tr").removeClass("tr-danger")
+            .removeClass("tr-success")
+            .removeClass("tr-pending");
     }
 
     getWaitlistData() {
@@ -49,6 +52,7 @@ export default class Index extends Component {
             url: `/api/v1/waitlist/pilots`
         }).done((result) => {
             this.setState({ waitingPilots: result });
+            this.getFcSettings();
         }).fail((err) => {
             console.error(`React/FleetManagement {FleetManagement@getWaitlistData} - Error getting fleet information`, err.responseText);
         });
@@ -57,13 +61,16 @@ export default class Index extends Component {
     getFcSettings() {
         $.ajax({
             type: 'get',
-            url: `/api/v1/fc-settings`,
-            async: false
+            url: `/api/v1/fc-settings`
         }).done((settings) => {
             this.setState({ fcOptions: settings });
         }).fail((err) => {
             console.error(`React/FleetManagement {Index@getFcSettings} - Error getting the FC settings`, err.responseText);
         })
+    }
+
+    getFleetWings() {
+        return this.state.fleet && this.state.fleet.wings ? this.state.fleet.wings : null;
     }
 
     getFleetSettings() {
@@ -110,7 +117,7 @@ export default class Index extends Component {
 
                 <div className="row">
                     <div className="col-lg-8 col-sm-12">
-                        <Waitlist waitlist={this.getWaitlist()} />
+                        <Waitlist waitlist={this.getWaitlist()} wings={this.getFleetWings()} fleetId={this.state.fleetId || null} />
                     </div>
 
                     <div className="col-lg-4 col-sm-12">        

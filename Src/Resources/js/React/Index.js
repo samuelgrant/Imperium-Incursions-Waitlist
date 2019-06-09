@@ -68,6 +68,10 @@ export default class Index extends Component {
         return this.state.userOptions ? this.state.userOptions.waitingPilots : null;
     }
 
+    test() {
+        console.log(`test`);
+    }
+
     render() {
         let noFleets;
         if (!this.availableFleets()) {
@@ -103,11 +107,11 @@ export default class Index extends Component {
 
                 <div className="row">
                     <div className="col-lg-4 col-md-6 col-sm-12">
-                        <WaitlistUp options={this.state.userOptions} baseUri={baseUri} forceUpdate={this.getSettings.bind(this)} />
+                        <WaitlistUp options={this.state.userOptions} baseUri={baseUri} u={this.getSettings.bind(this)} />
                     </div>
 
                     <div className="col-lg-4 col-md-6 col-sm-12">
-                        <WaitingPilot pilots={this.waitingPilots()} baseUri={baseUri} forceUpdate={this.getSettings.bind(this)} />
+                        <WaitingPilot pilots={this.waitingPilots()} baseUri={baseUri} u={this.getSettings.bind(this)} />
                     </div>
 
                     <div className="col-lg-4 col-sm-12">

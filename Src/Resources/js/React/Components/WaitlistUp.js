@@ -7,7 +7,7 @@ export default class WaitlistUp extends Component {
 
         this.state = {
             selectedPilot: null,
-            selectRoles: [],
+            selectedRoles: [],
             selectedFits: [],
             key: 0
         }
@@ -50,7 +50,7 @@ export default class WaitlistUp extends Component {
     }
 
     updateSelectedRoles(isSelected, role_id) {
-        let roles = this.state.selectRoles;
+        let roles = this.state.selectedRoles;
 
         if (isSelected) {
             roles.push(role_id);
@@ -61,7 +61,7 @@ export default class WaitlistUp extends Component {
             }
         }
 
-        this.setState({ selectRoles: roles });
+        this.setState({ selectedRoles: roles });
     }
 
     AddPilotToWaitlist() {   
@@ -75,13 +75,12 @@ export default class WaitlistUp extends Component {
             url: `${this.props.baseUri}/join`,
             data: {
                 pilot_id: this.state.selectedPilot,
-                role_ids: this.state.selectRoles.join(),
+                role_ids: this.state.selectedRoles.join(),
                 fit_ids: this.state.selectedFits.join()
             }
-        }).done((fleets) => {
-            //this.setState({ fleets: fleets });
-            this.setState({ key: this.state.key + 1 });
-            this.props.forceUpdate
+        }).done(() => {
+            this.props.u();
+            this.setState({ key: this.state.key + 1, selectedFits: [], selectedRoles: [] });
         }).fail((err) => {
             console.error(`React/Components/WaitlistUp {WaitlistUp@AddPilotToWaitlist} - Error joining the waitlist`, err.responseText);
         })  

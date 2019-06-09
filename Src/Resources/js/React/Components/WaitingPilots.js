@@ -12,7 +12,7 @@ export default class WaitingPilot extends Component {
                 pilot_id: pilot_id
             }
         }).done(() => {
-            this.props.forceUpdate
+            this.props.u();
         }).fail((err) => {
             console.error(`React/Components/WaitingPilots {WaitingPilot@removePilot} - Error leaving the waitlist`, err.responseText);
         })  

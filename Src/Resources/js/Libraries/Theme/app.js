@@ -65,6 +65,18 @@ $(document).ready(function () {
         $(this).next('ul').slideToggle(250);
     });
 
+    /*------------------------------------------------
+       Custom Side Bars
+    -------------------------------------------------*/
+    // Close sidebar if the user clicks outside of it.
+    $(document).click(function (e) {
+        if ($(".sidebar-special.active").length > 0) {
+            if (!e.target.closest(".sidebar-special")) {
+                $('.sidebar-special').removeClass('active');
+            }
+        }
+    });
+
 
     /*------------------------------------------------
         Form group bar
