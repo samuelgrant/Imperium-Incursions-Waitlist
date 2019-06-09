@@ -23,10 +23,10 @@ export default class SystemSettings extends Component {
     getShips() {
         $.ajax({
             type: 'get',
-            url: `${baseUri}/ships`,
+            url: `${baseUri}/data`,
         }).done((data) => {
             this.setState({
-                ships: data
+                settings: data
             });
         }).fail((err) => {
             console.error(`React/SystemSettings {SystemSettings@getShips} - Error getting the current ship queues`, err.responseText);
@@ -59,10 +59,10 @@ export default class SystemSettings extends Component {
 
     render() {
         let shipQueue_Row;
-        if (this.state.ships && this.state.ships.hull) {
-            shipQueue_Row = this.state.ships.hull.map((ship) => {
+        if (this.state.settings && this.state.settings.hull) {
+            shipQueue_Row = this.state.settings.hull.map((ship) => {
                 let options;
-                options = this.state.ships.queues.map((queue, key) => {
+                options = this.state.settings.queues.map((queue, key) => {
                     let isSelected = (ship.queue == key) ? true : false;
                     return <option value={`${ship.id},${key}`} selected={isSelected}>{queue}</option>
                 })
@@ -82,11 +82,11 @@ export default class SystemSettings extends Component {
         }
 
         let shipQueue_DropdownOptions;
-        if (this.state.ships && this.state.ships.queues) {
-            shipQueue_DropdownOptions = this.state.ships.queues.map((queue, key) => {
-                return <a className="dropdown-item" role="presentation" href="#" onClick={this.NewQueueAssignment.bind(this, key)}>{queue}</a>
+        if (this.state.settings && this.state.settings.queues) {
+            shipQueue_DropdownOptions = this.state.settings.queues.map((queue, key) => {
+                return <a className="dropdown-item" role="presentation" onClick={this.NewQueueAssignment.bind(this, key)}>{queue}</a>
             });
-        }///admin/settings/ships/search?q=
+        }
 
         return (
             <div className="container">
