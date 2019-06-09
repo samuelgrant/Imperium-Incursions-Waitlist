@@ -10,6 +10,7 @@ using Microsoft.AspNetCore.Mvc;
 namespace Imperium_Incursions_Waitlist.Controllers.Auth
 {
     [Authorize]
+    [Route("/pilot-select")]
     public class PilotSelectController : Controller
     {
         private Data.WaitlistDataContext _Db;
@@ -30,7 +31,7 @@ namespace Imperium_Incursions_Waitlist.Controllers.Auth
         /// <summary>
         /// Returns a list of all pilots linked to the account.
         /// </summary>
-        [HttpGet]
+        [HttpGet("pilots")]
         [Produces("application/json")]
         public IActionResult Pilots()
         {
@@ -52,7 +53,7 @@ namespace Imperium_Incursions_Waitlist.Controllers.Auth
         /// <summary>
         /// Sets a prefPilot cookie indicating the users preferred pilot
         /// </summary>
-        [HttpPost]
+        [HttpPost("pilots/{id}")]
         public async Task<IActionResult> Pilots(int id = 0)
         {
             var pilot = await _Db.Pilots.FindAsync(id);

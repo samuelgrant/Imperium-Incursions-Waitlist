@@ -130,11 +130,6 @@ namespace Imperium_Incursions_Waitlist
                     template: "/error",
                     defaults: new {controller = "Error", action = "Render"}
                 );
-                routes.MapRoute(
-                    name: "pilotSelect",
-                    template: "/pilot-select/{action=Index}/{id?}",
-                    defaults: new {controller = "PilotSelect"}
-                );
             });
         }
 

@@ -8,10 +8,6 @@ export default class SystemSettings extends Component {
     constructor(props) {
         super(props);
 
-        this.state = {
-            ships: null,
-        }
-
         this.shipInput = React.createRef();
     }
 
