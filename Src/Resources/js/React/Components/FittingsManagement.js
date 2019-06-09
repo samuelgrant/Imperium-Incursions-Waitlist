@@ -12,7 +12,7 @@ export default class FittingsManagement extends Component {
     }
 
     getFits() {
-        return (this.props.settings) ? this.props.settings.fits : null;
+        return this.props.fits || null;
     }
 
     submitNewFit(e) {
@@ -62,11 +62,11 @@ export default class FittingsManagement extends Component {
 
         let activeFit_rows;
         if (this.getFits()) {
-            activeFit_rows = this.getFits().map((fit, key) => {
+            activeFit_rows = this.getFits().map((fit) => {
                 return (
                     <tr>
                         <td><img src={`https://image.eveonline.com/Render/${fit.shipTypeId}_32.png`} /></td>
-                        <td>{fit.shipType.name}</td>
+                        <td>{fit.name}</td>
                         <td>{fit.description}</td>
                         <td><button class="btn btn-danger btn-sm" type="button" onClick={this.deleteFit.bind(this, fit.id)}>Delete Fit <i class="fas fa-trash"></i></button></td>
                     </tr>

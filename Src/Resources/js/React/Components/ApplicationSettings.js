@@ -2,13 +2,13 @@
 
 export default class ApplicationSettings extends Component {
     notificationsEnabled() {
-        return this.props.settings && this.props.settings.allowsJabberNotifications;
+        return this.props.settings && this.props.settings.jabberNotifications;
     }
 
     handleCheckboxClick() {
         $.ajax({
             type: 'post',
-            url: `${this.props.baseUri}/notifications`,
+            url: `${this.props.baseUri}/jabber`,
             data: {notificationsEnabled: !this.notificationsEnabled()}
         }).done((data) => {
             this.props.forceUpdate();

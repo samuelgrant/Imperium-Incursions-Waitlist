@@ -42,7 +42,7 @@ export default class FittingsSkills extends Component {
 
                         <div className="clearfix"></div>
 
-                        <FittingsManagements settings={this.state.settings} forceUpdate={this.getData.bind(this)} baseUri={baseUri} />
+                        <FittingsManagements fits={this.state.settings ? this.state.settings.fits : null} forceUpdate={this.getData.bind(this)} baseUri={baseUri} />
                     </div>
 
                     <div className="col-lg-6 col-md-12">
