@@ -29,6 +29,8 @@
     <Compile Remove="Migrations\20190604052450_AccountFits.Designer.cs" />
     <Compile Remove="Migrations\20190604054026_Accounts to Fits.cs" />
     <Compile Remove="Migrations\20190604054026_Accounts to Fits.Designer.cs" />
+    <Compile Remove="Migrations\20190608103007_FleetPositions Fields.cs" />
+    <Compile Remove="Migrations\20190608103007_FleetPositions Fields.Designer.cs" />
   </ItemGroup>
 
 

@@ -50,7 +50,12 @@ public class FleetService : IHostedService
 
         foreach (Fleet fleet in fleets)
         {
-            Pilot pilot = _Db.Pilots.Find(fleet.BossPilot.CharacterID);
+            //I'm not sure why, but occasionally a fleet without a boss will bleed through
+            //This happens if boss was null, and then updated by an FC before this system next runs.
+            if (fleet.BossPilotId == null)
+                continue;
+
+            Pilot pilot = _Db.Pilots.Find(fleet.BossPilotId);
 
             try
             {
@@ -63,6 +68,10 @@ public class FleetService : IHostedService
 
                 var System = await EsiWrapper.GetSystem((AuthorizedCharacterData)pilot);
                 fleet.SystemId = System?.SolarSystemId;
+
+                // Update Wings, Squads
+                await pilot.UpdateToken();
+                fleet.Wings = await EsiWrapper.GetFleetLayout((AuthorizedCharacterData)pilot, fleet.EveFleetId);
 
                 // Update the pilots in fleet
                 await pilot.UpdateToken();

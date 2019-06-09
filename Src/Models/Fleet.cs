@@ -1,10 +1,10 @@
-﻿using Newtonsoft.Json;
-using System;
+﻿using System;
+using Newtonsoft.Json;
+using ESI.NET.Models.Fleets;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
-using System.Linq;
-using System.Threading.Tasks;
+
 
 namespace Imperium_Incursions_Waitlist.Models
 {
@@ -30,6 +30,22 @@ namespace Imperium_Incursions_Waitlist.Models
 
         public string Type { get; set; }
 
+        public List<Wing> Wings { get; set; }
+
+        public DefaultSquad DefaultSquad()
+        {
+            if (Wings.Count == 0)
+                return new DefaultSquad { };
+
+            Wing wing = Wings[0];
+            Squad squad = wing.Squads[0];
+
+            return new DefaultSquad {
+                wing_id = wing.Id,
+                squad_id = squad.Id
+            };
+        }
+
         [Display(Name = "Created At"), DataType(DataType.Date)]
         [DisplayFormat(DataFormatString = "{0:dd-MM-yyyy}")]
         public DateTime CreatedAt { get; set; }
@@ -43,7 +59,6 @@ namespace Imperium_Incursions_Waitlist.Models
         public DateTime? ClosedAt { get; set; }
 
         // Navigation properties
-
         public CommChannel CommChannel { get; set; }
 
         public Pilot BossPilot { get; set; }
@@ -100,5 +115,11 @@ namespace Imperium_Incursions_Waitlist.Models
 
             return onGrid;
         }
+    }
+
+    public struct DefaultSquad
+    {
+        public long wing_id;
+        public long squad_id;
     }
 }

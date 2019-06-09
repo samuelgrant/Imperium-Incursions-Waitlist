@@ -38,15 +38,20 @@ public class CorporationService : IHostedService
         
     }
 
-    private void DoWork(object state)
+    private async void DoWork(object state)
     {
         _logger.LogInformation("Background Service Started: updating corporations.");
         List<Corporation> corporations = _Db.Corporation.ToList();
         foreach(Corporation corporation in corporations)
         {
-            var result = EsiWrapper.GetCorporation(corporation.Id);
-            corporation.Name = result.Result.Name;
-            corporation.AllianceId = result.Result.AllianceId;
+            var result = await EsiWrapper.GetCorporation(corporation.Id);
+
+            // Do not update the corporation information if null/errors are returned.
+            if (result != null)
+            {
+                corporation.Name = result.Name;
+                corporation.AllianceId = result.AllianceId;
+            }
         }
 
         _Db.SaveChanges();

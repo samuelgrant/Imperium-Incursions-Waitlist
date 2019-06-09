@@ -38,7 +38,7 @@ public class AllianceService : IHostedService
 
     }
 
-    private void DoWork(object state)
+    private async void DoWork(object state)
     {
         _logger.LogInformation("Background Service Started: updating alliances.");
         List<Alliance> alliances = _Db.Alliance.ToList();
@@ -48,8 +48,10 @@ public class AllianceService : IHostedService
             if (alliance.Id == 0)
                 continue;
 
-            var result = EsiWrapper.GetAlliance(alliance.Id);
-            alliance.Name = result.Result.Name;
+            var result = await EsiWrapper.GetAlliance(alliance.Id);
+            // Do not update the alliacne name if null/errors are returned.
+            if (result != null)
+                alliance.Name = result.Name;
         }
 
         _Db.SaveChanges();
