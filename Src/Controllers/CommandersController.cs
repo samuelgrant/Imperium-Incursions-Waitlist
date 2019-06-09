@@ -10,6 +10,7 @@ using Microsoft.AspNetCore.Http;
 
 namespace Imperium_Incursions_Waitlist.Controllers
 {
+    [Route("/admin/commanders")]
     [Authorize(Roles = "Leadership, Commander")]
     public class CommandersController : Controller
     {
@@ -32,29 +33,28 @@ namespace Imperium_Incursions_Waitlist.Controllers
         /// <summary>
         /// Returns a list of accounts that have one or more account roles. 
         /// </summary>
-        [HttpGet]
-        public IActionResult Elevated()
+        [HttpGet("data")]
+        public IActionResult Data()
         {
-            var fcs = _Db.Accounts
-                .Include(a => a.Pilots)
-                    .ThenInclude(a => a.Corporation)
-                    .ThenInclude(a => a.Alliance)
-                .Include(a => a.AccountRoles)
-                    .ThenInclude(ar => ar.Role)
-                .Where(a => a.AccountRoles.Count > 0)
-                .OrderBy(a => a.Name);
-               
-            return Ok(fcs);
-        }
+            var fcs = _Db.Accounts.Include(i => i.Pilots).Include(i => i.AccountRoles).ThenInclude(i => i.Role)
+                .Where(c => c.AccountRoles.Count > 0).Select( s => new {
+                s.Id,
+                s.Name,
+                s.LastLogin,
+                roles = s.AccountRoles.Select(s1 => new { id = s1.Role.Id, name = s1.Role.Name}),
+                pilots = s.Pilots.Select(s2 => new {
+                    id = s2.CharacterID,
+                    name = s2.CharacterName,
+                    corporation = new { id = s2.Corporation.Id, name = s2.Corporation.Name },
+                    alliance = new { id = s2.Corporation.Alliance.Id, name = s2.Corporation.Alliance.Name},
+                })
+            }).OrderBy(o => o.Name).ToList();
 
-        /// <summary>
-        /// Returns a list of all available roles.
-        /// </summary>
-        [HttpGet]
-        public IActionResult Roles()
-        {
             var roles = _Db.Roles;
-            return Ok(roles);
+            return Ok(new {
+                fcs,
+                roles
+            });
         }
 
         /// <summary>
@@ -63,7 +63,7 @@ namespace Imperium_Incursions_Waitlist.Controllers
         [HttpPost]
         [Produces("application/json")]
         [Authorize(Roles = "Leadership")]
-        public IActionResult AddRole(IFormCollection request)
+        public IActionResult Index(IFormCollection request)
         {
             // Parse inputs as ints
             int.TryParse(request["account_id"], out int accountId);
@@ -114,7 +114,7 @@ namespace Imperium_Incursions_Waitlist.Controllers
         /// <summary>
         /// Revokes a role from an account. 
         /// </summary>
-        [HttpDelete]
+        [HttpDelete("revoke")]
         [Produces("application/json")]
         [Authorize(Roles = "Leadership")]
         public IActionResult Revoke(IFormCollection request)

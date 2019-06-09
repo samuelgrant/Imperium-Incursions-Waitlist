@@ -7,7 +7,7 @@ const baseUri = "/admin/settings";
 export default class SystemSettings extends Component {
     constructor(props) {
         super(props);
-
+        this.state = {settings: null}
         this.shipInput = React.createRef();
     }
 
