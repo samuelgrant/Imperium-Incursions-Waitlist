@@ -217,6 +217,23 @@ namespace Imperium_Incursions_Waitlist.Controllers
                 return BadRequest(ex.Message);
             }
         }
+
+        [HttpDelete]
+        [Produces("application/json")]
+        [Route("/waitlist/remove/{id}")]
+        [Authorize(Roles = "Commander,Leadership,Dev")]
+        public IActionResult Remove(int id)
+        {
+            WaitingPilot pilot = _Db.WaitingPilots.Find(id);
+            if (pilot == null)
+                return NotFound("The pilot has already either been removed, or invited.");
+
+            pilot.RemovedByAccountId = User.AccountId();
+            pilot.UpdatedAt = DateTime.UtcNow;
+            _Db.SaveChanges();
+
+            return Ok();
+        }
     }
 
     struct FcSettingsResponse
