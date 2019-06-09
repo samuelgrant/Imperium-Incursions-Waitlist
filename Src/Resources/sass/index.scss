@@ -159,3 +159,24 @@ i {
 .alert-primary {
     background-color: #1164A2;
 }
+
+tr.tr-danger {
+    background: rgba(125, 0, 0, 0.5);
+    -webkit-transition: background-color 200ms linear;
+    -ms-transition: background-color 200ms linear;
+    transition: background-color 200ms linear;
+}
+
+tr.tr-success {
+    background: rgba(0, 80, 3, 0.5);
+    -webkit-transition: background-color 200ms linear;
+    -ms-transition: background-color 200ms linear;
+    transition: background-color 200ms linear;
+}
+
+tr.tr-pending {
+    background-color: rgba(16, 82, 82, 0.5);
+    -webkit-transition: background-color 200ms linear;
+    -ms-transition: background-color 200ms linear;
+    transition: background-color 200ms linear;
+}
