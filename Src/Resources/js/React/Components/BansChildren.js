@@ -17,20 +17,19 @@ export class BanRow extends Component {
     }
 
     //Name of the banned account
-    getBaneeName() {       
+    getBaneeName() {     
         return this.props.ban.bannedAccount.name || "";
     }
 
     //Name of the last admin who issued a ban
     getAdminName() {
-        return this.props.ban.creatorAdmin.name || "";
+        return this.props.ban.banAdmin.name || "";
     }
 
     getPilotUrl() {
-
         let pilot_id = 0;
         if (this.props.ban && this.props.ban.bannedAccount.pilots[0])
-            pilot_id = this.props.ban.bannedAccount.pilots[0].characterID;
+            pilot_id = this.props.ban.bannedAccount.pilots[0].id;
 
         return `https://imageserver.eveonline.com/Character/${pilot_id}_32.jpg`;
     }
@@ -59,7 +58,7 @@ export class ManageInfo extends Component {
         
         let pilot_id = 0;
         if (this.props.details && this.props.details.bannedAccount.pilots[0]) 
-            pilot_id = this.props.details.bannedAccount.pilots[0].characterID;
+            pilot_id = this.props.details.bannedAccount.pilots[0].id;
 
         return `https://imageserver.eveonline.com/Character/${pilot_id}_128.jpg`;
     }
@@ -69,7 +68,7 @@ export class ManageInfo extends Component {
     }
 
     getBaneeName() {
-        return (!this.inputNewBan()) ? this.props.details.bannedAccount.name : "";
+        return !this.inputNewBan() ? this.props.details.bannedAccount.name : "";
     }
 
     render() {

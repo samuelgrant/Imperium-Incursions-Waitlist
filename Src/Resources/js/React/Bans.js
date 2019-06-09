@@ -18,7 +18,6 @@ export default class BanManagement extends Component {
         this.getData();
     }
 
-    //Ajax call to API to get data
     getData() {
         $.ajax({
             type: 'get',
@@ -51,10 +50,9 @@ export default class BanManagement extends Component {
         let method = "post";
 
         if (this.state.banIndex != null) {
-            uri = `${baseUri}/update/${this.state.bans[this.state.banIndex].id}`;
+            uri = `${baseUri}/${this.state.bans[this.state.banIndex].id}`;
             method = "put";
         }
-            
 
         $.ajax({
             type: method,
@@ -73,12 +71,10 @@ export default class BanManagement extends Component {
 
     }
 
-    // Revokes a ban by setting the 
-    // timestamp for that ban to now.
     revokeBan(banId) {
         $.ajax({
             type: 'delete',
-            url: `${baseUri}/revoke/${banId}`
+            url: `${baseUri}/${banId}`
         }).done(() => {
             this.getData();
         }).fail((err) => {

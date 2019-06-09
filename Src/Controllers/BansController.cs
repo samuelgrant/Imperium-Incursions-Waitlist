@@ -9,6 +9,7 @@ using Microsoft.EntityFrameworkCore;
 
 namespace Imperium_Incursions_Waitlist.Controllers
 {
+    [Route("/admin/bans")]
     [Authorize(Roles = "Leadership, Commander")]
     public class BansController : Controller
     {
@@ -28,31 +29,41 @@ namespace Imperium_Incursions_Waitlist.Controllers
         }
 
         /// <summary>
-        /// Returns a list of active bans. 
-        /// Active bans are any ban that has not expired, or has no expiry date.
+        /// Returns a list of active bans. Active bans are bans that have not expired, or have no expiry date.
         /// </summary>
-        [HttpGet]
+        [HttpGet("active")]
         [Produces("application/json")]
         public IActionResult Active()
         {
-            var bans = _Db.Bans.Where(b => b.ExpiresAt > DateTime.UtcNow || b.ExpiresAt == null)
-                .OrderBy(c => c.BannedAccount.Name)
-                .Include(c => c.BannedAccount)
-                    .ThenInclude(ba => ba.Pilots)
-                .Include(c => c.CreatorAdmin);
+            var bans = _Db.Bans.Where(c => c.ExpiresAt > DateTime.UtcNow || c.ExpiresAt == null)
+                .Include(i => i.BannedAccount).ThenInclude(i => i.Pilots).ThenInclude(i => i.Corporation).ThenInclude(i => i.Alliance).Select(s => new
+                {
+                    s.Id,
+                    banAdmin = new {
+                        id = s.UpdatingAdmin == null ? s.CreatorAdmin.Id : s.UpdatingAdmin.Id,
+                        name = s.UpdatingAdmin == null ? s.CreatorAdmin.Name : s.UpdatingAdmin.Name },
+                    bannedAccount = new {
+                        id = s.BannedAccount.Id,
+                        name = s.BannedAccount.Name,
+                        pilots = s.BannedAccount.Pilots.Select(s1 => new {
+                            id = s1.CharacterID,
+                            name = s1.CharacterName
+                        })
+                    },
+                    s.ExpiresAt,
+                    s.Reason,
+                    s.CreatedAt
+                }).OrderBy(o => o.bannedAccount.name).ToList();
             return Ok(bans);
         }
 
         /// <summary>
         /// Issues a ban against a user account
         /// </summary>
-        /// <returns>HttpStatusCode</returns>
-        /// <see cref="StatusCodes"/>
         [HttpPost]
         [Produces("application/json")]
         [Authorize(Roles = "Leadership")]
-        [ActionName("Index")]
-        public IActionResult Bans(IFormCollection request)
+        public IActionResult Index(IFormCollection request)
         {
             if (request["reason"] == "" || request["name"] == "")
                 return BadRequest();
@@ -99,18 +110,11 @@ namespace Imperium_Incursions_Waitlist.Controllers
         /// <summary>
         /// Updates a ban against a user account. Enables leadership to update the reason or expiry
         /// </summary>
-        /// <param name="id">URL Paramater: ID of ban to be updated</param>
-        /// <returns>HttpStatusCode</returns>
-        /// <see cref="StatusCodes"/>
-        [HttpPut]
+        [HttpPut("{id}")]
         [Produces("application/json")]
         [Authorize(Roles = "Leadership")]
-        public IActionResult Update(IFormCollection request, int id = 0)
+        public IActionResult Update(IFormCollection request, int id)
         {
-            // If no ban ID was supplied return 400
-            if (id == 0)
-                return BadRequest();
-
             var currentBan = _Db.Bans.Include(c => c.BannedAccount).FirstOrDefault(c => c.Id == id);
             
             // If no ban was found return 404
@@ -141,19 +145,11 @@ namespace Imperium_Incursions_Waitlist.Controllers
         /// <summary>
         /// Soft deletes a ban against a specific user account.
         /// </summary>
-        /// <param name="id">URL Paramater: ID of ban to be revoked</param>
-        /// <returns>HttpStatusCode</returns>
-        /// <see cref="StatusCodes"/>
-        [HttpDelete]
+        [HttpDelete("{id}")]
         [Produces("application/json")]
         [Authorize(Roles = "Leadership")]
-        public IActionResult Revoke(int id = 0)
+        public IActionResult Revoke(int id)
         {
-            // Fail if no ban id is provided
-            if (id == 0)
-                return BadRequest();
-
-
             var currentBan = _Db.Bans.Include(c => c.BannedAccount).SingleOrDefault(c => c.Id == id);
             string baneeName = currentBan?.BannedAccount?.Name;
 

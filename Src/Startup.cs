@@ -121,7 +121,7 @@ namespace Imperium_Incursions_Waitlist
                     template: "/auth/{controller}/{action=Go}/{id?}");
                 routes.MapRoute(
                     name: "admin",
-                    template: "/admin/{controller}/{action=Index}/{id?}");
+                    template: "/admin/{controller}/{action=Index}/{id?}");//Delete once I clean up commander management
                 routes.MapRoute(
                     name: "default",
                     template: "/{controller=Waitlist}/{action=Index}/{id?}");
