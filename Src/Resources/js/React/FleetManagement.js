@@ -61,9 +61,9 @@ export default class Index extends Component {
     getFcSettings() {
         $.ajax({
             type: 'get',
-            url: `/api/v1/fc-settings`
+            url: `/api/v1/options`
         }).done((settings) => {
-            this.setState({ fcOptions: settings });
+            this.setState({ fcOptions: settings.fcOptions });
         }).fail((err) => {
             console.error(`React/FleetManagement {Index@getFcSettings} - Error getting the FC settings`, err.responseText);
         })
