@@ -8,9 +8,12 @@ using Microsoft.EntityFrameworkCore;
 using Imperium_Incursions_Waitlist.Models;
 using Imperium_Incursions_Waitlist.Services;
 using Microsoft.AspNetCore.Authorization;
+using System.Collections.Generic;
+using System;
 
 namespace Imperium_Incursions_Waitlist.Controllers.Auth
 {
+    [Route("/api/")]
     public class ApiController : Controller
     {
         private readonly Data.WaitlistDataContext _Db;
@@ -23,8 +26,7 @@ namespace Imperium_Incursions_Waitlist.Controllers.Auth
         }
 
 
-        [HttpPost]
-        [Route("/api/esi-ui/show-info")]
+        [HttpPost("esi-ui/show-info")]
         public async Task<IActionResult> ShowInfo(IFormCollection request)
         {
             int target_id = int.Parse(request["target_id"].ToString());
@@ -38,8 +40,7 @@ namespace Imperium_Incursions_Waitlist.Controllers.Auth
             return Ok();
         }
 
-        [HttpPost]
-        [Route("/api/esi-ui/destination")]
+        [HttpPost("esi-ui/destination")]
         public async Task<IActionResult> SetDestination(IFormCollection request)
         {
             int target_id = int.Parse(request["target_id"].ToString());
@@ -54,13 +55,12 @@ namespace Imperium_Incursions_Waitlist.Controllers.Auth
         }
 
 
-        [HttpGet]
+        [HttpGet("v1/waitlist/pilots")]
         [Produces("application/json")]
-        [Route("/api/v1/waitlist/pilots")]
         [Authorize(Roles = "Commander,Leadership,Dev")]
         public async Task<IActionResult> GetWaitingPilots()
         {
-            var waitlist =  _Db.WaitingPilots
+            var waitlist = await _Db.WaitingPilots
                 .Where(c => c.RemovedByAccountId == null)
                 .Include(a => a.SelectedRoles)
                 .ThenInclude(ac => ac.FleetRole)
@@ -77,10 +77,44 @@ namespace Imperium_Incursions_Waitlist.Controllers.Auth
                     system = (c.System != null) ? new { c.System.Id, c.System.Name } : null,
                     altInFleet = "",
                     c.WaitingFor,
-                }).ToList();
+                }).ToListAsync();
 
 
             return Ok(waitlist);
+        }
+
+        [Authorize]
+        [HttpGet("v1/options")]
+        [Produces("application/json")]
+        public async Task<IActionResult> GetFcSettings()
+        {
+            var prefPilot = new {
+                id = Request.Cookies.PreferredPilotId(),
+                name = Request.Cookies.PreferredPilotName()
+            };
+
+            if (User.IsInRole("Commander") || User.IsInRole("Leadership") || User.IsInRole("Dev"))
+            {
+                var commChannels = await _Db.CommChannels.Select(s => new { s.Id, s.LinkText, s.Url }).ToListAsync();
+                List<string> FleetTypes = Enum.GetValues(typeof(FleetType)).Cast<FleetType>()
+                                                                           .Select(v => v.ToString())
+                                                                           .ToList();
+
+                var bossEligible = await _Db.Pilots.Where(c => c.AccountId == User.AccountId() && c.ESIValid).Select(s => new {
+                                                                            id = s.CharacterID, name = s.CharacterName }).ToListAsync();
+
+                return Ok(new
+                {
+                    fcOptions = new {comms = commChannels, fleetTypes = FleetTypes, pilots = bossEligible},
+                    prefPilot
+                });
+            }
+
+            return Ok(new
+            {
+                fcOptions = new { },
+                prefPilot
+            });
         }
     }
 }

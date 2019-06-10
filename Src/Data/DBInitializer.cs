@@ -18,18 +18,7 @@ namespace Imperium_Incursions_Waitlist.Data
 
             // Check for existing account records
             if (!context.Accounts.Any())
-            {
-                // No Accounts in database, seeding basic accounts.
-                var accounts = new Account[]
-                {
-                new Account {Id = 1, Name = "SamJ", RegisteredAt = DateTime.Now},
-                new Account {Id = 2, Name = "MitchQ", RegisteredAt = DateTime.Now},
-                new Account {Id = 3, Name = "DanteG", RegisteredAt = DateTime.Now}
-                };
-
-                foreach (Account account in accounts)
-                    context.Accounts.Add(account);
-            }
+                context.Add(new Account { Id = 1, Name = "System", RegisteredAt = DateTime.Now });
 
             // Seeds comms channels -- June 2019
             if (!context.CommChannels.Any())

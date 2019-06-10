@@ -16,14 +16,14 @@ export class Pilot extends Component {
 
     getId() {
         if (this.props.pilot)
-            return this.props.pilot.characterID;
+            return this.props.pilot.characterID || this.props.pilot.id;
 
         return 0;
     }
 
     getName() {
         if (this.props.pilot)
-            return this.props.pilot.characterName;
+            return this.props.pilot.characterName || this.props.pilot.name;
 
         return "";
     }

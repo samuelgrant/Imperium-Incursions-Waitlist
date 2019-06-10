@@ -14,19 +14,19 @@ export default class WaitlistUp extends Component {
     }
 
     getPilots() {
-        return (this.props.options && this.props.options.account) ? this.props.options.account.pilots : null;
+        return this.props.pilots || null;
     }
 
     getPrefPilot() {
-        return (this.props.options) ? this.props.options.prefPilot : null;
+        return this.props.prefPilot || null;
     }
 
     getRoles() {
-        return (this.props.options) ? this.props.options.roles : null;
+        return this.props.options ? this.props.options.roles : null;
     }
 
     getShips() {
-        return (this.props.options) ? this.props.options.avaliableFits : null;
+        return this.props.options ? this.props.options.fittings : null;
     }
 
     updateSelectedPilot(pilot_id) {
@@ -72,7 +72,7 @@ export default class WaitlistUp extends Component {
 
         $.ajax({
             type: 'post',
-            url: `${this.props.baseUri}/join`,
+            url: `${this.props.baseUri}`,
             data: {
                 pilot_id: this.state.selectedPilot,
                 role_ids: this.state.selectedRoles.join(),
@@ -91,11 +91,11 @@ export default class WaitlistUp extends Component {
             <div>
                 <Card heading="Join the Waitlist">
                     <div className="row pb-4">
-                        <div className="col-md-4 col-sm-12">
+                        <div className="col-md-5 col-sm-12">
                             <WaitlistWith pilots={this.getPilots()} prefPilot={this.getPrefPilot()} selectedPilot={this.updateSelectedPilot.bind(this)} key={this.state.key} />
                         </div>
 
-                        <div className="col-md-8 col-sm-12">
+                        <div className="col-md-7 col-sm-12">
                             <SelectRoles roles={this.getRoles()} selectedRole={this.updateSelectedRoles.bind(this)} key={this.state.key} />
                         </div>
                     </div>
@@ -127,7 +127,7 @@ class SelectShips extends Component {
                         <label className="custom-control custom-checkbox">
                             <input type="checkbox" className="custom-control-input" onChange={this.updateFits.bind(this)} name={fit.id} />
                             <span className="custom-control-indicator"></span>
-                            <span className="custom-control-description"><img src={`https://image.eveonline.com/Render/${fit.shipTypeId}_32.png`} /> {fit.description}</span>
+                            <span className="custom-control-description"><img src={`https://image.eveonline.com/Render/${fit.typeId}_32.png`} /> {fit.description}</span>
                         </label>
                     </div>
                 )
@@ -182,9 +182,9 @@ class WaitlistWith extends Component {
         if (this.props.pilots != null) {
             pilotOptions = this.props.pilots.map((pilot) => {
                 let selected = false;
-                if (pilot.characterID == this.props.prefPilot.pilotId) selected = true;
+                if (this.props.prefPilot && pilot.id == this.props.prefPilot.id) selected = true;
 
-                return <option value={pilot.characterID} selected={selected}>{pilot.characterName}</option>
+                return <option value={pilot.id} selected={selected}>{pilot.name}</option>
             });
         }
 

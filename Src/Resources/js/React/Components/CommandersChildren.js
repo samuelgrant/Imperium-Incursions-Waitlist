@@ -1,20 +1,21 @@
 ﻿import React, { Component } from 'react';
 import { XmppLink } from './CommLinks';
 import { DateFormat } from '../Helpers';
-import { TextArea, Input } from './FormControls'
+import { Input } from './FormControls'
 import { Corporation, Alliance, Pilot } from './EsiUi';
+import { AccountPilot } from '../Helpers';
 
 export class UserRow extends Component {
     getCorporation() {
-        if (this.props.user && this.props.user.pilots[0]) 
-            return this.props.user.pilots[0].corporation;
+        if (this.props.user && this.props.user.pilots) 
+            return AccountPilot(this.props.user.name, this.props.user.pilots).corporation;
         
-        return "";
+        return;
     }
 
     getAlliance() {
-        if (this.props.user && this.props.user.pilots[0] && this.props.user.pilots[0].corporation)
-            return this.props.user.pilots[0].corporation.alliance;
+        if (this.props.user && this.props.user.pilots)
+            return AccountPilot(this.props.user.name, this.props.user.pilots).alliance;
 
         return;
     }
@@ -26,19 +27,18 @@ export class UserRow extends Component {
 
     // Pilot image url
     getPilotUrl() {
-
         let pilot_id = 0;
-        if (this.props.user && this.props.user.pilots[0])
-            pilot_id = this.props.user.pilots[0].characterID;
+        if (this.props.user)
+            pilot_id = AccountPilot(this.props.user.name, this.props.user.pilots).id;
 
         return `https://imageserver.eveonline.com/Character/${pilot_id}_32.jpg`;
     }
 
     render() {
         let roles;
-        if (!!this.props.user.accountRoles) {
-            roles = this.props.user.accountRoles.map((a) => {
-                return <p className="m-0">{a.role.name}</p>;
+        if (!!this.props.user.roles) {
+            roles = this.props.user.roles.map((role) => {
+                return <p className="m-0">{role.name}</p>;
             });
         }
 
@@ -61,24 +61,23 @@ export class ManageInfo extends Component {
     }
 
     getPilotUrl() {
-
         let pilot_id = 0;
-        if (this.props.details && this.props.details.pilots[0])
-            pilot_id = this.props.details.pilots[0].characterID;
+        if (this.props.details)
+            pilot_id = AccountPilot(this.props.details.name, this.props.details.pilots).id;
 
         return `https://imageserver.eveonline.com/Character/${pilot_id}_128.jpg`;
     }
 
     getCorporation() {
-        if (this.props.details && this.props.details.pilots[0])
-            return this.props.details.pilots[0].corporation;
+        if (this.props.details && this.props.details.pilots)
+            return AccountPilot(this.props.details.name, this.props.details.pilots).corporation;
 
         return null;
     }
 
     getAlliance() {
-        if (this.props.details && this.props.details.pilots[0])
-            return this.props.details.pilots[0].corporation.alliance;
+        if (this.props.details && this.props.details.pilots)
+            return AccountPilot(this.props.details.name, this.props.details.pilots).alliance;
 
         return null;
     }
@@ -110,8 +109,8 @@ export class ManageInfo extends Component {
         // Div: List of active roles
         let in_roles;
         if (!this.inputNewFc()) {
-            in_roles = this.props.details.accountRoles.map((r) => {
-                return <span className="badge role">{r.role.name} <i className="fas fa-times ml-2" onClick={this.props.removeGroup.bind(this, r.role.id)} ></i></span>
+            in_roles = this.props.details.roles.map((role) => {
+                return <span className="badge role">{role.name} <i className="fas fa-times ml-2" onClick={this.props.removeGroup.bind(this, role.id)} ></i></span>
             });
         }
 
@@ -128,7 +127,7 @@ export class ManageInfo extends Component {
             pilotList = this.props.details.pilots.map((pilot) => {
                 return (
                     <span className="pilot">
-                        <img src={`https://imageserver.eveonline.com/Character/${pilot.characterID}_32.jpg`} alt="Pilot Avatar" />
+                        <img src={`https://imageserver.eveonline.com/Character/${pilot.id}_32.jpg`} alt="Pilot Avatar" />
                         <Pilot pilot={pilot} />
                     </span>
                 )

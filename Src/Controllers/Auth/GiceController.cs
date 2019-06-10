@@ -156,18 +156,6 @@ namespace Imperium_Incursions_Waitlist.Controllers
             return "You were logged out!";
         }
 
-        // DO NOT KEEP THIS METHOD IN PRODUCTION!!!!!!!!!!!!!!!	
-        [AllowAnonymous]
-        public async Task<IActionResult> LoginWithId(int id)
-        {
-            if (Environment.GetEnvironmentVariable("ASPNETCORE_ENVIRONMENT") == "Development")
-            {
-                await LoginUserUsingId(id);
-            } 
-
-            return Redirect("~/");
-        }
-
         /// <summary>
         /// Logs a user in using a specific ID
         /// </summary>

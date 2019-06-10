@@ -1,7 +1,6 @@
 ﻿import React, { Component } from 'react';
 import { render } from 'react-dom';
 import { UserRow, ManageInfo } from './Components/CommandersChildren';
-import { isNumber } from 'util';
 
 
 const baseUri = "/admin/commanders";
@@ -19,40 +18,28 @@ export default class UserManagement extends Component {
 
     componentDidMount() { this.getData(); }
 
-    //Uri: Roles - Gets all of the roles that can be assigned to accounts
-    //Uri: Elevated - Gets a list of all users with one or more account roles
     getData() {
         $.ajax({
             type: 'get',
-            url: `${baseUri}/elevated`,
-            async: false
+            url: `${baseUri}/data`,
         }).done((result) => {
-            this.setState({ users: result });
+            this.setState({
+                users: result.fcs,
+                roles: result.roles
+            });
         }).fail((err) => {
             console.error(`React/Commanders {Commanders@getData} - Error getting active users`, err.responseText);
-        });
-
-        $.ajax({
-            type: 'get',
-            url: `${baseUri}/roles`,
-            async: false
-        }).done((result) => {
-            this.setState({ roles: result });
-        }).fail((err) => {
-            console.error(`React/Commanders {Commanders@getData} - Error getting the avaliable account roles`, err.responseText);
         });
 
         this.setUserIndex(null);
     }
 
     addGroup(role_id) {
-        
-        let account_id = (this.state.users[this.state.userIndex]) ? this.state.users[this.state.userIndex].characterID : null;
+        let account_id = (this.state.users[this.state.userIndex]) ? this.state.users[this.state.userIndex].id : null;
         let account_name = this.state.userInput;            
-
         $.ajax({
             type: 'post',
-            url: `${baseUri}/addrole`,
+            url: `${baseUri}`,
             data: {
                 "role_id": role_id,
                 "account_id": account_id,

@@ -16,11 +16,9 @@ export default class PilotSelect extends Component {
     }
 
     getData() {
-        //Ajax call to API to get data
         $.ajax({
             type: 'get',
             url: '/pilot-select/pilots',
-            //headers: { 'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content') }
         }).done((pilots) => {
             this.setState({ pilots: pilots });
         }).fail((err) => {
@@ -68,22 +66,22 @@ export default class PilotSelect extends Component {
 
 export class LoginCard extends Component {
 
-    getPilotId() {
-        return (!!this.props.pilot) ? this.props.pilot.characterID : 0
+    getId() {
+        return this.props.pilot.id || 0;
     }
 
-    getPilotName() {
-        return (!!this.props.pilot) ? this.props.pilot.characterName : ""
+    getName() {
+        return this.props.pilot.name || ""
     }
 
     isEsiVaild() {
-        return !!this.props.pilot && this.props.pilot.esiValid;
+        return this.props.pilot && this.props.pilot.esiValid;
     }
 
-    setMainPilot(character_id) {
+    setMainPilot(id) {
         $.ajax({
             type: `post`,
-            url: `/pilot-select/pilots/${character_id}`,
+            url: `/pilot-select/pilots/${id}`,
             statusCode: {
                 200: () => {
                     location.href = '/';
@@ -99,7 +97,7 @@ export class LoginCard extends Component {
         let esi = {}
         if (this.isEsiVaild()) {
             esi.label = <p className="login-esi text-success">ESI Valid</p>;
-            esi.button = <button className="btn btn-success d-block mx-auto mb-4" onClick={this.setMainPilot.bind(this, this.getPilotId())}>Proceed</button>;
+            esi.button = <button className="btn btn-success d-block mx-auto mb-4" onClick={this.setMainPilot.bind(this, this.getId())}>Proceed</button>;
         } else {
             esi.label = <p className="login-esi text-danger" data-toggle="tooltip" title="We require a valid ESI token before you can use this pilot. Please update your pilot ESI to continue.">ESI Invalid</p>;
             esi.button = <a className="btn btn-danger d-block mx-auto mb-4" href="/auth/eve">Update ESI</a>
@@ -108,8 +106,8 @@ export class LoginCard extends Component {
         return (
             <div className="col-lg-3 col-md-4 col-sm-6">
                 <div className="card login-card">
-                    <img className="login-avatar" src={`https://image.eveonline.com/Character/${this.getPilotId()}_256.jpg`} alt={this.getPilotName() + "\'s avatar."} />
-                    <div className="login-name">{this.getPilotName()}</div>
+                    <img className="login-avatar" src={`https://image.eveonline.com/Character/${this.getId()}_256.jpg`} alt={this.getName() + "\'s avatar."} />
+                    <div className="login-name">{this.getName()}</div>
 
                     {esi.label}
                     {esi.button}

@@ -1,18 +1,18 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
-using Microsoft.AspNetCore.Authorization;
-using Imperium_Incursions_Waitlist.Models;
-using Microsoft.AspNetCore.Mvc;
-using Microsoft.Extensions.Logging;
-using Microsoft.AspNetCore.Http;
-using Imperium_Incursions_Waitlist.Services;
 using ESI.NET.Models;
 using ESI.NET.Enumerations;
+using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Http;
+using Microsoft.Extensions.Logging;
+using Microsoft.AspNetCore.Authorization;
+using Imperium_Incursions_Waitlist.Models;
+using Imperium_Incursions_Waitlist.Services;
 
 namespace Imperium_Incursions_Waitlist.Controllers
 {
+    [Route("/admin/settings")]
     [Authorize(Roles ="Leadership,Dev")]
     public class SystemSettingsController : Controller
     {
@@ -32,16 +32,16 @@ namespace Imperium_Incursions_Waitlist.Controllers
             return View(viewName: "~/Views/SystemSettings.cshtml");
         }
 
-        /// <summary>
-        /// Returns a list of all ships that are attached to a queue
-        /// </summary>
-        /// <returns></returns>
-        [HttpGet]
+        [HttpGet("data")]
         [Produces("application/json")]
-        [Route("/admin/settings/ships")]
-        public IActionResult GetShipQueues()
+        public IActionResult GetData()
         {
-            List<ShipType> ships = _Db.ShipTypes.Where(c => c.Queue != Queue.None).OrderBy(o => o.Name).ToList();
+            var ships = _Db.ShipTypes.Where(c => c.Queue != Queue.None).Select(s => new
+            {
+                s.Id,
+                s.Name,
+                s.Queue
+            }).OrderBy(o => o.Name).ToList();
 
             return Ok(new {
                 hull = ships,
@@ -52,11 +52,8 @@ namespace Imperium_Incursions_Waitlist.Controllers
         /// <summary>
         /// AUTO COMPLETE search for all ships
         /// </summary>
-        /// <param name="q">Query string to search</param>
-        /// <returns>JSON output of ships matching the query</returns>
-        [HttpGet]
+        [HttpGet("ships/search")]
         [Produces("application/json")]
-        [Route("/admin/settings/ships/search")]
         public IActionResult SearchShips(string q)
         {
             return Ok(_Db.ShipTypes.Where(c => c.Name.Contains(q)).Select(c => c.Name).ToList());
@@ -65,9 +62,8 @@ namespace Imperium_Incursions_Waitlist.Controllers
         /// <summary>
         /// Updates the Queue applied to a given ship
         /// </summary>
-        [HttpPut]
+        [HttpPut("ships")]
         [Produces("application/json")]
-        [Route("/admin/settings/ships")]
         public async Task<IActionResult> UpdateShip(IFormCollection request)
         {
             ShipType ship = await _Db.ShipTypes.FindAsync(int.Parse(request["ship_id"].ToString()));
@@ -78,9 +74,11 @@ namespace Imperium_Incursions_Waitlist.Controllers
             return Ok();
         }
 
-        [HttpPost]
+        /// <summary>
+        /// Adds a queue to a ship, if the ship is not in our database then we get it from ESI.
+        /// </summary>
+        [HttpPost("ships")]
         [Produces("application/json")]
-        [Route("/admin/settings/ships")]
         public async Task<IActionResult> NewShip(IFormCollection request)
         {
             string hullType = request["ship_name"].ToString();
@@ -96,8 +94,8 @@ namespace Imperium_Incursions_Waitlist.Controllers
             }
 
             SearchResults x = await EsiWrapper.Search(hullType, true, SearchCategory.InventoryType);
-            if (x == null)
-                return NotFound($"{hullType} could not be found. The name must be spelt correctly.");
+            if (x.InventoryTypes == null)
+                return NotFound($"{hullType} could not be found. Is the name spelt correctly?");
 
             _Db.Add( new ShipType
             {

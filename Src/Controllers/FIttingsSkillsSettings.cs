@@ -13,6 +13,7 @@ using Microsoft.Extensions.Logging;
 namespace Imperium_Incursions_Waitlist.Controllers
 {
     [Authorize]
+    [Route("/account-settings")]
     public class AccountSettingsController : Controller
     {
         private Data.WaitlistDataContext _Db;
@@ -24,32 +25,35 @@ namespace Imperium_Incursions_Waitlist.Controllers
             _Logger = logger;
         }
 
-        [Route("/account-settings")]
         public IActionResult Index()
         {
             return View(viewName: "~/Views/AccountSettings.cshtml");
         }
 
-        [HttpGet]
+        [HttpGet("data")]
         [Produces("application/json")]
-        [Route("/account-settings/data")]          
         public async Task<IActionResult> Data()
         {
             Account account = await _Db.Accounts.FindAsync(User.AccountId());
-            List<Fit> fits = await _Db.Fits.Where(c => c.AccountId == User.AccountId() && !c.IsShipScan && c.DeletedAt == null)
-                                            .Include(ci => ci.ShipType).ToListAsync();
 
-            AccountSettings settingsResult = new AccountSettings {
-                AllowsJabberNotifications = account.JabberNotifications,
+            var fits = await _Db.Fits.Where(c => c.AccountId == User.AccountId() && !c.IsShipScan && c.DeletedAt == null)
+            .Include(i => i.ShipType).Select(s => new
+            {
+                s.Id,
+                s.Description,
+                s.ShipTypeId,
+                s.ShipType.Name
+            }).ToListAsync();
+
+            return Ok(new
+            {
+                account.JabberNotifications,
                 Fits = fits
-            };
-
-            return Ok(settingsResult);
+            });
         }
 
-        [HttpPost]
+        [HttpPost("jabber")]
         [Produces("application/json")]
-        [Route("/account-settings/notifications")]
         public async Task<IActionResult> JabberNotificationSetting(IFormCollection request)
         {
             Account account = await _Db.Accounts.FindAsync(User.AccountId());
@@ -60,9 +64,8 @@ namespace Imperium_Incursions_Waitlist.Controllers
             return Ok();
         }
 
-        [HttpPost]
+        [HttpPost("fit")]
         [Produces("application/json")]
-        [Route("/account-settings/fit")]
         public async Task<IActionResult> Fit(IFormCollection request)
         {
             int currentFits = _Db.Fits.Where(c => c.AccountId == User.AccountId() && !c.IsShipScan && c.DeletedAt == null).Count();
@@ -98,9 +101,8 @@ namespace Imperium_Incursions_Waitlist.Controllers
             }
         }
 
-        [HttpDelete]
+        [HttpDelete("fit/{id}")]
         [Produces("application/json")]
-        [Route("/account-settings/fit/{id}")]
         public async Task<IActionResult> Fit(int id)
         {
             Fit fit = await _Db.Fits.Where(c => c.Id == id && c.AccountId == User.AccountId()).FirstOrDefaultAsync();
@@ -111,12 +113,6 @@ namespace Imperium_Incursions_Waitlist.Controllers
             _Db.Remove(fit);
             await _Db.SaveChangesAsync();
             return Ok();
-        }
-
-        public struct AccountSettings
-        {
-            public bool AllowsJabberNotifications;
-            public List<Fit> Fits;
         }
     }
 }

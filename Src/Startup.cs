@@ -118,10 +118,7 @@ namespace Imperium_Incursions_Waitlist
             {
                 routes.MapRoute(
                     name: "auth",
-                    template: "/auth/{controller}/{action=Go}/{id?}");
-                routes.MapRoute(
-                    name: "admin",
-                    template: "/admin/{controller}/{action=Index}/{id?}");
+                    template: "/auth/{controller}/{action=Go}");
                 routes.MapRoute(
                     name: "default",
                     template: "/{controller=Waitlist}/{action=Index}/{id?}");
@@ -129,11 +126,6 @@ namespace Imperium_Incursions_Waitlist
                     name: "error",
                     template: "/error",
                     defaults: new {controller = "Error", action = "Render"}
-                );
-                routes.MapRoute(
-                    name: "pilotSelect",
-                    template: "/pilot-select/{action=Index}/{id?}",
-                    defaults: new {controller = "PilotSelect"}
                 );
             });
         }

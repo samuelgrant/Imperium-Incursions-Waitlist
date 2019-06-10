@@ -8,55 +8,50 @@ import WaitlistUp from './Components/WaitlistUp';
 import WaitingPilot from './Components/WaitingPilots';
 
 
-const baseUri = "/waitlist";
+const baseUri = "/";
 
 export default class Index extends Component {
     constructor(props) {
         super(props);
 
         this.state = {
-            fleets: null,
             fcOptions: null,
-            userOptions: null
+            fleets: null,
+            pilots: null,
+            prefPilot: null
         }
     }
 
     componentDidMount() {
-        this.getSettings()
         this.getFleets();
+
         setInterval(() => this.getFleets(), 1000 * 10);
+    }
+
+    getData() {
+        $.ajax({
+            type: 'get',
+            url: `/api/v1/options`,
+        }).done((data) => {
+            this.setState({
+                prefPilot: data.prefPilot,
+                fcOptions: data.fcOptions ? data.fcOptions : null
+            });
+        })
     }
 
     getFleets() {
         $.ajax({
             type: 'get',
-            url: `/waitlist/fleets`
-        }).done((fleets) => {
-            this.setState({ fleets: fleets });
-        }).fail((err) => {
-            console.error(`React/Index {Index@getFleets} - Error getting the available fleets`, err);
-        })  
-    }
+            url: `${baseUri}waitlist/data`,
+        }).done((data) => {
+            this.setState({
+                fleets: data.fleets,
+                options: data.options,
+                pilots: data.pilots
+            });
 
-    getSettings() {
-        $.ajax({
-            type: 'get',
-            url: `/api/v1/fc-settings`,
-            async: false
-        }).done((settings) => {
-            this.setState({ fcOptions: (settings != "") ? settings : null});
-        }).fail((err) => {
-            console.error(`React/Index {Index@getSettings} - Error getting the FC settings`, err.responseText);
-        })
-
-        $.ajax({
-            type: 'get',
-            url: `/api/v1/user-settings`,
-            async: false
-        }).done((settings) => {
-            this.setState({ userOptions: settings });
-        }).fail((err) => {
-            console.error(`React/Index {Index@getSettings} - Error getting the user settings`, err.responseText);
+            this.getData();
         })
     }
 
@@ -64,20 +59,15 @@ export default class Index extends Component {
         return this.state.fleets && this.state.fleets.length > 0;
     }
 
-    waitingPilots() {
-        return this.state.userOptions ? this.state.userOptions.waitingPilots : null;
+    availablePilots() {
+        return this.state.pilots ? this.state.pilots.avaliable : null;
     }
 
-    test() {
-        console.log(`test`);
+    waitingPilots() {
+        return this.state.pilots ? this.state.pilots.waiting : null;
     }
 
     render() {
-        let noFleets;
-        if (!this.availableFleets()) {
-            noFleets = <Alert type="danger" ><span className="font-weight-bold">Waitlist Inactive:</span> There is either no fleet, or the waitlist is inactive. Check our in game channel for more information.</Alert>
-        }
-
         let fleets;
         if (this.state.fleets) {
             fleets = this.state.fleets.map((fleet, index) => {
@@ -88,7 +78,31 @@ export default class Index extends Component {
         let newFleet = { btn: null, modal: null };
         if (this.state.fcOptions) {
             newFleet.btn = <NewFleetLink />;
-            newFleet.modal = <NewFleetModal options={this.state.fcOptions} />;
+            newFleet.modal = <NewFleetModal options={this.state.fcOptions} prefPilot={this.state.prefPilot} />;
+        }
+
+        let noFleets;
+        if (!this.availableFleets()) {
+            noFleets = <Alert type="danger" ><span className="font-weight-bold">Waitlist Inactive:</span> There is either no fleet, or the waitlist is inactive. Check our in game channel for more information.</Alert>
+        }
+
+        let waitlistUi;
+        if (this.availableFleets()) {
+            waitlistUi = (
+                <div className="row">
+                    <div className="col-lg-4 col-md-6 col-sm-12">
+                        <WaitlistUp options={this.state.options} pilots={this.availablePilots()} prefPilot={this.state.prefPilot} baseUri={baseUri} u={this.getFleets.bind(this)} />
+                    </div>
+
+                    <div className="col-lg-4 col-md-6 col-sm-12">
+                        <WaitingPilot pilots={this.waitingPilots()} baseUri={baseUri} u={this.getFleets.bind(this)} />
+                    </div>
+
+                    <div className="col-lg-4 col-sm-12">
+                        Queue
+                    </div>
+                </div>
+            )
         }
 
         return (
@@ -105,19 +119,7 @@ export default class Index extends Component {
                     {newFleet.btn}
                 </div>
 
-                <div className="row">
-                    <div className="col-lg-4 col-md-6 col-sm-12">
-                        <WaitlistUp options={this.state.userOptions} baseUri={baseUri} u={this.getSettings.bind(this)} />
-                    </div>
-
-                    <div className="col-lg-4 col-md-6 col-sm-12">
-                        <WaitingPilot pilots={this.waitingPilots()} baseUri={baseUri} u={this.getSettings.bind(this)} />
-                    </div>
-
-                    <div className="col-lg-4 col-sm-12">
-                        Queue
-                    </div>
-                </div>
+                {waitlistUi}
 
                 {newFleet.modal}
             </div>
