@@ -14,7 +14,7 @@ namespace Imperium_Incursions_Waitlist.Data
         /// <param name="context"></param>
         public static void Initialize(WaitlistDataContext context)
         {
-            char seperator = Path.DirectorySeparatorChar;
+            char separator = Path.DirectorySeparatorChar;
 
             // Check for existing account records
             if (!context.Accounts.Any())
@@ -34,7 +34,7 @@ namespace Imperium_Incursions_Waitlist.Data
             // Seeds comms channels -- June 2019
             if (!context.CommChannels.Any())
             {
-                var comms = Newtonsoft.Json.JsonConvert.DeserializeObject<List<CommChannel>>(File.ReadAllText($"Data{seperator}Seeds" + Path.DirectorySeparatorChar + "CommChannels.json"));
+                var comms = Newtonsoft.Json.JsonConvert.DeserializeObject<List<CommChannel>>(File.ReadAllText($"Data{separator}Seeds" + Path.DirectorySeparatorChar + "CommChannels.json"));
                 context.CommChannels.AddRange(comms);
                 context.SaveChanges();
             }
@@ -42,7 +42,7 @@ namespace Imperium_Incursions_Waitlist.Data
             // Seeds default account roles required to access all modules of the application
             if (!context.Roles.Any())
             {
-                var roles = Newtonsoft.Json.JsonConvert.DeserializeObject<List<Role>>(File.ReadAllText($"Data{seperator}Seeds" + Path.DirectorySeparatorChar + "Roles.json"));
+                var roles = Newtonsoft.Json.JsonConvert.DeserializeObject<List<Role>>(File.ReadAllText($"Data{separator}Seeds" + Path.DirectorySeparatorChar + "Roles.json"));
                 context.Roles.AddRange(roles);
                 context.SaveChanges();
             }
@@ -50,7 +50,7 @@ namespace Imperium_Incursions_Waitlist.Data
             // Seeds fleet roles that can be selected by the pilot
             if (!context.FleetRoles.Any())
             {
-                var fleetRoles = Newtonsoft.Json.JsonConvert.DeserializeObject<List<FleetRole>>(File.ReadAllText($"Data{seperator}Seeds" + Path.DirectorySeparatorChar + "FleetRoles.json"));
+                var fleetRoles = Newtonsoft.Json.JsonConvert.DeserializeObject<List<FleetRole>>(File.ReadAllText($"Data{separator}Seeds" + Path.DirectorySeparatorChar + "FleetRoles.json"));
                 context.FleetRoles.AddRange(fleetRoles);
                 context.SaveChanges();
             }
@@ -58,7 +58,7 @@ namespace Imperium_Incursions_Waitlist.Data
             // Seeds solar systems from the SDE
             if (!context.Systems.Any())
             {
-                var systems = Newtonsoft.Json.JsonConvert.DeserializeObject<List<StarSystem>>(File.ReadAllText($"Data{seperator}Seeds" + Path.DirectorySeparatorChar + "Systems.json"));
+                var systems = Newtonsoft.Json.JsonConvert.DeserializeObject<List<StarSystem>>(File.ReadAllText($"Data{separator}Seeds" + Path.DirectorySeparatorChar + "Systems.json"));
                 context.Systems.AddRange(systems);
                 context.SaveChanges();
             }
@@ -66,7 +66,7 @@ namespace Imperium_Incursions_Waitlist.Data
             // Seeds ship types from the SDE -- 2017
             if (!context.ShipTypes.Any())
             {
-                var shipTypes = Newtonsoft.Json.JsonConvert.DeserializeObject<List<ShipType>>(File.ReadAllText($"Data{seperator}Seeds" + Path.DirectorySeparatorChar + "ShipTypes.json"));
+                var shipTypes = Newtonsoft.Json.JsonConvert.DeserializeObject<List<ShipType>>(File.ReadAllText($"Data{separator}Seeds" + Path.DirectorySeparatorChar + "ShipTypes.json"));
                 context.ShipTypes.AddRange(shipTypes);
                 context.SaveChanges();
             }
@@ -74,7 +74,7 @@ namespace Imperium_Incursions_Waitlist.Data
             // Seed module items from the SDE -- June 2019
             if (!context.Modules.Any())
             {
-                var modules = Newtonsoft.Json.JsonConvert.DeserializeObject<List<ModuleItem>>(File.ReadAllText($"Data{seperator}Seeds" + Path.DirectorySeparatorChar + "Modules.json"));
+                var modules = Newtonsoft.Json.JsonConvert.DeserializeObject<List<ModuleItem>>(File.ReadAllText($"Data{separator}Seeds" + Path.DirectorySeparatorChar + "Modules.json"));
                 context.AddRange(modules);
             }
 

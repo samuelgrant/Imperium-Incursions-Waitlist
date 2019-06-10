@@ -21,25 +21,25 @@ public static class LoggerExtensions
     public static void LogWarning(this ILogger log, string entry, params object[] args) => log.LogWarning(string.Format(entry, args));
 
     // Returns an enum representation of why the fleet members api errored
-    public static FleetErrorTypes? ErrorType(this ESI.NET.EsiResponse<List<ESI.NET.Models.Fleets.Member>> x)
+    public static FleetErrorType? ErrorType(this ESI.NET.EsiResponse<List<ESI.NET.Models.Fleets.Member>> x)
     {
         if (x.Message.Contains("The specified proxy or server node") && x.Message.Contains("is dead"))
-            return FleetErrorTypes.FleetDead;
+            return FleetErrorType.FleetDead;
 
         if (x.Message.Contains("The fleet does not exist or you don't have access to it"))
-            return FleetErrorTypes.InvalidBoss;
+            return FleetErrorType.InvalidBoss;
 
         return null;
     }
 
     // Returns an enum representation of why the fleet members api errored
-    public static FleetErrorTypes? ErrorType(this ESI.NET.EsiResponse<List<ESI.NET.Models.Fleets.Wing>> x)
+    public static FleetErrorType? ErrorType(this ESI.NET.EsiResponse<List<ESI.NET.Models.Fleets.Wing>> x)
     {
         if (x.Message.Contains("The specified proxy or server node") && x.Message.Contains("is dead"))
-            return FleetErrorTypes.FleetDead;
+            return FleetErrorType.FleetDead;
 
         if (x.Message.Contains("The fleet does not exist or you don't have access to it"))
-            return FleetErrorTypes.InvalidBoss;
+            return FleetErrorType.InvalidBoss;
 
         return null;
     }

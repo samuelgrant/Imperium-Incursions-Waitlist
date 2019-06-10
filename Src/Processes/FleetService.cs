@@ -122,7 +122,7 @@ public class FleetService : IHostedService
             {
                 _logger.LogError("Error updating fleet {0} (FC: {1}). {2} ", fleet.Id, fleet.BossPilot.CharacterName, ex.Message);
 
-                if (ex.Message == FleetErrorTypes.FleetDead.ToString())
+                if (ex.Message == FleetErrorType.FleetDead.ToString())
                 {
                     fleet.ClosedAt = DateTime.UtcNow;
                     _logger.LogInformation("The fleet no longer exists and has been closed");

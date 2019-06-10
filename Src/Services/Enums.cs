@@ -17,7 +17,7 @@
         Support
     };
 
-    public enum FleetErrorTypes
+    public enum FleetErrorType
     {
         FleetDead,
         InvalidBoss
