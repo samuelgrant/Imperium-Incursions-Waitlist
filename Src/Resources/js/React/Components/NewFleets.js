@@ -31,10 +31,10 @@ export class NewFleetModal extends Component {
 
         let boss;
         if (this.props.options) {
-            boss = this.props.options.pilots.map((pilot, index) => {
+            boss = this.props.options.pilots.map((pilot) => {
                 let selected = false;
 
-                if (this.props.options.prefPilot && this.props.options.prefPilot.pilotId == pilot.id)
+                if (this.props.prefPilot && this.props.prefPilot.id == pilot.id)
                     selected = true;
 
                 return <option value={pilot.id} selected={selected}>{pilot.name}</option>
@@ -43,14 +43,14 @@ export class NewFleetModal extends Component {
 
         let types;
         if (this.props.options) {
-            types = this.props.options.fleetTypes.map((type, index) => {
+            types = this.props.options.fleetTypes.map((type) => {
                 return <option value={type}>{type}</option>
             });
         }
 
         let comms;
         if (this.props.options) {
-            comms = this.props.options.comms.map((channel, index) => {
+            comms = this.props.options.comms.map((channel) => {
                 return <option value={channel.id}>{channel.linkText}</option>
             });
         }

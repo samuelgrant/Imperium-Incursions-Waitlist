@@ -10,10 +10,12 @@ using Imperium_Incursions_Waitlist.Data;
 using System.Net;
 using Imperium_Incursions_Waitlist.Models;
 using Microsoft.AspNetCore.Http;
+using System.Threading.Tasks;
 
 namespace Imperium_Incursions_Waitlist.Controllers
 {
     [Authorize]
+    [Route("/waitlist")]
     public class WaitlistController : Controller
     {
         private readonly WaitlistDataContext _Db;
@@ -26,54 +28,75 @@ namespace Imperium_Incursions_Waitlist.Controllers
         }
 
         [HttpGet]
+        [Route("/")]
         public IActionResult Index()
         {
             return View(viewName: "~/Views/Index.cshtml");
         }
 
-        [HttpGet]
-        [Produces("application/json")]
-        public IActionResult Fleets()
+        [NonAction]
+        public bool ValidFleets(Fleet x)
         {
-            try
-            {
-                if (User.IsInRole("Commander") || User.IsInRole("Leadership"))
-                {
-                    return Ok(_Db.Fleets.Where(c => c.ClosedAt == null)
-                        .Include(c => c.FleetAssignments)
-                        .Select(c => new
-                        {
-                            c.Id,
-                            c.Type,
-                            Members = new { onGrid = c.GetOngridCount(c.FleetAssignments.ToList()), max = c.GetFleetTypeMax() },
-                            comms = new { c.CommChannel.LinkText, c.CommChannel.Url },
-                            fc = (c.BossPilot != null) ? new { c.BossPilot.CharacterID, c.BossPilot.CharacterName } : null,
-                            system = (c.System != null) ? new { c.System.Id, c.System.Name } : null
-                        }).ToList());
-                }
-                else
-                {
-                    return Ok(_Db.Fleets.Where(c => c.ClosedAt == null && c.IsPublic)
-                        .Include(c => c.FleetAssignments)
-                        .Select(c => new
-                        {
-                            c.Id,
-                            c.Type,
-                            Members = new { onGrid = c.GetOngridCount(c.FleetAssignments.ToList()), max = c.GetFleetTypeMax() },
-                            comms = new { c.CommChannel.LinkText, c.CommChannel.Url },
-                            fc = (c.BossPilot != null) ? new { c.BossPilot.CharacterID, c.BossPilot.CharacterName } : null,
-                            system = (c.System != null) ? new { c.System.Id, c.System.Name } : null
-                        }).ToList());
-                }
-            }
-            catch (Exception ex)
-            {
-                _Logger.LogError("Error getting fleets {0}", ex.Message);
-                return BadRequest(ex.Message);
-            }
+            if(User.IsInRole("Commander") || User.IsInRole("Leadership") || User.IsInRole("Dev"))
+                return x.ClosedAt == null;
+
+            return x.ClosedAt == null && x.IsPublic;
         }
 
-        [HttpDelete]
+        [HttpGet("data")]
+        [Produces("application/json")]
+        public async Task<IActionResult> Data()
+        {
+            // Fleets avaliable to the user -> FCs, Leadership & Devs get all open fleets. Pilots get all visible open fleets
+            var fleets = await _Db.Fleets.Where(c => ValidFleets(c)).Select(s => new {
+                s.Id,
+                s.Type,
+                Members = new { onGrid = s.GetOngridCount(s.FleetAssignments.ToList()), max = s.GetFleetTypeMax() },
+                comms = new { s.CommChannel.LinkText, s.CommChannel.Url },
+                fc = s.BossPilot != null ? new { id = s.BossPilot.CharacterID, name = s.BossPilot.CharacterName } : null,
+                system = s.System != null ? new { s.System.Id, s.System.Name } : null
+            }).ToListAsync();
+
+            // Roles that a user can select as well as their active fits
+            var options = new
+            {
+                roles = await _Db.FleetRoles.Where(c => c.Avaliable).Select(s => new
+                {
+                    s.Id,
+                    s.Name
+                }).OrderBy(o => o.Name).ToArrayAsync(),
+
+                fittings = await _Db.Fits.Where(c => c.AccountId == User.AccountId() && !c.IsShipScan && c.DeletedAt == null).Select(s => new
+                {
+                    s.Id,
+                    s.Description,
+                    typeId = s.ShipTypeId
+                }).ToListAsync()
+            };
+
+            // Gets a list of pilots and puts then into one of two arrays: Avaliable or Waiting
+            var pilots = new
+            {
+                waiting = await _Db.WaitingPilots.Where(c => c.Pilot.AccountId == User.AccountId() && c.RemovedByAccount == null).Select(s => new {
+                    id = s.Pilot.CharacterID,
+                    name = s.Pilot.CharacterName
+                }).OrderBy(o => o.name).ToListAsync(),
+
+                avaliable = await _Db.Pilots.Where(c => c.AccountId == User.AccountId() && c.ESIValid).Select(s => new {
+                    id = s.CharacterID,
+                    name = s.CharacterName
+                }).OrderBy(o => o.name).ToListAsync()
+            };
+
+            return Ok(new
+            {
+                fleets,
+                pilots,
+                options
+            });
+        }
+
+        [HttpDelete("/")]
         [Produces("application/json")]
         public IActionResult Leave(IFormCollection request)
         {
@@ -87,7 +110,7 @@ namespace Imperium_Incursions_Waitlist.Controllers
                 waitingPilots = _Db.WaitingPilots.Where(c => c.PilotId == int.Parse(request["pilot_id"].ToString()) && c.RemovedByAccount == null).ToList();
             }
 
-            foreach(WaitingPilot pilot in waitingPilots)
+            foreach (WaitingPilot pilot in waitingPilots)
             {
                 pilot.RemovedByAccountId = User.AccountId();
             }
@@ -97,7 +120,7 @@ namespace Imperium_Incursions_Waitlist.Controllers
             return Ok();
         }
 
-        [HttpPost]
+        [HttpPost("/")]
         [Produces("application/json")]
         public IActionResult Join(IFormCollection request)
         {
@@ -147,80 +170,15 @@ namespace Imperium_Incursions_Waitlist.Controllers
                 _Db.SaveChanges();
 
                 return Ok();
-            } catch(Exception ex)
+            } catch (Exception ex)
             {
                 _Logger.LogWarning("{0} could not be added to the waitlist: {1}", pilot.CharacterName, ex.Message);
                 return BadRequest($"Could not add {pilot.CharacterName} to the waitlist {ex.Message}");
             }
         }
 
-        [HttpGet]
-        [Route("/api/v1/user-settings")]
+        [HttpDelete("remove/{id:int}")]
         [Produces("application/json")]
-        public IActionResult UserSettings()
-        {
-            Account account = _Db.Accounts.Where(c => c.Id == User.AccountId()).Include(c => c.Pilots).Include(c => c.Fits).FirstOrDefault();
-            // Account not found, user redirected to login
-            if (account == null)
-                return NotFound("We could not load your account, logout and back in.");
-
-            List<FleetRole> roles = _Db.FleetRoles.Where(c => c.Avaliable).ToList();
-            List<WaitingPilot> waitingPilots = _Db.WaitingPilots.Include(c => c.Pilot).Where(c => c.Pilot.AccountId == User.AccountId() && c.RemovedByAccountId == null).ToList();
-            //?? ships[]
-            return Ok(new UserSettingsResponse {
-                account = account,
-                waitingPilots = waitingPilots,
-                avaliableFits = account.ActiveFits(),
-                roles = roles,
-                prefPilot = new PrefPilot { pilotId = Request.Cookies.PreferredPilotId(), Name = Request.Cookies.PreferredPilotName()}
-            });
-        }
-
-        [HttpGet]
-        [Route("/api/v1/fc-settings")]
-        [Produces("application/json")]
-        public IActionResult FcSettings()
-        {
-            if (!User.IsInRole("Commander") || !User.IsInRole("Leadership"))
-                return Ok();
-
-            try
-            {
-                var CommsChannels = _Db.CommChannels.ToList();
-                List<string> FleetTypes = Enum.GetValues(typeof(FleetType)).Cast<FleetType>()
-                                                                           .Select(v => v.ToString())
-                                                                           .ToList();
-
-                var PilotResults = _Db.Pilots.Where(a => a.AccountId == User.AccountId() && a.ESIValid).Select(c => new { c.CharacterID, c.CharacterName }).ToList();
-
-                List<FleetBoss> pilotTuple = new List<FleetBoss>();
-
-                foreach (var p in PilotResults)
-                    pilotTuple.Add(
-                        new FleetBoss{
-                            Id = p.CharacterID,
-                            Name = p.CharacterName
-                        }
-                    );
-
-                
-                return Ok(new FcSettingsResponse
-                {
-                    Comms = CommsChannels,
-                    FleetTypes = FleetTypes,
-                    Pilots = pilotTuple,
-                    prefPilot = new PrefPilot { pilotId = Request.Cookies.PreferredPilotId(), Name = Request.Cookies.PreferredPilotName() }
-                });
-            }
-            catch (Exception ex)
-            {
-                return BadRequest(ex.Message);
-            }
-        }
-
-        [HttpDelete]
-        [Produces("application/json")]
-        [Route("/waitlist/remove/{id}")]
         [Authorize(Roles = "Commander,Leadership,Dev")]
         public IActionResult Remove(int id)
         {
@@ -234,34 +192,5 @@ namespace Imperium_Incursions_Waitlist.Controllers
 
             return Ok();
         }
-    }
-
-    struct FcSettingsResponse
-    {
-        public List<Models.CommChannel> Comms;
-        public List<string> FleetTypes;
-        public List<FleetBoss> Pilots;
-        public PrefPilot prefPilot;
-    }
-
-    struct UserSettingsResponse
-    {
-        public Account account;
-        public List<WaitingPilot> waitingPilots;
-        public List<FleetRole> roles;
-        public List<Fit> avaliableFits;
-        public PrefPilot prefPilot;
-    }
-
-    struct FleetBoss
-    {
-        public int Id;
-        public string Name;
-    }
-
-    struct PrefPilot
-    {
-        public int pilotId;
-        public string Name;
     }
 }
