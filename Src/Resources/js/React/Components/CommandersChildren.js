@@ -3,18 +3,19 @@ import { XmppLink } from './CommLinks';
 import { DateFormat } from '../Helpers';
 import { Input } from './FormControls'
 import { Corporation, Alliance, Pilot } from './EsiUi';
+import { AccountPilot } from '../Helpers';
 
 export class UserRow extends Component {
     getCorporation() {
-        if (this.props.user && this.props.user.pilots[0]) 
-            return this.props.user.pilots[0].corporation;
+        if (this.props.user && this.props.user.pilots) 
+            return AccountPilot(this.props.user.name, this.props.user.pilots).corporation;
         
-        return "";
+        return;
     }
 
     getAlliance() {
-        if (this.props.user && this.props.user.pilots[0] && this.props.user.pilots[0].corporation)
-            return this.props.user.pilots[0].alliance;
+        if (this.props.user && this.props.user.pilots)
+            return AccountPilot(this.props.user.name, this.props.user.pilots).alliance;
 
         return;
     }
@@ -26,10 +27,9 @@ export class UserRow extends Component {
 
     // Pilot image url
     getPilotUrl() {
-
         let pilot_id = 0;
-        if (this.props.user && this.props.user.pilots[0])
-            pilot_id = this.props.user.pilots[0].id;
+        if (this.props.user)
+            pilot_id = AccountPilot(this.props.user.name, this.props.user.pilots).id;
 
         return `https://imageserver.eveonline.com/Character/${pilot_id}_32.jpg`;
     }
@@ -61,24 +61,23 @@ export class ManageInfo extends Component {
     }
 
     getPilotUrl() {
-
         let pilot_id = 0;
-        if (this.props.details && this.props.details.pilots[0])
-            pilot_id = this.props.details.pilots[0].id;
+        if (this.props.details)
+            pilot_id = AccountPilot(this.props.details.name, this.props.details.pilots).id;
 
         return `https://imageserver.eveonline.com/Character/${pilot_id}_128.jpg`;
     }
 
     getCorporation() {
-        if (this.props.details && this.props.details.pilots[0])
-            return this.props.details.pilots[0].corporation;
+        if (this.props.details && this.props.details.pilots)
+            return AccountPilot(this.props.details.name, this.props.details.pilots).corporation;
 
         return null;
     }
 
     getAlliance() {
-        if (this.props.details && this.props.details.pilots[0])
-            return this.props.details.pilots[0].alliance;
+        if (this.props.details && this.props.details.pilots)
+            return AccountPilot(this.props.details.name, this.props.details.pilots).alliance;
 
         return null;
     }

@@ -2,6 +2,7 @@
 import { XmppLink } from './CommLinks';
 import { DateFormat } from '../Helpers';
 import { TextArea, Input } from './FormControls'
+import { AccountPilot } from '../Helpers';
 
 export class BanRow extends Component {
     //Permanant or temporary
@@ -28,8 +29,8 @@ export class BanRow extends Component {
 
     getPilotUrl() {
         let pilot_id = 0;
-        if (this.props.ban && this.props.ban.bannedAccount.pilots[0])
-            pilot_id = this.props.ban.bannedAccount.pilots[0].id;
+        if (this.props.ban && this.props.ban.bannedAccount.pilots)
+            pilot_id = AccountPilot(this.props.ban.bannedAccount.name, this.props.ban.bannedAccount.pilots).id;
 
         return `https://imageserver.eveonline.com/Character/${pilot_id}_32.jpg`;
     }
@@ -57,8 +58,8 @@ export class ManageInfo extends Component {
     getPilotUrl() {
         
         let pilot_id = 0;
-        if (this.props.details && this.props.details.bannedAccount.pilots[0]) 
-            pilot_id = this.props.details.bannedAccount.pilots[0].id;
+        if (this.props.details && this.props.details.bannedAccount.pilots[0])
+            pilot_id = AccountPilot(this.props.details.bannedAccount.name, this.props.details.bannedAccount.pilots).id;
 
         return `https://imageserver.eveonline.com/Character/${pilot_id}_128.jpg`;
     }
