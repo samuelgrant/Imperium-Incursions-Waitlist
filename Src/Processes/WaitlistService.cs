@@ -24,7 +24,9 @@ public class WaitlistService : IHostedService
         _logger = logger;
     }
 
+#pragma warning disable CS1998 // Async method lacks 'await' operators and will run synchronously
     public async Task StartAsync(CancellationToken cancellationToken)
+#pragma warning restore CS1998 // Async method lacks 'await' operators and will run synchronously
     {
         // Create a new scope to retrieve scoped services
         var scope = _serviceProvider.CreateScope();
@@ -45,9 +47,11 @@ public class WaitlistService : IHostedService
         foreach (WaitingPilot waiting_pilot in waitlist)
         {
             Pilot pilot = _Db.Pilots.Find(waiting_pilot.PilotId);
-
             // Update pilot system
             await pilot.UpdateToken();
+            if (!pilot.ESIValid)
+                continue;
+
             var System = await EsiWrapper.GetSystem((AuthorizedCharacterData)pilot);
             waiting_pilot.SystemId = System?.SolarSystemId;
 

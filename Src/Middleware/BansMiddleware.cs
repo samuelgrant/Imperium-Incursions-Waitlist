@@ -31,15 +31,22 @@ public class BansMiddleware
         else
         {
             var account = _Db.Accounts.Include(c => c.AccountBans).FirstOrDefault( 
-                    c => c.Id == int.Parse(context.User.FindFirst("Id").Value)
+                    c => c.Id == context.User.AccountId()
                 );
 
-            if(!account.IsBanned())
+            if(account == null || !account.IsBanned())
             {
                 await _next.Invoke(context);
             }
             else
-            {
+            {//context.Request.Headers["X-Requested-With"] >>> {XMLHttpRequest}
+                if(context.Request.Headers["X-Requested-With"].ToString() == "XMLHttpRequest")
+                {
+                    context.Response.StatusCode = 404;
+                    await _next.Invoke(context);
+                }
+                    
+
                 await context.SignOutAsync();
                 context.Response.Redirect("/error/banned");
             }

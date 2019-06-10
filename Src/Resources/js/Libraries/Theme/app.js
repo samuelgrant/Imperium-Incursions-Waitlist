@@ -9,21 +9,6 @@ $(window).on('load', function () {
     }, 500);
 });
 
-/*------------------------------------------------
-    Header -- Tmp remoed so the navbar stays dark
--------------------------------------------------*/
-/*
-$(window).on('scroll', function () {
-    var scroll = $(window).scrollTop();
-    if (scroll >= 20) {
-        $('.header').addClass('header--scrolled');
-    } else {
-        $('.header').removeClass('header--scrolled');
-    }
-});
-*/
-
-
 $(document).ready(function () {
     /*------------------------------------------------
         Search
@@ -54,6 +39,21 @@ $(document).ready(function () {
         minLength: 3,
         delay: 500
     });
+
+    // Admin settings ship search
+    $("#ship_search").autocomplete({
+        source: (request, response) => {
+            $.ajax({
+                url: `/admin/settings/ships/search?q=${request.term}`,
+                dataType: "json",
+                success: function (data) {
+                    response(data);
+                }
+            });
+        },
+        minLength: 3,
+        delay: 500
+    });
     
     /*------------------------------------------------
         Sidebar toggle menu
@@ -63,6 +63,18 @@ $(document).ready(function () {
 
         $(this).parent().toggleClass('navigation__sub--toggled');
         $(this).next('ul').slideToggle(250);
+    });
+
+    /*------------------------------------------------
+       Custom Side Bars
+    -------------------------------------------------*/
+    // Close sidebar if the user clicks outside of it.
+    $(document).click(function (e) {
+        if ($(".sidebar-special.active").length > 0) {
+            if (!e.target.closest(".sidebar-special")) {
+                $('.sidebar-special').removeClass('active');
+            }
+        }
     });
 
 

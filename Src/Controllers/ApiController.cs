@@ -1,13 +1,13 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
+﻿using System.Linq;
+using ESI.NET.Models.SSO;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
-using ESI.NET.Models.SSO;
+using Microsoft.EntityFrameworkCore;
 using Imperium_Incursions_Waitlist.Models;
 using Imperium_Incursions_Waitlist.Services;
+using Microsoft.AspNetCore.Authorization;
 
 namespace Imperium_Incursions_Waitlist.Controllers.Auth
 {
@@ -51,6 +51,36 @@ namespace Imperium_Incursions_Waitlist.Controllers.Auth
             await _Db.SaveChangesAsync();
 
             return Ok();
+        }
+
+
+        [HttpGet]
+        [Produces("application/json")]
+        [Route("/api/v1/waitlist/pilots")]
+        [Authorize(Roles = "Commander,Leadership,Dev")]
+        public async Task<IActionResult> GetWaitingPilots()
+        {
+            var waitlist =  _Db.WaitingPilots
+                .Where(c => c.RemovedByAccountId == null)
+                .Include(a => a.SelectedRoles)
+                .ThenInclude(ac => ac.FleetRole)
+                .Include(c => c.SelectedFits)
+                .ThenInclude(ac => ac.Fit)
+                .Select(c => new {
+                    c.Id,
+                    c.Pilot,
+                    account = new{c.Pilot.AccountId, c.Pilot.Account.Name },
+                    c.IsOffline,
+                    c.NewPilot,
+                    ships = c.SelectedFits.Select(s => new { s.Fit.Id, s.Fit.ShipTypeId, s.Fit.Description }),
+                    roles = c.SelectedRoles.Select(s => new { s.FleetRole.Name, s.FleetRole.Acronym }),
+                    system = (c.System != null) ? new { c.System.Id, c.System.Name } : null,
+                    altInFleet = "",
+                    c.WaitingFor,
+                }).ToList();
+
+
+            return Ok(waitlist);
         }
     }
 }

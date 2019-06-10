@@ -11,6 +11,8 @@ using Microsoft.Extensions.DependencyInjection;
 using Imperium_Incursions_Waitlist.Services;
 using ESI.NET.Models.SSO;
 using Microsoft.EntityFrameworkCore;
+using System.ComponentModel;
+using Imperium_Incursions_Waitlist;
 
 public class FleetService : IHostedService
 {
@@ -25,7 +27,9 @@ public class FleetService : IHostedService
         _logger = logger;
     }
 
+#pragma warning disable CS1998 // Async method lacks 'await' operators and will run synchronously
     public async Task StartAsync(CancellationToken cancellationToken)
+#pragma warning restore CS1998 // Async method lacks 'await' operators and will run synchronously
     {
         // Create a new scope to retrieve scoped services
         var scope = _serviceProvider.CreateScope();
@@ -33,26 +37,41 @@ public class FleetService : IHostedService
         // Get the DbContext instance
         _Db = scope.ServiceProvider.GetRequiredService<WaitlistDataContext>();
 
+
         _timer = new Timer(DoWork, null, TimeSpan.Zero,
                   TimeSpan.FromSeconds(20));
-
     }
 
     private async void DoWork(object state)
     {
         _logger.LogInformation("Background Service Started: updating fleets.");
-        List<Fleet> fleets = _Db.Fleets.Where(c => c.BossPilot != null && c.ClosedAt == null).Include(ci => ci.BossPilot).ToList();
+        List<Fleet> fleets = _Db.Fleets.Include(ci => ci.BossPilot).Where(c => c.BossPilot != null && c.ClosedAt == null).ToList();
+        if (fleets.Count == 0) return;
+
         foreach (Fleet fleet in fleets)
         {
-            Pilot pilot = _Db.Pilots.Find(fleet.BossPilot.CharacterID);
+            //I'm not sure why, but occasionally a fleet without a boss will bleed through
+            //This happens if boss was null, and then updated by an FC before this system next runs.
+            if (fleet.BossPilotId == null)
+                continue;
+
+            Pilot pilot = _Db.Pilots.Find(fleet.BossPilotId);
 
             try
             {
                 // Update fleet location based on the Fleet Boss
                 await pilot.UpdateToken();
+                if (!pilot.ESIValid)
+                {
+                    throw new UnauthorizedAccessException("The Fleet Boss's ESI token is no longer valid");
+                }
+
                 var System = await EsiWrapper.GetSystem((AuthorizedCharacterData)pilot);
                 fleet.SystemId = System?.SolarSystemId;
-                fleet.ErrorCount = null;
+
+                // Update Wings, Squads
+                await pilot.UpdateToken();
+                fleet.Wings = await EsiWrapper.GetFleetLayout((AuthorizedCharacterData)pilot, fleet.EveFleetId);
 
                 // Update the pilots in fleet
                 await pilot.UpdateToken();
@@ -89,32 +108,38 @@ public class FleetService : IHostedService
                         }
                     }
 
-                    // Delete pilots who have not been reported through ESI for more than 2 minutes.
+                    // Delete pilots who have not been reported through ESI for more than 1 minutes.
                     current_members = _Db.FleetAssignments.Where(c => c.FleetId == fleet.Id).ToList();
                     foreach(FleetAssignment member in current_members)
                         if (member.UpdatedAt.Value.AddMinutes(1) < DateTime.UtcNow)
                             member.DeletedAt = DateTime.UtcNow;
-                    
                 }
+
+                // NO errors, resetting counter
+                fleet.ErrorCount = null;
             }
             catch (Exception ex)
             {
+                _logger.LogError("Error updating fleet {0} (FC: {1}). {2} ", fleet.Id, fleet.BossPilot.CharacterName, ex.Message);
+
+                if (ex.Message == FleetErrorType.FleetDead.ToString())
+                {
+                    fleet.ClosedAt = DateTime.UtcNow;
+                    _logger.LogInformation("The fleet no longer exists and has been closed");
+                    continue;
+                }
+
                 // Increase error counter
                 int? errors = fleet.ErrorCount;
                 fleet.ErrorCount = (errors != null) ? errors + 1 : 1;
-
-
+                
 
                 // Too many errors, deleting fleet boss to protect against error throttling
                 if (errors >= 15)
                 {
                     fleet.BossPilotId = null;
-                    //_logger.LogWarning("Too many errors have occurred for fleet {0} (FC: {1}. The boss has been removed and ESI queries for this fleet disabled.", 
-                    //    fleet.Id, fleet.BossPilot.CharacterName, ex.Message);
+                    fleet.ErrorCount = null;
                 }
-                    
-
-                _logger.LogError("Error updating fleet {0} (FC: {1}). {2} ", fleet.Id, fleet.BossPilot.CharacterName, ex.Message);
             }
 
             // Touch Updated At timestamp

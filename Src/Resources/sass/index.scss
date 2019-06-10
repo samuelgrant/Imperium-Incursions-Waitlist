@@ -97,6 +97,10 @@ button.close:hover, button.close:active {
     background-color: #DC7325;
 }
 
+.btn-warning.disabled, .btn-warning:disabled {
+    background-color: #dc7325
+}
+
 .sidepanel-content {
     font-size: large;
 }
@@ -129,6 +133,10 @@ i {
     margin-left: -15px;
 }
 
+.card-body {
+    background-color: rgba(0, 0, 0, 0.3);
+}
+
 .fleet-info .card-body .row, .fleet-info .card-body .row .xmpp{
     padding: 1.25rem;
     font-size: x-large;
@@ -146,4 +154,29 @@ i {
     .container {
         min-width: 1640px;
     }
+}
+
+.alert-primary {
+    background-color: #1164A2;
+}
+
+tr.tr-danger {
+    background: rgba(125, 0, 0, 0.5);
+    -webkit-transition: background-color 200ms linear;
+    -ms-transition: background-color 200ms linear;
+    transition: background-color 200ms linear;
+}
+
+tr.tr-success {
+    background: rgba(0, 80, 3, 0.5);
+    -webkit-transition: background-color 200ms linear;
+    -ms-transition: background-color 200ms linear;
+    transition: background-color 200ms linear;
+}
+
+tr.tr-pending {
+    background-color: rgba(16, 82, 82, 0.5);
+    -webkit-transition: background-color 200ms linear;
+    -ms-transition: background-color 200ms linear;
+    transition: background-color 200ms linear;
 }

@@ -14,9 +14,10 @@ namespace Imperium_Incursions_Waitlist.Migrations
                 {
                     Id = table.Column<int>(nullable: false),
                     Name = table.Column<string>(nullable: false),
+                    JabberNotifications = table.Column<bool>(nullable: false),
+                    LastLoginIP = table.Column<string>(maxLength: 15, nullable: true),
                     RegisteredAt = table.Column<DateTime>(nullable: false),
-                    LastLogin = table.Column<DateTime>(nullable: true),
-                    LastLoginIP = table.Column<string>(nullable: true)
+                    LastLogin = table.Column<DateTime>(nullable: true)
                 },
                 constraints: table =>
                 {
@@ -28,7 +29,7 @@ namespace Imperium_Incursions_Waitlist.Migrations
                 columns: table => new
                 {
                     Id = table.Column<int>(nullable: false),
-                    Name = table.Column<string>(nullable: true)
+                    Name = table.Column<string>(nullable: false)
                 },
                 constraints: table =>
                 {
@@ -40,10 +41,9 @@ namespace Imperium_Incursions_Waitlist.Migrations
                 columns: table => new
                 {
                     Id = table.Column<int>(nullable: false)
-                        .Annotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn)
-                        .Annotation("MySql:ValueGenerationStrategy", MySqlValueGenerationStrategy.IdentityColumn),
-                    Url = table.Column<string>(nullable: true),
-                    LinkText = table.Column<string>(nullable: true)
+                        .Annotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn),
+                    Url = table.Column<string>(nullable: false),
+                    LinkText = table.Column<string>(nullable: false)
                 },
                 constraints: table =>
                 {
@@ -55,9 +55,9 @@ namespace Imperium_Incursions_Waitlist.Migrations
                 columns: table => new
                 {
                     Id = table.Column<int>(nullable: false)
-                        .Annotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn)
-                        .Annotation("MySql:ValueGenerationStrategy", MySqlValueGenerationStrategy.IdentityColumn),
-                    Name = table.Column<string>(nullable: true),
+                        .Annotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn),
+                    Acronym = table.Column<string>(nullable: false),
+                    Name = table.Column<string>(nullable: false),
                     Avaliable = table.Column<bool>(nullable: false)
                 },
                 constraints: table =>
@@ -66,12 +66,25 @@ namespace Imperium_Incursions_Waitlist.Migrations
                 });
 
             migrationBuilder.CreateTable(
+                name: "Modules",
+                columns: table => new
+                {
+                    Id = table.Column<int>(nullable: false),
+                    Name = table.Column<string>(nullable: true),
+                    Slot = table.Column<string>(nullable: true),
+                    GroupId = table.Column<int>(nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Modules", x => x.Id);
+                });
+
+            migrationBuilder.CreateTable(
                 name: "Roles",
                 columns: table => new
                 {
                     Id = table.Column<int>(nullable: false)
-                        .Annotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn)
-                        .Annotation("MySql:ValueGenerationStrategy", MySqlValueGenerationStrategy.IdentityColumn),
+                        .Annotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn),
                     Name = table.Column<string>(nullable: false)
                 },
                 constraints: table =>
@@ -83,10 +96,8 @@ namespace Imperium_Incursions_Waitlist.Migrations
                 name: "ShipTypes",
                 columns: table => new
                 {
-                    Id = table.Column<int>(nullable: false)
-                        .Annotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn)
-                        .Annotation("MySql:ValueGenerationStrategy", MySqlValueGenerationStrategy.IdentityColumn),
-                    Name = table.Column<string>(nullable: true),
+                    Id = table.Column<int>(nullable: false),
+                    Name = table.Column<string>(nullable: false),
                     Queue = table.Column<int>(nullable: false)
                 },
                 constraints: table =>
@@ -99,9 +110,8 @@ namespace Imperium_Incursions_Waitlist.Migrations
                 columns: table => new
                 {
                     Id = table.Column<int>(nullable: false)
-                        .Annotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn)
-                        .Annotation("MySql:ValueGenerationStrategy", MySqlValueGenerationStrategy.IdentityColumn),
-                    Name = table.Column<string>(nullable: true)
+                        .Annotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn),
+                    Name = table.Column<string>(nullable: false)
                 },
                 constraints: table =>
                 {
@@ -125,8 +135,7 @@ namespace Imperium_Incursions_Waitlist.Migrations
                 columns: table => new
                 {
                     Id = table.Column<int>(nullable: false)
-                        .Annotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn)
-                        .Annotation("MySql:ValueGenerationStrategy", MySqlValueGenerationStrategy.IdentityColumn),
+                        .Annotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn),
                     AdminId = table.Column<int>(nullable: false),
                     UpdatedByAdminId = table.Column<int>(nullable: true),
                     BannedAccountId = table.Column<int>(nullable: false),
@@ -163,12 +172,11 @@ namespace Imperium_Incursions_Waitlist.Migrations
                 columns: table => new
                 {
                     Id = table.Column<int>(nullable: false)
-                        .Annotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn)
-                        .Annotation("MySql:ValueGenerationStrategy", MySqlValueGenerationStrategy.IdentityColumn),
+                        .Annotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn),
                     AdminId = table.Column<int>(nullable: false),
                     TargetAccountId = table.Column<int>(nullable: false),
                     UpdatedByAdminId = table.Column<int>(nullable: false),
-                    Message = table.Column<string>(nullable: true),
+                    Message = table.Column<string>(nullable: false),
                     CreatedAt = table.Column<DateTime>(nullable: false),
                     UpdatedAt = table.Column<DateTime>(nullable: false)
                 },
@@ -243,11 +251,11 @@ namespace Imperium_Incursions_Waitlist.Migrations
                 columns: table => new
                 {
                     Id = table.Column<int>(nullable: false)
-                        .Annotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn)
-                        .Annotation("MySql:ValueGenerationStrategy", MySqlValueGenerationStrategy.IdentityColumn),
+                        .Annotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn),
                     AccountId = table.Column<int>(nullable: false),
                     ShipTypeId = table.Column<int>(nullable: false),
                     FittingDNA = table.Column<string>(nullable: true),
+                    Description = table.Column<string>(nullable: true),
                     IsShipScan = table.Column<bool>(nullable: false),
                     CreatedAt = table.Column<DateTime>(nullable: false),
                     DeletedAt = table.Column<DateTime>(nullable: true)
@@ -330,8 +338,7 @@ namespace Imperium_Incursions_Waitlist.Migrations
                 columns: table => new
                 {
                     Id = table.Column<int>(nullable: false)
-                        .Annotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn)
-                        .Annotation("MySql:ValueGenerationStrategy", MySqlValueGenerationStrategy.IdentityColumn),
+                        .Annotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn),
                     EveFleetId = table.Column<long>(nullable: false),
                     BossPilotId = table.Column<int>(nullable: true),
                     CommChannelId = table.Column<int>(nullable: false),
@@ -403,8 +410,7 @@ namespace Imperium_Incursions_Waitlist.Migrations
                 columns: table => new
                 {
                     Id = table.Column<int>(nullable: false)
-                        .Annotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn)
-                        .Annotation("MySql:ValueGenerationStrategy", MySqlValueGenerationStrategy.IdentityColumn),
+                        .Annotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn),
                     PilotId = table.Column<int>(nullable: false),
                     SystemId = table.Column<int>(nullable: true),
                     RemovedByAccountId = table.Column<int>(nullable: true),
@@ -514,26 +520,6 @@ namespace Imperium_Incursions_Waitlist.Migrations
                 table: "Alliance",
                 columns: new[] { "Id", "Name" },
                 values: new object[] { 0, "" });
-
-            migrationBuilder.InsertData(
-                table: "FleetRoles",
-                columns: new[] { "Id", "Avaliable", "Name" },
-                values: new object[,]
-                {
-                    { 1, true, "TTT" },
-                    { 2, true, "AAA" },
-                    { 3, true, "DDD" },
-                    { 4, true, "MTAC" }
-                });
-
-            migrationBuilder.InsertData(
-                table: "Roles",
-                columns: new[] { "Id", "Name" },
-                values: new object[,]
-                {
-                    { 1, "Commander" },
-                    { 2, "Leadership" }
-                });
 
             migrationBuilder.CreateIndex(
                 name: "IX_AccountRoles_RoleId",
@@ -667,6 +653,9 @@ namespace Imperium_Incursions_Waitlist.Migrations
 
             migrationBuilder.DropTable(
                 name: "FleetAssignments");
+
+            migrationBuilder.DropTable(
+                name: "Modules");
 
             migrationBuilder.DropTable(
                 name: "Notes");

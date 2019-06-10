@@ -1,9 +1,12 @@
 ﻿import React, { Component } from 'react';
 import { render } from 'react-dom';
 import { NewFleetModal, NewFleetLink } from './components/newfleets';
-import Alert from './components/alert';
+import Alert from './Components/alert';
 import FleetInfo from './Components/FleetInfo';
 import { setInterval } from 'timers';
+import WaitlistUp from './Components/WaitlistUp';
+import WaitingPilot from './Components/WaitingPilots';
+
 
 const baseUri = "/waitlist";
 
@@ -13,42 +16,60 @@ export default class Index extends Component {
 
         this.state = {
             fleets: null,
-            fcOptions: null
+            fcOptions: null,
+            userOptions: null
         }
     }
 
     componentDidMount() {
+        this.getSettings()
         this.getFleets();
-        this.getFcSettings()
         setInterval(() => this.getFleets(), 1000 * 10);
     }
 
     getFleets() {
         $.ajax({
             type: 'get',
-            url: `/waitlist/fleets`,
-            async: false
+            url: `/waitlist/fleets`
         }).done((fleets) => {
-            console.log(fleets);
             this.setState({ fleets: fleets });
         }).fail((err) => {
             console.error(`React/Index {Index@getFleets} - Error getting the available fleets`, err);
         })  
     }
 
-    getFcSettings() {
+    getSettings() {
         $.ajax({
             type: 'get',
             url: `/api/v1/fc-settings`,
+            async: false
         }).done((settings) => {
-            this.setState({ fcOptions: settings });
+            this.setState({ fcOptions: (settings != "") ? settings : null});
         }).fail((err) => {
-            console.error(`React/Index {Index@getFcSettings} - Error getting the FC settings`, err.responseText);
+            console.error(`React/Index {Index@getSettings} - Error getting the FC settings`, err.responseText);
+        })
+
+        $.ajax({
+            type: 'get',
+            url: `/api/v1/user-settings`,
+            async: false
+        }).done((settings) => {
+            this.setState({ userOptions: settings });
+        }).fail((err) => {
+            console.error(`React/Index {Index@getSettings} - Error getting the user settings`, err.responseText);
         })
     }
 
     availableFleets() {
-        return this.state.fleets != null;
+        return this.state.fleets && this.state.fleets.length > 0;
+    }
+
+    waitingPilots() {
+        return this.state.userOptions ? this.state.userOptions.waitingPilots : null;
+    }
+
+    test() {
+        console.log(`test`);
     }
 
     render() {
@@ -60,8 +81,14 @@ export default class Index extends Component {
         let fleets;
         if (this.state.fleets) {
             fleets = this.state.fleets.map((fleet, index) => {
-                return <FleetInfo fleet={fleet} key={index} myPilots={(this.state.fcOptions) ? this.state.fcOptions.pilots : null} />
+                return <FleetInfo fleet={fleet} key={index} showFcOptions={this.state.fcOptions ? true : false } myPilots={(this.state.fcOptions) ? this.state.fcOptions.pilots : null} />
             })
+        }
+
+        let newFleet = { btn: null, modal: null };
+        if (this.state.fcOptions) {
+            newFleet.btn = <NewFleetLink />;
+            newFleet.modal = <NewFleetModal options={this.state.fcOptions} />;
         }
 
         return (
@@ -75,14 +102,24 @@ export default class Index extends Component {
 
                     {fleets}
 
-                    <NewFleetLink />
+                    {newFleet.btn}
                 </div>
 
                 <div className="row">
-                    Waitlist up and queue
+                    <div className="col-lg-4 col-md-6 col-sm-12">
+                        <WaitlistUp options={this.state.userOptions} baseUri={baseUri} u={this.getSettings.bind(this)} />
+                    </div>
+
+                    <div className="col-lg-4 col-md-6 col-sm-12">
+                        <WaitingPilot pilots={this.waitingPilots()} baseUri={baseUri} u={this.getSettings.bind(this)} />
+                    </div>
+
+                    <div className="col-lg-4 col-sm-12">
+                        Queue
+                    </div>
                 </div>
 
-                <NewFleetModal options={this.state.fcOptions}/>
+                {newFleet.modal}
             </div>
         )
     }

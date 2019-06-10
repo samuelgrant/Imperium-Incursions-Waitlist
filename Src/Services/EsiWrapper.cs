@@ -2,6 +2,7 @@
 using System.Threading.Tasks;
 using System.Net;
 using ESI.NET;
+using ESI.NET.Models;
 using ESI.NET.Enumerations;
 using Microsoft.Extensions.Options;
 using Microsoft.Extensions.Logging;
@@ -82,7 +83,7 @@ namespace Imperium_Incursions_Waitlist.Services
             if(FleetMembers_response.StatusCode != HttpStatusCode.OK)
             {
                 s_Log.LogError("{0} error searching API '{1}': {2}", FleetMembers_response.StatusCode, FleetMembers_response.Endpoint, FleetMembers_response.Message);
-                return null;
+                throw new Exception(FleetMembers_response.ErrorType().ToString());
             }
 
             return FleetMembers_response.Data;
@@ -101,6 +102,21 @@ namespace Imperium_Incursions_Waitlist.Services
             }
 
             return SystemInfo_response.Data;
+        }
+
+        public static async Task<SearchResults> Search(string searchTerm, bool strict, SearchCategory category)
+        {
+            EnsureInit();
+            
+            EsiResponse<SearchResults> Search_response = await s_client.Search.Query(SearchType.Public, searchTerm, category, strict);
+
+            if (Search_response.StatusCode != HttpStatusCode.OK)
+            {
+                s_Log.LogError("{0} error searching API '{1}': {2}", Search_response.StatusCode, Search_response.Endpoint, Search_response.Message);
+                return null;
+            }
+
+            return Search_response.Data;
         }
 
         /// <summary>
@@ -191,16 +207,24 @@ namespace Imperium_Incursions_Waitlist.Services
         public static async Task<ESI.NET.Models.Corporation.Corporation> GetCorporation(long id)
         {
             EnsureInit();
-            
-            EsiResponse<ESI.NET.Models.Corporation.Corporation> Corporation_response = await s_client.Corporation.Information((int)id);
 
-            if(Corporation_response.StatusCode != HttpStatusCode.OK)
+            try
             {
-                s_Log.LogError("{0} error searching API '{1}': {2}", Corporation_response.StatusCode, Corporation_response.Endpoint, Corporation_response.Message);
+                EsiResponse<ESI.NET.Models.Corporation.Corporation> Corporation_response = await s_client.Corporation.Information((int)id);
+
+                if (Corporation_response.StatusCode != HttpStatusCode.OK)
+                {
+                    s_Log.LogError("{0} error searching API '{1}': {2}", Corporation_response.StatusCode, Corporation_response.Endpoint, Corporation_response.Message);
+                    return null;
+                }
+
+                return Corporation_response.Data;
+            }
+            catch(Exception ex)
+            {
+                s_Log.LogError($"Error getting corporation information {ex.Message}");
                 return null;
             }
-
-            return Corporation_response.Data;
         }
 
         /// <summary>
@@ -213,15 +237,79 @@ namespace Imperium_Incursions_Waitlist.Services
         {
             EnsureInit();
 
-            EsiResponse<ESI.NET.Models.Alliance.Alliance> Alliance_response = await s_client.Alliance.Information(id);
-
-            if(Alliance_response.StatusCode != HttpStatusCode.OK)
+            try
             {
-                s_Log.LogError("{0} error search API '{1}': {2}", Alliance_response.StatusCode, Alliance_response.Endpoint, Alliance_response.Message);
+                EsiResponse<ESI.NET.Models.Alliance.Alliance> Alliance_response = await s_client.Alliance.Information(id);
+
+                if (Alliance_response.StatusCode != HttpStatusCode.OK)
+                {
+                    s_Log.LogError("{0} error search API '{1}': {2}", Alliance_response.StatusCode, Alliance_response.Endpoint, Alliance_response.Message);
+                    return null;
+                }
+
+                return Alliance_response.Data;
+            }
+            catch(Exception ex)
+            {
+                s_Log.LogError($"Error getting alliance information {ex.Message}");
                 return null;
             }
+        }
 
-            return Alliance_response.Data;
+        /// <summary>
+        /// Invites the pilot to a fleet. If a specific squad is not specified they will be invited to the default squad.
+        /// </summary>
+        /// <param name="fleetBoss">Fleet Boss explicit cast as AuthorizedCharacterData</param>
+        /// <param name="fleetId">Target fleet Id</param>
+        /// <param name="squadId">Target squad Id</param>
+        /// <param name="pilotId">Invitee Id</param>
+        public static async Task<object> FleetInvite(AuthorizedCharacterData fleetBoss, long fleetId, long squadId, long wingId, int pilotId)
+        {
+            try
+            {                
+                EsiClient x = GetEsiClient();
+                x.SetCharacterData(fleetBoss);
+                EsiResponse<string> response = await x.Fleets.InviteCharacter(fleetId, pilotId, ESI.NET.Enumerations.FleetRole.SquadMember, wingId, squadId);
+                if(response.StatusCode != HttpStatusCode.OK)
+                {
+                    s_Log.LogError("{0} error search API '{1}': {2}", response.StatusCode, response.Endpoint, response.Message);
+
+                    Exception ex;
+                    if (response.Message.Contains("'error_label': 'FleetCandidateOffline', 'error_dict'"))
+                    {
+                        ex = new Exception("Fleet Candidate Offline");
+                    } 
+                    else
+                    {
+                        ex = new Exception(response.Message);
+                    }
+
+                    throw new Exception("Fleet Invite Failed", ex);
+                }
+
+                return null;
+            }
+            catch (Exception ex)
+            {
+                //s_Log.LogError("{0} error searching API '{1}': {2}", FleetMembers_response.StatusCode, FleetMembers_response.Endpoint, FleetMembers_response.Message);
+                //throw new Exception(FleetLayout_response.ErrorType().ToString());
+                throw new NotImplementedException();
+            }
+        }
+
+        public static async Task<List<ESI.NET.Models.Fleets.Wing>> GetFleetLayout(AuthorizedCharacterData fleetBoss, long fleetId)
+        {
+            EsiClient x = GetEsiClient();
+            x.SetCharacterData(fleetBoss);
+            EsiResponse<List<ESI.NET.Models.Fleets.Wing>> FleetLayout_response = await x.Fleets.Wings(fleetId);
+
+            if (FleetLayout_response.StatusCode != HttpStatusCode.OK)
+            {
+                s_Log.LogError("{0} error search API '{1}': {2}", FleetLayout_response.StatusCode, FleetLayout_response.Endpoint, FleetLayout_response.Message);
+                throw new Exception(FleetLayout_response.ErrorType().ToString());
+            }
+
+            return FleetLayout_response.Data;
         }
     }
 }

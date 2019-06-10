@@ -10,6 +10,20 @@ export default class Modal extends Component {
         return this.props.title || "";
     }
 
+    getSize() {
+        switch (this.props.size) {
+
+            case "lg":
+                return `modal-${this.props.size}`
+                break;
+            case "xl":
+                return `modal-${this.props.size}`
+                break;
+            default:
+                return;
+        }
+    }
+
     render() {
         let dismiss;
         if (this.props.dismiss) {
@@ -22,7 +36,7 @@ export default class Modal extends Component {
 
         return (
             <div className="modal fade" id={this.getId()} role="dialog" tabindex="-1">
-                <div className="modal-dialog" role="document">
+                <div className={`modal-dialog ${this.getSize()}`} role="document">
                     <div className="modal-content">
 
                         <div className="modal-header">

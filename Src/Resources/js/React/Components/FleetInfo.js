@@ -4,12 +4,37 @@ import { MumbleLink } from './CommLinks';
 
 export default class FleetInfo extends Component {
 
+    joinFleet(id) {
+        $.ajax({
+            type: 'post',
+            url: `/fleets/${this.props.fleet.id}/invite/${id}`,
+        }).fail((err) => {
+            console.error(`React/Components/FleetInfo {FleetInfo@joinFleet} - Error joining the waitlist`, err.responseText);
+        }) 
+    }
+
     render() {
         let myPilots;
         if (this.props.myPilots) {
             myPilots = this.props.myPilots.map((pilot) => {
-                return <a role="presentation" className="dropdown-item" href="#">{pilot.name}</a>;
+                return <a role="presentation" className="dropdown-item" onClick={this.joinFleet.bind(this, pilot.id)}>{pilot.name}</a>;
             });
+        }
+
+        let fcButtons;
+        if (this.props.showFcOptions) {
+            fcButtons = (
+                <div role="group" className="btn-group special">
+                    <a className="btn btn-dark" type="button" href={`/fleets/${this.props.fleet.id}`}>Manage Fleet</a>
+
+                    <div className="dropdown btn-group" role="group">
+                        <button className="btn btn-success dropdown-toggle" data-toggle="dropdown" aria-expanded="false" type="button">Join Fleet With....</button>
+                        <div role="menu" className="dropdown-menu">
+                            {myPilots}
+                        </div>
+                    </div>
+                </div>
+            )
         }
         return (
             <div className="col-lg-4 col-md-6 col-sm-12">
@@ -37,18 +62,7 @@ export default class FleetInfo extends Component {
                             </div>
                         </div>
 
-
-                        <div role="group" className="btn-group special">
-                            <a className="btn btn-dark" type="button" href={`/fleets/${this.props.fleet.id}`}>Manage Fleet</a>
-
-                            <div className="dropdown btn-group" role="group">
-                                <button className="btn btn-success dropdown-toggle disabled" data-toggle="dropdown" aria-expanded="false" type="button">Join Fleet With....</button>
-                                <div role="menu" className="dropdown-menu">
-                                    {myPilots}
-                                </div>
-                            </div>
-
-                        </div>
+                        {fcButtons}
                     </div>
                 </div>
             </div>

@@ -12,8 +12,10 @@ namespace Imperium_Incursions_Waitlist.Data
         /// Seeds the database for development purposes.
         /// </summary>
         /// <param name="context"></param>
-        public static async System.Threading.Tasks.Task Initialize(WaitlistDataContext context)
+        public static void Initialize(WaitlistDataContext context)
         {
+            char separator = Path.DirectorySeparatorChar;
+
             // Check for existing account records
             if (!context.Accounts.Any())
             {
@@ -29,42 +31,54 @@ namespace Imperium_Incursions_Waitlist.Data
                     context.Accounts.Add(account);
             }
 
-            // Check for existing Comms Channel records
+            // Seeds comms channels -- June 2019
             if (!context.CommChannels.Any())
             {
-                // No channels in database, seeding basic channels
-                var CommChannels = new CommChannel[]
-                {
-                    new CommChannel {
-                        LinkText = "Inc -> Fleet A",
-                        Url = "mumble://mumble.goonfleet.com/Squads%20and%20SIGs/Incursions/Fleet%20A?title=Goonfleet&version=1.2.0"
-                    },
-                    new CommChannel {
-                        LinkText = "Inc -> Fleet B",
-                        Url = "mumble://mumble.goonfleet.com/Squads%20and%20SIGs/Incursions/Fleet%20B?title=Goonfleet&version=1.2.0"
-                    },
-                    new CommChannel {
-                        LinkText = "Inc -> Fleet C",
-                        Url = "mumble://mumble.goonfleet.com/Squads%20and%20SIGs/Incursions/Fleet%20C?title=Goonfleet&version=1.2.0"
-                    },
-                    new CommChannel {
-                        LinkText = "Inc -> Fleet D",
-                        Url = "mumble://mumble.goonfleet.com/Squads%20and%20SIGs/Incursions/Fleet%20D?title=Goonfleet&version=1.2.0"
-                    }
-                };
+                var comms = Newtonsoft.Json.JsonConvert.DeserializeObject<List<CommChannel>>(File.ReadAllText($"Data{separator}Seeds" + Path.DirectorySeparatorChar + "CommChannels.json"));
+                context.CommChannels.AddRange(comms);
+                context.SaveChanges();
+            }
 
-                foreach (CommChannel channel in CommChannels)
-                    context.CommChannels.Add(channel);
+            // Seeds default account roles required to access all modules of the application
+            if (!context.Roles.Any())
+            {
+                var roles = Newtonsoft.Json.JsonConvert.DeserializeObject<List<Role>>(File.ReadAllText($"Data{separator}Seeds" + Path.DirectorySeparatorChar + "Roles.json"));
+                context.Roles.AddRange(roles);
+                context.SaveChanges();
+            }
+
+            // Seeds fleet roles that can be selected by the pilot
+            if (!context.FleetRoles.Any())
+            {
+                var fleetRoles = Newtonsoft.Json.JsonConvert.DeserializeObject<List<FleetRole>>(File.ReadAllText($"Data{separator}Seeds" + Path.DirectorySeparatorChar + "FleetRoles.json"));
+                context.FleetRoles.AddRange(fleetRoles);
+                context.SaveChanges();
             }
 
             // Seeds solar systems from the SDE
             if (!context.Systems.Any())
             {
-                var systems = Newtonsoft.Json.JsonConvert.DeserializeObject<List<StarSystem>>(File.ReadAllText("Data" + Path.DirectorySeparatorChar + "Systems.json"));
+                var systems = Newtonsoft.Json.JsonConvert.DeserializeObject<List<StarSystem>>(File.ReadAllText($"Data{separator}Seeds" + Path.DirectorySeparatorChar + "Systems.json"));
                 context.Systems.AddRange(systems);
+                context.SaveChanges();
+            }
+
+            // Seeds ship types from the SDE -- 2017
+            if (!context.ShipTypes.Any())
+            {
+                var shipTypes = Newtonsoft.Json.JsonConvert.DeserializeObject<List<ShipType>>(File.ReadAllText($"Data{separator}Seeds" + Path.DirectorySeparatorChar + "ShipTypes.json"));
+                context.ShipTypes.AddRange(shipTypes);
+                context.SaveChanges();
+            }
+
+            // Seed module items from the SDE -- June 2019
+            if (!context.Modules.Any())
+            {
+                var modules = Newtonsoft.Json.JsonConvert.DeserializeObject<List<ModuleItem>>(File.ReadAllText($"Data{separator}Seeds" + Path.DirectorySeparatorChar + "Modules.json"));
+                context.AddRange(modules);
             }
 
             context.SaveChanges();
-        }        
+        }
     }
 }

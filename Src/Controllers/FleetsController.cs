@@ -1,8 +1,11 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Linq;
+using System.Net;
+using System.Net.Http;
 using System.Threading.Tasks;
+using ESI.NET.Models.SSO;
 using Imperium_Incursions_Waitlist.Models;
+using Imperium_Incursions_Waitlist.Services;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
@@ -11,11 +14,11 @@ using Microsoft.Extensions.Logging;
 
 namespace Imperium_Incursions_Waitlist.Controllers
 {
-    [Authorize(Roles = "Commander")]
+    [Authorize(Roles = "Commander,Leadership,Dev")]
     public class FleetsController : Controller
     {
-        private Data.WaitlistDataContext _Db;
-        private ILogger _Logger;
+        private readonly Data.WaitlistDataContext _Db;
+        private readonly ILogger _Logger;
 
         public FleetsController(Data.WaitlistDataContext db, ILogger<FleetsController> logger)
         {
@@ -27,9 +30,9 @@ namespace Imperium_Incursions_Waitlist.Controllers
         public IActionResult Index(int id)
         {
             var fleet = _Db.Fleets.Where(c => c.Id == id && c.ClosedAt == null).FirstOrDefault();
-            if(fleet == null)
+            if (fleet == null)
                 // Fleet not found
-                return NotFound("Fleet not found.");
+                return Redirect("/");
 
             ViewData["fleetId"] = id;
             return View(viewName: "~/Views/FleetManagement.cshtml");
@@ -323,6 +326,60 @@ namespace Imperium_Incursions_Waitlist.Controllers
             _Db.SaveChanges();
 
             return Ok();
+        }
+
+        [HttpPost]
+        [Produces("application/json")]
+        [Route("/fleets/{fleetId}/invite/{pilotId}")]
+        public async Task<IActionResult> Invite(int fleetId, int pilotId, IFormCollection request)
+        {
+            Fleet fleet = _Db.Fleets.Where(c => c.Id == fleetId).Include(c => c.BossPilot).FirstOrDefault();
+            if (fleet == null)
+                return BadRequest("The fleet was not found");
+
+            Pilot boss = _Db.Pilots.Find(fleet.BossPilotId);
+            if (boss == null)
+                return BadRequest("The fleet boss was not found");
+
+            if (!boss.ESIValid)
+                return Unauthorized("Could not validate the FCs ESI Tokens");
+
+            await boss.UpdateToken();
+            _Db.SaveChanges();
+
+            try
+            {
+                long.TryParse(request["squadId"].ToString(), out long squad_id);
+                long.TryParse(request["wingId"].ToString(), out long wing_id);
+                DefaultSquad squadPosition;
+                if (squad_id == 0)
+                {
+                    squadPosition = fleet.DefaultSquad();
+                }
+                else
+                {
+                    squadPosition = new DefaultSquad
+                    {
+                        squad_id = squad_id,
+                        wing_id = wing_id
+                    };
+                }
+                
+                var x = EsiWrapper.FleetInvite((AuthorizedCharacterData)boss, fleet.EveFleetId, squadPosition.squad_id, squadPosition.wing_id, pilotId);
+                return Ok();
+            }
+            catch(Exception ex)
+            {
+                return BadRequest(ex.Message);
+            }
+        }
+
+        [HttpPost]
+        [Produces("application/json")]
+        [Route("/fleets/{fleetId}/alarm/{accountId}")]
+        public HttpResponseMessage Alarm(int fleetId, int accountId)
+        {
+            return new HttpResponseMessage(HttpStatusCode.NotImplemented);
         }
     }
 }

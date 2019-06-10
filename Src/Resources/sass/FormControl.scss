@@ -3,6 +3,7 @@
     background-color: hsla(0,0%,100%,.14);
     border-radius: 3px;
     border-color: white;
+    padding-left: 10px;
 }
 
 label.required::after {
@@ -113,4 +114,20 @@ input:checked + .slider .off {
 
 .slider.round:before {
     border-radius: 50%;
+}
+
+/* Custom Checkbox */
+.custom-checkbox .custom-control-indicator:before {
+    font-family: "Font Awesome 5 Pro";
+    font-weight: 900;
+    content: "\f00c";
+}
+
+.custom-checkbox .custom-control-indicator:before {
+    background-color: #38C63D;
+    color: black;
+}
+
+.custom-checkbox .custom-control-input:checked ~ .custom-control-indicator {
+    border-color: #38C63D;
 }

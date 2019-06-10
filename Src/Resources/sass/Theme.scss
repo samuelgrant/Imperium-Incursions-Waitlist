@@ -2935,7 +2935,8 @@ tbody.collapse.show {
 }
 
 .nav-link:focus, .nav-link:hover {
-    text-decoration: none
+    text-decoration: none;
+    background: none;
 }
 
 .nav-link.disabled {
@@ -8023,8 +8024,6 @@ a.text-danger:focus, a.text-danger:hover {
     padding-left: 1px;
     padding-right: 1px;
     resize: none;
-    -webkit-appearance: none;
-    -moz-appearance: none;
     appearance: none;
     -ms-overflow-style: none
 }

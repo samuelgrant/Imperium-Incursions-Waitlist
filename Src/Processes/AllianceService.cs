@@ -23,7 +23,9 @@ public class AllianceService : IHostedService
         _logger = logger;
     }
 
+#pragma warning disable CS1998 // Async method lacks 'await' operators and will run synchronously
     public async Task StartAsync(CancellationToken cancellationToken)
+#pragma warning restore CS1998 // Async method lacks 'await' operators and will run synchronously
     {
         // Create a new scope to retrieve scoped services
         var scope = _serviceProvider.CreateScope();
@@ -36,7 +38,7 @@ public class AllianceService : IHostedService
 
     }
 
-    private void DoWork(object state)
+    private async void DoWork(object state)
     {
         _logger.LogInformation("Background Service Started: updating alliances.");
         List<Alliance> alliances = _Db.Alliance.ToList();
@@ -46,8 +48,10 @@ public class AllianceService : IHostedService
             if (alliance.Id == 0)
                 continue;
 
-            var result = EsiWrapper.GetAlliance(alliance.Id);
-            alliance.Name = result.Result.Name;
+            var result = await EsiWrapper.GetAlliance(alliance.Id);
+            // Do not update the alliacne name if null/errors are returned.
+            if (result != null)
+                alliance.Name = result.Name;
         }
 
         _Db.SaveChanges();

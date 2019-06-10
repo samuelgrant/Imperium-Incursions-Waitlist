@@ -10,8 +10,8 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace Imperium_Incursions_Waitlist.Migrations
 {
     [DbContext(typeof(WaitlistDataContext))]
-    [Migration("20190531031131_RequireNonNullStringFields")]
-    partial class RequireNonNullStringFields
+    [Migration("20190603234350_Initial Migration")]
+    partial class InitialMigration
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
@@ -24,6 +24,8 @@ namespace Imperium_Incursions_Waitlist.Migrations
             modelBuilder.Entity("Imperium_Incursions_Waitlist.Models.Account", b =>
                 {
                     b.Property<int>("Id");
+
+                    b.Property<bool>("JabberNotifications");
 
                     b.Property<DateTime?>("LastLogin");
 
@@ -147,6 +149,8 @@ namespace Imperium_Incursions_Waitlist.Migrations
 
                     b.Property<DateTime?>("DeletedAt");
 
+                    b.Property<string>("Description");
+
                     b.Property<string>("FittingDNA");
 
                     b.Property<bool>("IsShipScan");
@@ -237,6 +241,9 @@ namespace Imperium_Incursions_Waitlist.Migrations
                         .ValueGeneratedOnAdd()
                         .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
+                    b.Property<string>("Acronym")
+                        .IsRequired();
+
                     b.Property<bool>("Avaliable");
 
                     b.Property<string>("Name")
@@ -245,32 +252,21 @@ namespace Imperium_Incursions_Waitlist.Migrations
                     b.HasKey("Id");
 
                     b.ToTable("FleetRoles");
+                });
 
-                    b.HasData(
-                        new
-                        {
-                            Id = 1,
-                            Avaliable = true,
-                            Name = "TTT"
-                        },
-                        new
-                        {
-                            Id = 2,
-                            Avaliable = true,
-                            Name = "AAA"
-                        },
-                        new
-                        {
-                            Id = 3,
-                            Avaliable = true,
-                            Name = "DDD"
-                        },
-                        new
-                        {
-                            Id = 4,
-                            Avaliable = true,
-                            Name = "MTAC"
-                        });
+            modelBuilder.Entity("Imperium_Incursions_Waitlist.Models.ModuleItem", b =>
+                {
+                    b.Property<int>("Id");
+
+                    b.Property<int>("GroupId");
+
+                    b.Property<string>("Name");
+
+                    b.Property<string>("Slot");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("Modules");
                 });
 
             modelBuilder.Entity("Imperium_Incursions_Waitlist.Models.Note", b =>
@@ -358,18 +354,6 @@ namespace Imperium_Incursions_Waitlist.Migrations
                     b.HasKey("Id");
 
                     b.ToTable("Roles");
-
-                    b.HasData(
-                        new
-                        {
-                            Id = 1,
-                            Name = "Commander"
-                        },
-                        new
-                        {
-                            Id = 2,
-                            Name = "Leadership"
-                        });
                 });
 
             modelBuilder.Entity("Imperium_Incursions_Waitlist.Models.SelectedFit", b =>
@@ -421,9 +405,7 @@ namespace Imperium_Incursions_Waitlist.Migrations
 
             modelBuilder.Entity("Imperium_Incursions_Waitlist.Models.ShipType", b =>
                 {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
+                    b.Property<int>("Id");
 
                     b.Property<string>("Name")
                         .IsRequired();

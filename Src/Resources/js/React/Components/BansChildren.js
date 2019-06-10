@@ -30,7 +30,7 @@ export class BanRow extends Component {
 
         let pilot_id = 0;
         if (this.props.ban && this.props.ban.bannedAccount.pilots[0])
-            pilot_id = this.props.ban.bannedAccount.pilots[0].id;
+            pilot_id = this.props.ban.bannedAccount.pilots[0].characterID;
 
         return `https://imageserver.eveonline.com/Character/${pilot_id}_32.jpg`;
     }
@@ -59,7 +59,7 @@ export class ManageInfo extends Component {
         
         let pilot_id = 0;
         if (this.props.details && this.props.details.bannedAccount.pilots[0]) 
-            pilot_id = this.props.details.bannedAccount.pilots[0].id;
+            pilot_id = this.props.details.bannedAccount.pilots[0].characterID;
 
         return `https://imageserver.eveonline.com/Character/${pilot_id}_128.jpg`;
     }
