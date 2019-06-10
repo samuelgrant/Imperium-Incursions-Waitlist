@@ -41,7 +41,7 @@ public class RoleSessionUpdateMiddleware
             }
 
             var roles = _Db.Accounts.Include(a => a.AccountRoles).ThenInclude(ar => ar.Role)
-                .Where(a => a.Id == int.Parse(user.FindFirst("id").Value)).SingleOrDefault();
+                .Where(a => a.Id == context.User.AccountId()).SingleOrDefault();
 
             if (roles != null)
             {
