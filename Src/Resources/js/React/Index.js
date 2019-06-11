@@ -37,6 +37,8 @@ export default class Index extends Component {
                 prefPilot: data.prefPilot,
                 fcOptions: data.fcOptions ? data.fcOptions : null
             });
+        }).fail((err) => {
+            console.error(`[React/Index@getData] Error getting user options: ${err.responseText}`)
         })
     }
 
@@ -52,6 +54,8 @@ export default class Index extends Component {
             });
 
             this.getData();
+        }).fail((err) => {
+            console.error(`[React/Index@getFleets] Error getting fleets: ${err.responseText}`)
         })
     }
 

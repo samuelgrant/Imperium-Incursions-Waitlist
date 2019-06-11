@@ -37,6 +37,8 @@ export default class Index extends Component {
             this.setState({ fleet: result });
             this.getWaitlistData();
         }).fail((err) => {
+            if (err.statusCode === 404)
+                location.href = '/';
             console.error(`React/FleetManagement {FleetManagement@getFleetData} - Error getting fleet information`, err.responseText);
         });
 
@@ -158,7 +160,7 @@ export default class Index extends Component {
 
                     <div className="row">
                         <BtnClose fleetId={this.state.fleetId} />
-                        <BtnClear fleetId={this.state.fleetId} />
+                        <BtnClear fleetId={this.state.fleetId} u={this.getFleetData.bind(this) }/>
 
                         <BtnInvAll fleetId={this.state.fleetId} />
                         <BtnInvFaxes fleetId={this.state.fleetId} />

@@ -34,11 +34,24 @@ export class BtnClose extends Component {
 }
 
 export class BtnClear extends Component {
+    clearWaitlist() {
+        if (confirm("This will clear the waitlist for all fleets, are you sure you wish to continue?")) {
+            $.ajax({
+                type: 'post',
+                url: `/waitlist/clear`
+            }).done((message) => {
+                this.props.u();
+            }).fail((err) => {
+                console.error(`[React/.../FleetSettings BtnClear@clearWaitlist] Error clearing the waitlist: ${err.responseText}`)
+            })
+        }
+    }
+
     render() {
         return (
             <div className="col-6 py-1">
-                <button className="btn btn-danger btn-block disabled">
-                    Clear Fleet
+                <button className="btn btn-danger btn-block" onClick={this.clearWaitlist.bind(this)}>
+                    Clear Waitlist
                     <i className="far fa-times-circle"></i>
                 </button>
             </div>

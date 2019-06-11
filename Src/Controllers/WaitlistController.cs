@@ -192,5 +192,29 @@ namespace Imperium_Incursions_Waitlist.Controllers
 
             return Ok();
         }
+
+        [HttpPost("clear")]
+        [Produces("application/json")]
+        [Authorize(Roles ="Commander,Leadership,Dev")]
+        public async Task<IActionResult> Clear()
+        {
+            List<WaitingPilot> waitlist = await _Db.WaitingPilots.Where(c => c.RemovedByAccountId == null).ToListAsync();
+            try
+            {
+                _Logger.LogInformation("{0} is clearing the waitlist.", User.FindFirst("name").ToString());
+                foreach (WaitingPilot pilot in waitlist)
+                {
+                    pilot.RemovedByAccountId = User.AccountId();
+                    await _Db.SaveChangesAsync();
+                }
+
+                return Ok();
+            }
+            catch(Exception ex)
+            {
+                _Logger.LogError("Error clearing the waitlist: {0}", ex.Message);
+                return BadRequest(ex.Message);
+            }
+        }
     }
 }
