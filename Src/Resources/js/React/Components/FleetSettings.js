@@ -198,7 +198,7 @@ export class ExitCyno_Add extends Component {
 
         return (
             <div className="mb-5 pb-4">
-                <p className="text-danger text-center" >Incursions Squad-L would like to remind you that you MUST have the exit cynos at all times.</p>
+                <p className="text-danger text-center" >Incursions Squad-L would like to remind you that you MUST have exit cynos at all times.</p>
 
                 <div className="dropdown float-right">
                     <button class="btn btn-lg btn-dark dropdown-toggle" data-toggle="dropdown" aria-expanded="false" type="button">Add fleet cyno...</button>
@@ -212,28 +212,44 @@ export class ExitCyno_Add extends Component {
 }
 
 export class ExitCyno extends Component {
-    unsetCyno(id) {
-        console.log(`Unset cyno, pilot id: ${id}`);
+    unsetCyno(fleetId, pilotId) {
+        console.log(`Unset cyno, pilot id: ${pilotId} who is in fleet ${fleetId}`);
+        $.ajax({
+            type: 'put',
+            url: `/fleets/${fleetId}/cyno/${pilotId}`
+        }).done(() => {
+            this.props.u();
+        }).fail((err) => {
+            console.error(`[React/FleetSettings@unsetCyno] Error removing pilotId: ${pilotId} as a fleet cyno: ${err.responseText}`)
+        })
     }
+
     render() {
-        let system = { id: 30000142, name: "Jita" }//Delete this once it's dynamic
-        let pilot = { id: 96304094, name: "Caitlin Viliana" }//Delete this once it's dynamic
+        let cynos;
+        if (this.props.cynos) {
+            cynos = this.props.cynos.map((pilot) => {
+                return (
+                    <div className="row sidepanel-content">
+                        <div className="col-3">
+                            <img className="ml-3 pr-2" src={`https://image.eveonline.com/Character/${pilot.id}_64.jpg`} />
+                        </div>
+                        <div className="col-9 pl-4">
+                            <Pilot pilot={pilot} />
+                            <i className="fas fa-times-circle float-right mr-3" onClick={this.unsetCyno.bind(this, this.props.fleetId, pilot.id)}></i>
+
+                            <div class="clearfix" />
+
+                            <i className="fas fa-map-marker-alt"></i>
+                            <Destination system={pilot.system} />
+                        </div>
+                    </div>
+                )
+            });
+        }
+
         return (
             <SideSection>
-                <div className="row sidepanel-content">
-                    <div className="col-3">
-                        <img className="ml-3 pr-2" src={`https://image.eveonline.com/Character/${0}_64.jpg`} />
-                    </div>
-                    <div className="col-9 pl-4">
-                        <Pilot pilot={pilot} />
-                        <i className="fas fa-times-circle float-right mr-3" onClick={this.unsetCyno.bind(this, null)}></i>
-
-                        <div class="clearfix" />
-
-                        <i className="fas fa-map-marker-alt"></i> 
-                        <Destination system={system} />
-                    </div>
-                </div>
+                {cynos}
             </SideSection>
         );
     }

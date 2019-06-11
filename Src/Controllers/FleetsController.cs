@@ -70,6 +70,20 @@ namespace Imperium_Incursions_Waitlist.Controllers
                     s.System.Id,
                     s.System.Name
                 },
+                // Used for Fleet at a Glance & Exit Cynos.
+                members = new {
+                    onGrid = s.GetOngridCount(s.FleetAssignments.ToList()),
+                    max = s.GetFleetTypeMax(),
+                    pilots = s.FleetAssignments.Select( s1 => new {
+                        id = s1.WaitingPilot.Pilot.CharacterID,
+                        name = s1.WaitingPilot.Pilot.CharacterName,
+                        s1.IsExitCyno,
+                        s1.TakesFleetWarp,
+                        joinedAt = s1.CreatedAt,
+                        s1.CurrentShipId,
+                        system = new { s1.System.Id, s1.System.Name }
+                    })
+                },
 
                 // Standard properties
                 s.EveFleetId,
@@ -410,6 +424,28 @@ namespace Imperium_Incursions_Waitlist.Controllers
         public HttpResponseMessage Alarm(int fleetId, int accountId)
         {
             return new HttpResponseMessage(HttpStatusCode.NotImplemented);
+        }
+
+        [HttpPut("/fleets/{fleetId}/cyno/{pilotId}")]
+        [Produces("application/json")]
+        public IActionResult Cyno(int fleetId, int pilotId)
+        {
+            FleetAssignment pilot = _Db.FleetAssignments.Where(c => c.FleetId == fleetId && c.WaitingPilot.PilotId == pilotId).FirstOrDefault();
+            if (pilot == null)
+                return NotFound("The pilot was not found.");
+
+            try
+            {
+                pilot.IsExitCyno = !pilot.IsExitCyno;
+                _Db.SaveChanges();
+                return Ok();
+            }
+            catch (Exception ex)
+            {
+                _Logger.LogError("Error updating {0} status as an exit cyno: {1}", pilot.WaitingPilot.Pilot.CharacterName, ex.Message);
+                return BadRequest(ex.Message);
+            }
+            
         }
     }
 }

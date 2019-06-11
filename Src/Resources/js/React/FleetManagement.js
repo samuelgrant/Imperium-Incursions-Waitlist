@@ -91,6 +91,23 @@ export default class Index extends Component {
         return this.state.fleet && this.state.fleet.bossPilot;
     }
 
+    getMembers() {
+        return this.state.fleet && this.state.fleet.members ? this.state.fleet.members : null;
+    }
+
+    fleetCynos() {
+        let members = this.getMembers();
+        if (members == null)
+            return null;
+
+        let cynoArr = [];
+        for (let i = 0; i < members.pilots.length; i++)
+            if (members.pilots[i].isExitCyno)
+                cynoArr.push(members.pilots[i]);
+
+        return cynoArr;
+    }
+
     render() {
         let fleetPrivate;
         if (!this.isPublic()) {
@@ -113,7 +130,7 @@ export default class Index extends Component {
         }
 
         let needCynos;
-        if (true) {
+        if (!this.fleetCynos() || this.fleetCynos().length == 0) {
             needCynos = (
                 <Alert type="danger">
                     <span className="font-weight-bold">
@@ -124,6 +141,23 @@ export default class Index extends Component {
                     You MUST have at least one exit cyno in this fleet!
                 </Alert>
             )
+        }
+
+        let fleetSize;
+        let fleetSizeClass;
+        if (this.state.fleet && this.state.fleet.members) {
+            let onGrid = this.state.fleet.members.onGrid;
+            let max = this.state.fleet.members.max;
+
+            fleetSize = `${this.state.fleet.members.onGrid} / ${this.state.fleet.members.max}`;
+
+            if (onGrid > max) {
+                fleetSizeClass = `danger blink`;
+            } else if (onGrid < max - 5) {
+                fleetSizeClass = `warning`;
+            } else {
+                fleetSizeClass = `white`;
+            }
         }
 
         return (
@@ -141,9 +175,10 @@ export default class Index extends Component {
                         <SidePanelButton id="fleetSettings" title="Fleet Settings" />
                         <SidePanelButton id="fleetCynos" title="Fleet Cynos" />
 
-                        Fleet at a Glance Goes Here
+                        <h4 className={`d-block text-center text-${fleetSizeClass}`}>Fleet Size: {fleetSize}</h4>
                     </div>
                 </div>
+
 
                 <SidePanel id="fleetSettings" title="Fleet Settings">
                     <div className="row">
@@ -187,7 +222,10 @@ export default class Index extends Component {
                 <SidePanel id="fleetCynos" title="Fleet Cynos">
                     <ExitCyno_Add />
                     <hr />
-                    <ExitCyno />
+                    <ExitCyno
+                        cynos={this.fleetCynos()}
+                        u={this.getFleetData.bind(this)}
+                        fleetId={this.state.fleetId} />
                 </SidePanel>
             </div>
         )

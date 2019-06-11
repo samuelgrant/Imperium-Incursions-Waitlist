@@ -80,7 +80,7 @@ export default class Index extends Component {
         }
 
         let newFleet = { btn: null, modal: null };
-        if (this.state.fcOptions) {
+        if (this.state.fcOptions && this.state.fcOptions.fleetTypes) {
             newFleet.btn = <NewFleetLink />;
             newFleet.modal = <NewFleetModal options={this.state.fcOptions} prefPilot={this.state.prefPilot} />;
         }
