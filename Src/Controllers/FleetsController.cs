@@ -41,7 +41,7 @@ namespace Imperium_Incursions_Waitlist.Controllers
         [HttpGet]
         [Route("/fleets/{id}/data")]
         [Produces("application/json")]
-        public IActionResult Data(int id)
+        public async Task<IActionResult> Data(int id)
         {
 
             var Fleet = _Db.Fleets.Include(i => i.BossPilot)
@@ -49,11 +49,41 @@ namespace Imperium_Incursions_Waitlist.Controllers
                                   .Include(i => i.BackseatAccount)
                                     .ThenInclude(i => i.Pilots)
                                   .Where(c => c.Id == id && c.ClosedAt == null).FirstOrDefault();
-            if (Fleet == null)
+
+            var fleet1 = await _Db.Fleets.Where(c => c.Id == id && c.ClosedAt == null).Select(s => new {
+                s.Id,
+                // Custom properties
+                BackseatAccount = s.BackseatAccount == null ? null : new {
+                    s.BackseatAccount.Id,
+                    s.BackseatAccount.Name
+                },
+                BossPilot = s.BossPilot == null ? null : new {
+                    id = s.BossPilot.CharacterID,
+                    name = s.BossPilot.CharacterName
+                },
+                commChannel = new {
+                    s.CommChannel.Id,
+                    s.CommChannel.LinkText,
+                    s.CommChannel.Url
+                },
+                system = new {
+                    s.System.Id,
+                    s.System.Name
+                },
+
+                // Standard properties
+                s.EveFleetId,
+                s.IsPublic,
+                s.Type,
+                s.Wings
+
+            }).FirstOrDefaultAsync();
+
+            if (fleet1 == null)
                 return NotFound($"Fleet {id} not found.");
 
 
-            return Ok(Fleet);
+            return Ok(fleet1);
         }
 
         [HttpPut]

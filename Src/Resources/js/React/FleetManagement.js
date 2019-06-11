@@ -152,9 +152,10 @@ export default class Index extends Component {
                             u={this.getFleetData.bind(this)}
                             fleetId={this.state.fleetId} />
 
-                        <Backseat account={(this.state.fleet)? this.state.fleet.backseatAccount : null}
+                        <Backseat account={(this.state.fleet) ? this.state.fleet.backseatAccount : null}
                             u={this.getFleetData.bind(this)}
-                            fleetId={this.state.fleetId} />
+                            fleetId={this.state.fleetId}
+                            pilots={this.state.fcOptions ? this.state.fcOptions.pilots : null}/>
 
                         <Mumble channel={(this.getFleetSettings()) ? this.getFleetSettings().commChannel : null}
                             options={(this.getSettings()) ? this.getSettings().comms : null}

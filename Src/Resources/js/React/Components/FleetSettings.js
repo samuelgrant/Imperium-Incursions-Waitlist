@@ -2,6 +2,8 @@
 import { SideSection } from './SidePanel';
 import { MumbleLink, XmppLink } from './CommLinks';
 import { Pilot, Destination } from './EsiUi';
+import { AccountPilot } from '../Helpers';
+import { Account } from './AutocompleteInputs';
 
 const baseUri = "/fleets";
 
@@ -88,9 +90,9 @@ export class BtnInvFaxes extends Component {
 /** Fleet Settings Options */
 
 export class Backseat extends Component {
-    getAccountIcoId() {
-        if (this.props.account && this.props.account.pilots)
-            return this.props.account.pilots[0].characterID;
+    getIcoId() {
+        if (this.props.account && this.props.pilots)
+            return AccountPilot(this.props.account.name, this.props.pilots).id
 
         return 0;
     }
@@ -122,7 +124,7 @@ export class Backseat extends Component {
             <SideSection title="Backseat">
                 <div className="row sidepanel-content">
                     <div className="col-3">
-                        <img className="ml-3 pr-2" src={`https://image.eveonline.com/Character/${this.getAccountIcoId()}_64.jpg`} />
+                        <img className="ml-3 pr-2" src={`https://image.eveonline.com/Character/${this.getIcoId()}_64.jpg`} />
                     </div>
                     <div className="col-9">
                         <XmppLink AuthName={ (this.props.account) ? this.props.account.name : null } />
@@ -167,7 +169,7 @@ export class Boss extends Component {
             <SideSection title="Fleet Commander">
                 <div className="row sidepanel-content">
                     <div className="col-3">
-                        <img className="ml-3 pr-2" src={`https://image.eveonline.com/Character/${(this.getPilot()) ? this.getPilot().characterID : 0}_64.jpg`} />
+                        <img className="ml-3 pr-2" src={`https://image.eveonline.com/Character/${this.getPilot() ? this.getPilot().id : 0}_64.jpg`} />
                     </div>
                     <div className="col-9">
                         <Pilot pilot={this.getPilot()} />
