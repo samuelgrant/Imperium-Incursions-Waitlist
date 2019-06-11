@@ -1,7 +1,9 @@
 ﻿import React, { Component } from 'react';
 import { SideSection } from './SidePanel';
 import { MumbleLink, XmppLink } from './CommLinks';
-import { Pilot } from './EsiUi';
+import { Pilot, Destination } from './EsiUi';
+import { AccountPilot } from '../Helpers';
+import { Account } from './AutocompleteInputs';
 
 const baseUri = "/fleets";
 
@@ -34,11 +36,24 @@ export class BtnClose extends Component {
 }
 
 export class BtnClear extends Component {
+    clearWaitlist() {
+        if (confirm("This will clear the waitlist for all fleets, are you sure you wish to continue?")) {
+            $.ajax({
+                type: 'post',
+                url: `/waitlist/clear`
+            }).done((message) => {
+                this.props.u();
+            }).fail((err) => {
+                console.error(`[React/.../FleetSettings BtnClear@clearWaitlist] Error clearing the waitlist: ${err.responseText}`)
+            })
+        }
+    }
+
     render() {
         return (
             <div className="col-6 py-1">
-                <button className="btn btn-danger btn-block disabled">
-                    Clear Fleet
+                <button className="btn btn-danger btn-block" onClick={this.clearWaitlist.bind(this)}>
+                    Clear Waitlist
                     <i className="far fa-times-circle"></i>
                 </button>
             </div>
@@ -75,9 +90,9 @@ export class BtnInvFaxes extends Component {
 /** Fleet Settings Options */
 
 export class Backseat extends Component {
-    getAccountIcoId() {
-        if (this.props.account && this.props.account.pilots)
-            return this.props.account.pilots[0].characterID;
+    getIcoId() {
+        if (this.props.account && this.props.pilots)
+            return AccountPilot(this.props.account.name, this.props.pilots).id
 
         return 0;
     }
@@ -109,7 +124,7 @@ export class Backseat extends Component {
             <SideSection title="Backseat">
                 <div className="row sidepanel-content">
                     <div className="col-3">
-                        <img className="ml-3 pr-2" src={`https://image.eveonline.com/Character/${this.getAccountIcoId()}_64.jpg`} />
+                        <img className="ml-3 pr-2" src={`https://image.eveonline.com/Character/${this.getIcoId()}_64.jpg`} />
                     </div>
                     <div className="col-9">
                         <XmppLink AuthName={ (this.props.account) ? this.props.account.name : null } />
@@ -154,7 +169,7 @@ export class Boss extends Component {
             <SideSection title="Fleet Commander">
                 <div className="row sidepanel-content">
                     <div className="col-3">
-                        <img className="ml-3 pr-2" src={`https://image.eveonline.com/Character/${(this.getPilot()) ? this.getPilot().characterID : 0}_64.jpg`} />
+                        <img className="ml-3 pr-2" src={`https://image.eveonline.com/Character/${this.getPilot() ? this.getPilot().id : 0}_64.jpg`} />
                     </div>
                     <div className="col-9">
                         <Pilot pilot={this.getPilot()} />
@@ -168,6 +183,97 @@ export class Boss extends Component {
                     </div>
                 </div>
             </SideSection>    
+        );
+    }
+}
+
+export class ExitCyno_Add extends Component {
+    // Only returns true if the pilot is in our fleet, and not an exit cyno already.
+    isInFleet(pilot) {
+        if (this.props.fleetPilots == null) return null;
+
+        for (let i = 0; i < this.props.fleetPilots.length; i++)
+            if (this.props.fleetPilots[i].id == pilot.id && !this.props.fleetPilots[i].isExitCyno)
+                return true;
+
+        return false;
+    }
+
+    setCyno(fleetId, pilotId) {
+        $.ajax({
+            type: 'put',
+            url: `/fleets/${fleetId}/cyno/${pilotId}`
+        }).done(() => {
+            this.props.u();
+        }).fail((err) => {
+            console.error(`[React/FleetSettings@setCyno] Error setting pilotId: ${pilotId} as a fleet cyno: ${err.responseText}`)
+        })
+    }
+
+    render() {
+        let pilots;
+        if (this.props.myPilots) {
+            pilots = this.props.myPilots.map((pilot) => {
+                if (this.isInFleet(pilot)) {
+                    return <a className="dropdown-item" role="presentation" onClick={this.setCyno.bind(this, this.props.fleetId, pilot.id)}>{pilot.name}</a>
+                }
+            });
+        }
+
+        return (
+            <div className="mb-5 pb-4">
+                <p className="text-danger text-center" >Incursions Squad-L would like to remind you that you MUST have exit cynos at all times.</p>
+
+                <div className="dropdown float-right">
+                    <button class="btn btn-lg btn-dark dropdown-toggle" data-toggle="dropdown" aria-expanded="false" type="button">Add fleet cyno...</button>
+                    <div class="dropdown-menu" role="menu">
+                        {pilots}
+                    </div>
+                </div>
+            </div>
+        )
+    }
+}
+
+export class ExitCyno extends Component {
+    unsetCyno(fleetId, pilotId) {
+        $.ajax({
+            type: 'put',
+            url: `/fleets/${fleetId}/cyno/${pilotId}`
+        }).done(() => {
+            this.props.u();
+        }).fail((err) => {
+            console.error(`[React/FleetSettings@unsetCyno] Error removing pilotId: ${pilotId} as a fleet cyno: ${err.responseText}`)
+        })
+    }
+
+    render() {
+        let cynos;
+        if (this.props.cynos) {
+            cynos = this.props.cynos.map((pilot) => {
+                return (
+                    <div className="row sidepanel-content">
+                        <div className="col-3">
+                            <img className="ml-3 pr-2" src={`https://image.eveonline.com/Character/${pilot.id}_64.jpg`} />
+                        </div>
+                        <div className="col-9 pl-4">
+                            <Pilot pilot={pilot} />
+                            <i className="fas fa-times-circle float-right mr-3" onClick={this.unsetCyno.bind(this, this.props.fleetId, pilot.id)}></i>
+
+                            <div class="clearfix" />
+
+                            <i className="fas fa-map-marker-alt"></i>
+                            <Destination system={pilot.system} />
+                        </div>
+                    </div>
+                )
+            });
+        }
+
+        return (
+            <SideSection>
+                {cynos}
+            </SideSection>
         );
     }
 }

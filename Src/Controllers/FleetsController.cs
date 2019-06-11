@@ -41,7 +41,7 @@ namespace Imperium_Incursions_Waitlist.Controllers
         [HttpGet]
         [Route("/fleets/{id}/data")]
         [Produces("application/json")]
-        public IActionResult Data(int id)
+        public async Task<IActionResult> Data(int id)
         {
 
             var Fleet = _Db.Fleets.Include(i => i.BossPilot)
@@ -49,11 +49,55 @@ namespace Imperium_Incursions_Waitlist.Controllers
                                   .Include(i => i.BackseatAccount)
                                     .ThenInclude(i => i.Pilots)
                                   .Where(c => c.Id == id && c.ClosedAt == null).FirstOrDefault();
-            if (Fleet == null)
+
+            var fleet1 = await _Db.Fleets.Where(c => c.Id == id && c.ClosedAt == null).Select(s => new {
+                s.Id,
+                // Custom properties
+                BackseatAccount = s.BackseatAccount == null ? null : new {
+                    s.BackseatAccount.Id,
+                    s.BackseatAccount.Name
+                },
+                BossPilot = s.BossPilot == null ? null : new {
+                    id = s.BossPilot.CharacterID,
+                    name = s.BossPilot.CharacterName
+                },
+                commChannel = new {
+                    s.CommChannel.Id,
+                    s.CommChannel.LinkText,
+                    s.CommChannel.Url
+                },
+                system = new {
+                    s.System.Id,
+                    s.System.Name
+                },
+                // Used for Fleet at a Glance & Exit Cynos.
+                members = new {
+                    onGrid = s.GetOngridCount(s.FleetAssignments.ToList()),
+                    max = s.GetFleetTypeMax(),
+                    pilots = s.FleetAssignments.Select( s1 => new {
+                        id = s1.WaitingPilot.Pilot.CharacterID,
+                        name = s1.WaitingPilot.Pilot.CharacterName,
+                        s1.IsExitCyno,
+                        s1.TakesFleetWarp,
+                        joinedAt = s1.CreatedAt,
+                        s1.CurrentShipId,
+                        system = new { s1.System.Id, s1.System.Name }
+                    })
+                },
+
+                // Standard properties
+                s.EveFleetId,
+                s.IsPublic,
+                s.Type,
+                s.Wings
+
+            }).FirstOrDefaultAsync();
+
+            if (fleet1 == null)
                 return NotFound($"Fleet {id} not found.");
 
 
-            return Ok(Fleet);
+            return Ok(fleet1);
         }
 
         [HttpPut]
@@ -380,6 +424,28 @@ namespace Imperium_Incursions_Waitlist.Controllers
         public HttpResponseMessage Alarm(int fleetId, int accountId)
         {
             return new HttpResponseMessage(HttpStatusCode.NotImplemented);
+        }
+
+        [HttpPut("/fleets/{fleetId}/cyno/{pilotId}")]
+        [Produces("application/json")]
+        public IActionResult Cyno(int fleetId, int pilotId)
+        {
+            FleetAssignment pilot = _Db.FleetAssignments.Where(c => c.FleetId == fleetId && c.WaitingPilot.PilotId == pilotId).FirstOrDefault();
+            if (pilot == null)
+                return NotFound("The pilot was not found.");
+
+            try
+            {
+                pilot.IsExitCyno = !pilot.IsExitCyno;
+                _Db.SaveChanges();
+                return Ok();
+            }
+            catch (Exception ex)
+            {
+                _Logger.LogError("Error updating {0} status as an exit cyno: {1}", pilot.WaitingPilot.Pilot.CharacterName, ex.Message);
+                return BadRequest(ex.Message);
+            }
+            
         }
     }
 }

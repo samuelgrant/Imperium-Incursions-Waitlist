@@ -101,7 +101,9 @@ namespace Imperium_Incursions_Waitlist.Controllers.Auth
                                                                            .ToList();
 
                 var bossEligible = await _Db.Pilots.Where(c => c.AccountId == User.AccountId() && c.ESIValid).Select(s => new {
-                                                                            id = s.CharacterID, name = s.CharacterName }).ToListAsync();
+                                                        id = s.CharacterID,
+                                                        name = s.CharacterName
+                                                    }).OrderBy(o => o.name).ToListAsync();
 
                 return Ok(new
                 {

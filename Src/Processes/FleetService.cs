@@ -90,6 +90,7 @@ public class FleetService : IHostedService
                             knownMembers[fleetMember.CharacterId].CurrentShipId = fleetMember.ShipTypeId;
                             knownMembers[fleetMember.CharacterId].TakesFleetWarp = fleetMember.TakesFleetWarp;
                             knownMembers[fleetMember.CharacterId].UpdatedAt = DateTime.UtcNow;
+                            knownMembers[fleetMember.CharacterId].SystemId = fleetMember.SolarSystemId;
                         }
                         else
                         {
@@ -102,6 +103,7 @@ public class FleetService : IHostedService
                                 IsExitCyno = false,
                                 CurrentShipId = fleetMember.ShipTypeId,
                                 TakesFleetWarp = fleetMember.TakesFleetWarp,
+                                SystemId = fleetMember.SolarSystemId,
                                 CreatedAt = DateTime.UtcNow,
                                 UpdatedAt = DateTime.UtcNow
                             });

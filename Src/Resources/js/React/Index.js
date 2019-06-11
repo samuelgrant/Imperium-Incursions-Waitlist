@@ -37,6 +37,8 @@ export default class Index extends Component {
                 prefPilot: data.prefPilot,
                 fcOptions: data.fcOptions ? data.fcOptions : null
             });
+        }).fail((err) => {
+            console.error(`[React/Index@getData] Error getting user options: ${err.responseText}`)
         })
     }
 
@@ -52,6 +54,8 @@ export default class Index extends Component {
             });
 
             this.getData();
+        }).fail((err) => {
+            console.error(`[React/Index@getFleets] Error getting fleets: ${err.responseText}`)
         })
     }
 
@@ -76,7 +80,7 @@ export default class Index extends Component {
         }
 
         let newFleet = { btn: null, modal: null };
-        if (this.state.fcOptions) {
+        if (this.state.fcOptions && this.state.fcOptions.fleetTypes) {
             newFleet.btn = <NewFleetLink />;
             newFleet.modal = <NewFleetModal options={this.state.fcOptions} prefPilot={this.state.prefPilot} />;
         }
