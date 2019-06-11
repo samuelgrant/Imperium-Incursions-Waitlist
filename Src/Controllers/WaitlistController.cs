@@ -203,11 +203,9 @@ namespace Imperium_Incursions_Waitlist.Controllers
             {
                 _Logger.LogInformation("{0} is clearing the waitlist.", User.FindFirst("name").ToString());
                 foreach (WaitingPilot pilot in waitlist)
-                {
                     pilot.RemovedByAccountId = User.AccountId();
-                    await _Db.SaveChangesAsync();
-                }
 
+                await _Db.SaveChangesAsync();
                 return Ok();
             }
             catch(Exception ex)
