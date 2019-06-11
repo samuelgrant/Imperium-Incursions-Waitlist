@@ -3,7 +3,7 @@ import { render } from 'react-dom';
 import Alert from './Components/Alert';
 import Waitlist from './Components/Waitlist';
 import { SidePanel, SideSection, SidePanelButton } from './Components/SidePanel';
-import { BtnClose, BtnClear, BtnInvAll, BtnInvFaxes, Backseat, Boss, Mumble, Status, Type } from './Components/FleetSettings';
+import { BtnClose, BtnClear, BtnInvAll, BtnInvFaxes, Backseat, Boss, ExitCyno, ExitCyno_Add, Mumble, Status, Type } from './Components/FleetSettings';
 
 const baseUri = "/fleets";
 
@@ -112,10 +112,25 @@ export default class Index extends Component {
             );
         }
 
+        let needCynos;
+        if (true) {
+            needCynos = (
+                <Alert type="danger">
+                    <span className="font-weight-bold">
+                        <i className="fas fa-exclamation-triangle"></i>
+                         Fleet Cynos Needed:
+                    </span>
+
+                    You MUST have at least one exit cyno in this fleet!
+                </Alert>
+            )
+        }
+
         return (
             <div className="container">
                 {fleetPrivate}
                 {noFleetBoss}
+                {needCynos}
 
                 <div className="row">
                     <div className="col-lg-8 col-sm-12">
@@ -169,7 +184,9 @@ export default class Index extends Component {
                 
                     
                 <SidePanel id="fleetCynos" title="Fleet Cynos">
-
+                    <ExitCyno_Add />
+                    <hr />
+                    <ExitCyno />
                 </SidePanel>
             </div>
         )
