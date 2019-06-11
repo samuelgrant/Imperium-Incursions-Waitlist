@@ -220,8 +220,14 @@ export default class Index extends Component {
                 
                     
                 <SidePanel id="fleetCynos" title="Fleet Cynos">
-                    <ExitCyno_Add />
+                    <ExitCyno_Add
+                        myPilots={this.state.fcOptions !=null ? this.state.fcOptions.pilots : null}
+                        fleetPilots={this.state.fleet != null ? this.state.fleet.members.pilots : null}
+                        u={this.getFleetData.bind(this)}
+                        fleetId={this.state.fleetId} />
+
                     <hr />
+
                     <ExitCyno
                         cynos={this.fleetCynos()}
                         u={this.getFleetData.bind(this)}

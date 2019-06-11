@@ -188,11 +188,35 @@ export class Boss extends Component {
 }
 
 export class ExitCyno_Add extends Component {
+    // Only returns true if the pilot is in our fleet, and not an exit cyno already.
+    isInFleet(pilot) {
+        if (this.props.fleetPilots == null) return null;
+
+        for (let i = 0; i < this.props.fleetPilots.length; i++)
+            if (this.props.fleetPilots[i].id == pilot.id && !this.props.fleetPilots[i].isExitCyno)
+                return true;
+
+        return false;
+    }
+
+    setCyno(fleetId, pilotId) {
+        $.ajax({
+            type: 'put',
+            url: `/fleets/${fleetId}/cyno/${pilotId}`
+        }).done(() => {
+            this.props.u();
+        }).fail((err) => {
+            console.error(`[React/FleetSettings@setCyno] Error setting pilotId: ${pilotId} as a fleet cyno: ${err.responseText}`)
+        })
+    }
+
     render() {
         let pilots;
-        if (this.props.pilots) {
-            pilots = this.props.pilots.map((pilot) => {
-                return <a className="dropdown-item" role="presentation" onClick={this.set.bind(this, pilot.id)}>{pilot.name}</a>
+        if (this.props.myPilots) {
+            pilots = this.props.myPilots.map((pilot) => {
+                if (this.isInFleet(pilot)) {
+                    return <a className="dropdown-item" role="presentation" onClick={this.setCyno.bind(this, this.props.fleetId, pilot.id)}>{pilot.name}</a>
+                }
             });
         }
 
@@ -213,7 +237,6 @@ export class ExitCyno_Add extends Component {
 
 export class ExitCyno extends Component {
     unsetCyno(fleetId, pilotId) {
-        console.log(`Unset cyno, pilot id: ${pilotId} who is in fleet ${fleetId}`);
         $.ajax({
             type: 'put',
             url: `/fleets/${fleetId}/cyno/${pilotId}`
