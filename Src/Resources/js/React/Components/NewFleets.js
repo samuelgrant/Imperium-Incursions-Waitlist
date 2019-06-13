@@ -72,7 +72,7 @@ export class NewFleetModal extends Component {
                     </div>
 
                     <div className="form-group">
-                        <label className="required" htmlFor="FleetType">Fleet Boss:</label>
+                        <label className="required" htmlFor="FleetType">Fleet Type:</label>
                         <select id="FleetType" name="FleetType" className="form-control" required>
                             {types}
                         </select>
