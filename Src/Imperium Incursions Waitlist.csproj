@@ -25,12 +25,24 @@
     <Compile Remove="Migrations\20190602120730_Modules table.Designer.cs" />
     <Compile Remove="Migrations\20190603013541_EnumConversionTest.cs" />
     <Compile Remove="Migrations\20190603013541_EnumConversionTest.Designer.cs" />
+    <Compile Remove="Migrations\20190603234350_Initial Migration.cs" />
+    <Compile Remove="Migrations\20190603234350_Initial Migration.Designer.cs" />
     <Compile Remove="Migrations\20190604052450_AccountFits.cs" />
     <Compile Remove="Migrations\20190604052450_AccountFits.Designer.cs" />
     <Compile Remove="Migrations\20190604054026_Accounts to Fits.cs" />
     <Compile Remove="Migrations\20190604054026_Accounts to Fits.Designer.cs" />
     <Compile Remove="Migrations\20190608103007_FleetPositions Fields.cs" />
     <Compile Remove="Migrations\20190608103007_FleetPositions Fields.Designer.cs" />
+    <Compile Remove="Migrations\20190608213532_Test.cs" />
+    <Compile Remove="Migrations\20190608213532_Test.Designer.cs" />
+    <Compile Remove="Migrations\20190611040249_Added System Information to FleetAssignments.cs" />
+    <Compile Remove="Migrations\20190611040249_Added System Information to FleetAssignments.Designer.cs" />
+    <Compile Remove="Migrations\20190613052425_Adds Announcments.cs" />
+    <Compile Remove="Migrations\20190613052425_Adds Announcments.Designer.cs" />
+    <Compile Remove="Migrations\20190613060215_Database Patch.cs" />
+    <Compile Remove="Migrations\20190613060215_Database Patch.Designer.cs" />
+    <Compile Remove="Migrations\20190613060442_InitialMigration.cs" />
+    <Compile Remove="Migrations\20190613060442_InitialMigration.Designer.cs" />
   </ItemGroup>
 
 

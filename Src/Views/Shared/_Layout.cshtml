@@ -41,59 +41,68 @@
             @*<div class="content__inner">*@
 
                 <!-- Body Content -->
-                <div class="quick-stats">
-                    @RenderBody()
-                </div>
-                <!-- End Body Content -->
-                <!-- Footer -->
-                <footer class="footer hidden-xs-down mt-5">
-                    <p>Imperium Incursions &copy; 2019. All rights reserved.</p>
-                    <ul class="nav footer__nav">
-                        <li>
-                            <a class="nav-link" href="https://goonfleet.com/index.php/topic/258379-incursion-squad-rules-policies/" target="_blank">Squad Rules</a>
-                        </li>
-                        <li>
-                            <a class="nav-link" href="https://goonfleet.com/index.php/topic/261158-incursion-squad-fittings/" target="_blank">Squad Fittings</a>
-                        </li>
-                        <li>
-                            <a class="nav-link" href="https://goonfleet.com/index.php/topic/259285-new-pilot-guide/" target="_blank">New Pliot Guide</a>
-                        </li>
-                        <li>
-                            <a class="nav-link" data-toggle="modal" data-target="#legal">Legal Disclaimer</a>
-                        </li>
-                        <li>
-                            <a class="nav-link" href="">FC Team</a>
-                        </li>
-                    </ul>
+            <div class="quick-stats">
+                @{
+                    string currentUrl = Context.Request.Path;
 
-                    <div class="modal fade" id="legal" tabindex="-1">
-                        <div class="modal-dialog modal-lg">
-                            <div class="modal-content">
-                                <div class="modal-header">
-                                    <h4 class="modal-title">Legal Notices</h4>
-                                    <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">×</span></button>
-                                </div>
-                                <div class="modal-body">
-                                    <p>
-                                        EVE Online and the EVE logo are the registered trademarks of CCP hf. All rights are reserved worldwide. All other trademarks are the property
-                                        of their respective owners. EVE Online, the EVE logo, EVE and all associated logos and designs are the intellectual property of CCP hf.
-                                        All artwork, screenshots, characters, vehicles, storylines, world facts or other recognizable features of the intellectual property relating
-                                        to these trademarks are likewise the intellectual property of CCP hf. CCP hf. has granted permission to Imperium Incursions to use EVE Online
-                                        and all associated logos and designs for promotional and information purposes on its website but does not endorse, and is not in any way affiliated
-                                        with, Imperium Incursions. CCP is in no way responsible for the content on or functioning of this website, nor can it be liable for any damage
-                                        arising from the use of this website.
-                                    </p>
+                    if (!currentUrl.Contains("pilot-select"))
+                    {
+                        <div id="announcementBanner"></div>
+                    }
+                }
 
-                                    <p class="text-center">Website developed and maintained by Caitlin Viliana/<a href="xmpp:samuel_the_terrible@confrence.goonfleet.com">Samuel the Terrible</a></p>
-                                </div>
-                                <div class="modal-footer">
-                                    <button class="btn btn-light" type="button" data-dismiss="modal">Close</button>
-                                </div>
+                @RenderBody()
+            </div>
+            <!-- End Body Content -->
+            <!-- Footer -->
+            <footer class="footer hidden-xs-down mt-5">
+                <p>Imperium Incursions &copy; 2019. All rights reserved.</p>
+                <ul class="nav footer__nav">
+                    <li>
+                        <a class="nav-link" href="https://goonfleet.com/index.php/topic/258379-incursion-squad-rules-policies/" target="_blank">Squad Rules</a>
+                    </li>
+                    <li>
+                        <a class="nav-link" href="https://goonfleet.com/index.php/topic/261158-incursion-squad-fittings/" target="_blank">Squad Fittings</a>
+                    </li>
+                    <li>
+                        <a class="nav-link" href="https://goonfleet.com/index.php/topic/259285-new-pilot-guide/" target="_blank">New Pliot Guide</a>
+                    </li>
+                    <li>
+                        <a class="nav-link" data-toggle="modal" data-target="#legal">Legal Disclaimer</a>
+                    </li>
+                    <li>
+                        <a class="nav-link" href="">FC Team</a>
+                    </li>
+                </ul>
+
+                <div class="modal fade" id="legal" tabindex="-1">
+                    <div class="modal-dialog modal-lg">
+                        <div class="modal-content">
+                            <div class="modal-header">
+                                <h4 class="modal-title">Legal Notices</h4>
+                                <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">×</span></button>
+                            </div>
+                            <div class="modal-body">
+                                <p>
+                                    EVE Online and the EVE logo are the registered trademarks of CCP hf. All rights are reserved worldwide. All other trademarks are the property
+                                    of their respective owners. EVE Online, the EVE logo, EVE and all associated logos and designs are the intellectual property of CCP hf.
+                                    All artwork, screenshots, characters, vehicles, storylines, world facts or other recognizable features of the intellectual property relating
+                                    to these trademarks are likewise the intellectual property of CCP hf. CCP hf. has granted permission to Imperium Incursions to use EVE Online
+                                    and all associated logos and designs for promotional and information purposes on its website but does not endorse, and is not in any way affiliated
+                                    with, Imperium Incursions. CCP is in no way responsible for the content on or functioning of this website, nor can it be liable for any damage
+                                    arising from the use of this website.
+                                </p>
+
+                                <p class="text-center">Website developed and maintained by Caitlin Viliana/<a class="xmpp" href="xmpp:samuel_the_terrible@confrence.goonfleet.com">Samuel the Terrible</a></p>
+                            </div>
+                            <div class="modal-footer">
+                                <button class="btn btn-light" type="button" data-dismiss="modal">Close</button>
                             </div>
                         </div>
                     </div>
-                </footer>
-                <!-- End Footer -->
+                </div>
+            </footer>
+            <!-- End Footer -->
             @*</div>*@
         </section>
         <!-- End Main Page -->

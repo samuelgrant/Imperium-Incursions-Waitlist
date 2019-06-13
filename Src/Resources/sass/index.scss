@@ -204,3 +204,12 @@ tr.tr-pending {
 .mainlogo { 
     height: 70px;
 }
+
+.alert a:link.xmpp {
+    color: white;
+    border-bottom: 1px dotted #fff;
+}
+
+.modal-backdrop {
+    background-color: #261f1c;
+}

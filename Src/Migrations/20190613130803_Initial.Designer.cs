@@ -10,8 +10,8 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace Imperium_Incursions_Waitlist.Migrations
 {
     [DbContext(typeof(WaitlistDataContext))]
-    [Migration("20190608213532_Test")]
-    partial class Test
+    [Migration("20190613130803_Initial")]
+    partial class Initial
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
@@ -74,6 +74,33 @@ namespace Imperium_Incursions_Waitlist.Migrations
                             Id = 0,
                             Name = ""
                         });
+                });
+
+            modelBuilder.Entity("Imperium_Incursions_Waitlist.Models.Announcement", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
+
+                    b.Property<DateTime>("CreatedAt");
+
+                    b.Property<int>("CreatorAdminId");
+
+                    b.Property<DateTime?>("DeletedAt");
+
+                    b.Property<string>("Message")
+                        .IsRequired();
+
+                    b.Property<string>("Type")
+                        .IsRequired()
+                        .ValueGeneratedOnAdd()
+                        .HasDefaultValue("primary");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("CreatorAdminId");
+
+                    b.ToTable("Announcements");
                 });
 
             modelBuilder.Entity("Imperium_Incursions_Waitlist.Models.Ban", b =>
@@ -225,6 +252,8 @@ namespace Imperium_Incursions_Waitlist.Migrations
 
                     b.Property<bool>("IsExitCyno");
 
+                    b.Property<int>("SystemId");
+
                     b.Property<bool>("TakesFleetWarp");
 
                     b.Property<DateTime?>("UpdatedAt");
@@ -232,6 +261,8 @@ namespace Imperium_Incursions_Waitlist.Migrations
                     b.HasKey("WaitingPilotId", "FleetId");
 
                     b.HasIndex("FleetId");
+
+                    b.HasIndex("SystemId");
 
                     b.HasIndex("WaitingPilotId")
                         .IsUnique();
@@ -490,6 +521,14 @@ namespace Imperium_Incursions_Waitlist.Migrations
                         .OnDelete(DeleteBehavior.Cascade);
                 });
 
+            modelBuilder.Entity("Imperium_Incursions_Waitlist.Models.Announcement", b =>
+                {
+                    b.HasOne("Imperium_Incursions_Waitlist.Models.Account", "CreatorAdmin")
+                        .WithMany()
+                        .HasForeignKey("CreatorAdminId")
+                        .OnDelete(DeleteBehavior.Cascade);
+                });
+
             modelBuilder.Entity("Imperium_Incursions_Waitlist.Models.Ban", b =>
                 {
                     b.HasOne("Imperium_Incursions_Waitlist.Models.Account", "CreatorAdmin")
@@ -553,6 +592,11 @@ namespace Imperium_Incursions_Waitlist.Migrations
                     b.HasOne("Imperium_Incursions_Waitlist.Models.Fleet", "Fleet")
                         .WithMany("FleetAssignments")
                         .HasForeignKey("FleetId")
+                        .OnDelete(DeleteBehavior.Cascade);
+
+                    b.HasOne("Imperium_Incursions_Waitlist.Models.StarSystem", "System")
+                        .WithMany()
+                        .HasForeignKey("SystemId")
                         .OnDelete(DeleteBehavior.Cascade);
 
                     b.HasOne("Imperium_Incursions_Waitlist.Models.WaitingPilot", "WaitingPilot")

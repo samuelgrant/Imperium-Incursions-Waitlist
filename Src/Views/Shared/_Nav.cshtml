@@ -50,7 +50,12 @@
                         <li class="_lowerLine"></li>
                         <li><a href="/admin/bans"><i class="fas fa-gavel"></i> Ban Management</a></li>
                         <li><a href="/admin/commanders"><i class="fa fa-users-cog"></i> User Management</a></li>
-                        <li><a href="/admin/settings"><i class="fas fa-tools"></i> System Settings</a></li>
+                        <li><a data-toggle="modal" data-target="#announcmentBannersModal"><i class="fas fa-pennant"></i> Announcments</a></li>
+
+                        @if (User.IsInRole("Leadership"))
+                        {
+                            <li><a href="/admin/settings"><i class="fas fa-tools"></i> System Settings</a></li>
+                        }
                         <!-- End Leadership Functions -->
                     }
 
