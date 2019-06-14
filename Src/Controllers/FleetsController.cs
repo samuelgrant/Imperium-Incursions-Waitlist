@@ -15,6 +15,7 @@ using Microsoft.Extensions.Logging;
 namespace Imperium_Incursions_Waitlist.Controllers
 {
     [Authorize(Roles = "Commander,Leadership,Dev")]
+    [Route("/fleets/{fleetId}")]
     public class FleetsController : Controller
     {
         private readonly Data.WaitlistDataContext _Db;
@@ -26,24 +27,23 @@ namespace Imperium_Incursions_Waitlist.Controllers
             _Logger = logger;
         }
 
-        [Route("/fleets/{id}")]
-        public IActionResult Index(int id)
+        [HttpGet("")]
+        public IActionResult Index(int fleetId)
         {
-            var fleet = _Db.Fleets.Where(c => c.Id == id && c.ClosedAt == null).FirstOrDefault();
+            var fleet = _Db.Fleets.Where(c => c.Id == fleetId && c.ClosedAt == null).FirstOrDefault();
             if (fleet == null)
                 // Fleet not found
                 return Redirect("/");
 
-            ViewData["fleetId"] = id;
+            ViewData["fleetId"] = fleetId;
             return View(viewName: "~/Views/FleetManagement.cshtml");
         }
 
-        [HttpGet]
-        [Route("/fleets/{id}/data")]
+        [HttpGet("data")]
         [Produces("application/json")]
-        public async Task<IActionResult> Data(int id)
+        public async Task<IActionResult> Data(int fleetId)
         {
-            var fleet1 = await _Db.Fleets.Where(c => c.Id == id && c.ClosedAt == null).Select(s => new {
+            var fleet1 = await _Db.Fleets.Where(c => c.Id == fleetId && c.ClosedAt == null).Select(s => new {
                 s.Id,
                 // Custom properties
                 BackseatAccount = s.BackseatAccount == null ? null : new
@@ -92,18 +92,17 @@ namespace Imperium_Incursions_Waitlist.Controllers
             }).FirstOrDefaultAsync();
 
             if (fleet1 == null)
-                return NotFound($"Fleet {id} not found.");
+                return NotFound($"Fleet {fleetId} not found.");
 
 
             return Ok(fleet1);
         }
 
-        [HttpPut]
-        [Route("/fleets/{id}/backseat")]
+        [HttpPut("backseat")]
         [Produces("application/json")]
-        public IActionResult Backseat(int id)
+        public IActionResult Backseat(int fleetId)
         {
-            var fleet = _Db.Fleets.Where(c => c.Id == id && c.ClosedAt == null).FirstOrDefault();
+            var fleet = _Db.Fleets.Where(c => c.Id == fleetId && c.ClosedAt == null).FirstOrDefault();
             if (fleet == null)
                 // Fleet not found
                 return NotFound("Fleet not found.");
@@ -129,14 +128,11 @@ namespace Imperium_Incursions_Waitlist.Controllers
         /// <summary>
         /// Unsets the backseat FC
         /// </summary>
-        /// <param name="id"></param>
-        /// <returns></returns>
-        [HttpDelete]
-        [Route("/fleets/{id}/backseat")]
+        [HttpDelete("backseat")]
         [Produces("application/json")]
-        public IActionResult ClearBackseat(int id)
+        public IActionResult ClearBackseat(int fleetId)
         {
-            var fleet = _Db.Fleets.Where(c => c.Id == id && c.ClosedAt == null).FirstOrDefault();
+            var fleet = _Db.Fleets.Where(c => c.Id == fleetId && c.ClosedAt == null).FirstOrDefault();
             if (fleet == null)
                 // Fleet not found
                 return NotFound("Fleet not found.");
@@ -160,14 +156,11 @@ namespace Imperium_Incursions_Waitlist.Controllers
         /// <summary>
         /// Sets the fleet boss (FC with star in game)
         /// </summary>
-        /// <param name="request"></param>
-        /// <param name="id"></param>
-        [HttpPut]
-        [Route("/fleets/{id}/boss")]
+        [HttpPut("boss")]
         [Produces("application/json")]
-        public IActionResult Boss(IFormCollection request, int id)
+        public IActionResult Boss(IFormCollection request, int fleetId)
         {
-            var fleet = _Db.Fleets.Where(c => c.Id == id && c.ClosedAt == null).FirstOrDefault();
+            var fleet = _Db.Fleets.Where(c => c.Id == fleetId && c.ClosedAt == null).FirstOrDefault();
             if (fleet == null)
                 // Fleet not found
                 return NotFound("Fleet not found.");
@@ -195,14 +188,11 @@ namespace Imperium_Incursions_Waitlist.Controllers
         /// <summary>
         /// Sets the fleet comms.
         /// </summary>
-        /// <param name="request"></param>
-        /// <param name="id"></param>
-        [HttpPut]
-        [Route("/fleets/{id}/comms")]
+        [HttpPut("comms")]
         [Produces("application/json")]
-        public IActionResult Comms(IFormCollection request, int id)
+        public IActionResult Comms(IFormCollection request, int fleetId)
         {
-            var fleet = _Db.Fleets.Where(c => c.Id == id && c.ClosedAt == null).FirstOrDefault();
+            var fleet = _Db.Fleets.Where(c => c.Id == fleetId && c.ClosedAt == null).FirstOrDefault();
             if (fleet == null)
                 // Fleet not found
                 return NotFound("Fleet not found.");
@@ -230,15 +220,11 @@ namespace Imperium_Incursions_Waitlist.Controllers
         /// <summary>
         /// Sets the fleet status.
         /// </summary>
-        /// <param name="request"></param>
-        /// <param name="id"></param>
-        /// <returns></returns>
-        [HttpPut]
-        [Route("/fleets/{id}/status")]
+        [HttpPut("status")]
         [Produces("application/json")]
-        public IActionResult Status(IFormCollection request, int id)
+        public IActionResult Status(IFormCollection request, int fleetId)
         {
-            var fleet = _Db.Fleets.Where(c => c.Id == id && c.ClosedAt == null).FirstOrDefault();
+            var fleet = _Db.Fleets.Where(c => c.Id == fleetId && c.ClosedAt == null).FirstOrDefault();
             if (fleet == null)
                 // Fleet not found
                 return NotFound("Fleet not found.");
@@ -260,15 +246,11 @@ namespace Imperium_Incursions_Waitlist.Controllers
         /// <summary>
         /// Sets the fleet type.
         /// </summary>
-        /// <param name="request"></param>
-        /// <param name="id"></param>
-        /// <returns></returns>
-        [HttpPut]
-        [Route("/fleets/{id}/type")]
+        [HttpPut("type")]
         [Produces("application/json")]
-        public IActionResult Type(IFormCollection request, int id)
+        public IActionResult Type(IFormCollection request, int fleetId)
         {
-            var fleet = _Db.Fleets.Where(c => c.Id == id && c.ClosedAt == null).FirstOrDefault();
+            var fleet = _Db.Fleets.Where(c => c.Id == fleetId && c.ClosedAt == null).FirstOrDefault();
             if (fleet == null)
                 // Fleet not found
                 return NotFound("Fleet not found.");
@@ -291,8 +273,7 @@ namespace Imperium_Incursions_Waitlist.Controllers
         /// Registers a new fleet with the waitlist
         /// </summary>
         /// <!--TODO: Fleet Ownership Check! -->
-        /// <returns></returns>
-        [HttpPost]
+        [HttpPost("/fleets")]
         public IActionResult Index(IFormCollection request)
         {
 
@@ -353,12 +334,11 @@ namespace Imperium_Incursions_Waitlist.Controllers
             return Ok(newFleet.Id);
         }
 
-        [HttpDelete]
-        [Route("/fleets/{id}")]
+        [HttpDelete("")]
         [Produces("application/json")]
-        public IActionResult Close(int id)
+        public IActionResult Close(int fleetId)
         {
-            var fleet = _Db.Fleets.Where(c => c.Id == id && c.ClosedAt == null).FirstOrDefault();
+            var fleet = _Db.Fleets.Where(c => c.Id == fleetId && c.ClosedAt == null).FirstOrDefault();
             if (fleet == null)
                 // Fleet not found
                 return NotFound("Fleet not found.");
@@ -370,9 +350,8 @@ namespace Imperium_Incursions_Waitlist.Controllers
             return Ok();
         }
 
-        [HttpPost]
+        [HttpPost("invite/{pilotId}")]
         [Produces("application/json")]
-        [Route("/fleets/{fleetId}/invite/{pilotId}")]
         public async Task<IActionResult> Invite(int fleetId, int pilotId, IFormCollection request)
         {
             Fleet fleet = _Db.Fleets.Where(c => c.Id == fleetId).Include(c => c.BossPilot).FirstOrDefault();
@@ -416,19 +395,18 @@ namespace Imperium_Incursions_Waitlist.Controllers
             }
         }
 
-        [HttpPost]
+        [HttpPost("alarm/{accountId}")]
         [Produces("application/json")]
-        [Route("/fleets/{fleetId}/alarm/{accountId}")]
         public HttpResponseMessage Alarm(int fleetId, int accountId)
         {
             return new HttpResponseMessage(HttpStatusCode.NotImplemented);
         }
 
-        [HttpPut("/fleets/{fleetId}/cyno/{pilotId}")]
+        [HttpPut("cyno/{pilotId}")]
         [Produces("application/json")]
-        public IActionResult Cyno(int fleetId, int pilotId)
+        public IActionResult Cyno(int id, int pilotId)
         {
-            FleetAssignment pilot = _Db.FleetAssignments.Where(c => c.FleetId == fleetId && c.WaitingPilot.PilotId == pilotId).FirstOrDefault();
+            FleetAssignment pilot = _Db.FleetAssignments.Where(c => c.FleetId == id && c.WaitingPilot.PilotId == pilotId).FirstOrDefault();
             if (pilot == null)
                 return NotFound("The pilot was not found.");
 
