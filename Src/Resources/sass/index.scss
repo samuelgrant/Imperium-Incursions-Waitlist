@@ -100,6 +100,11 @@ button.close:hover, button.close:active {
     background-color: #DC7325;
 }
 
+.btn-warning:hover, .btn-warning:active {
+    background-color: #ab5a1e;
+    color: white;
+}
+
 .btn-warning.disabled, .btn-warning:disabled {
     background-color: #dc7325
 }
