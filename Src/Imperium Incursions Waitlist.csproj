@@ -31,6 +31,21 @@
     <Compile Remove="Migrations\20190604054026_Accounts to Fits.Designer.cs" />
     <Compile Remove="Migrations\20190608103007_FleetPositions Fields.cs" />
     <Compile Remove="Migrations\20190608103007_FleetPositions Fields.Designer.cs" />
+<<<<<<< Updated upstream
+=======
+    <Compile Remove="Migrations\20190608213532_Test.cs" />
+    <Compile Remove="Migrations\20190608213532_Test.Designer.cs" />
+    <Compile Remove="Migrations\20190611040249_Added System Information to FleetAssignments.cs" />
+    <Compile Remove="Migrations\20190611040249_Added System Information to FleetAssignments.Designer.cs" />
+    <Compile Remove="Migrations\20190613052425_Adds Announcments.cs" />
+    <Compile Remove="Migrations\20190613052425_Adds Announcments.Designer.cs" />
+    <Compile Remove="Migrations\20190613060215_Database Patch.cs" />
+    <Compile Remove="Migrations\20190613060215_Database Patch.Designer.cs" />
+    <Compile Remove="Migrations\20190613060442_InitialMigration.cs" />
+    <Compile Remove="Migrations\20190613060442_InitialMigration.Designer.cs" />
+    <Compile Remove="Migrations\20190613130803_Initial.cs" />
+    <Compile Remove="Migrations\20190613130803_Initial.Designer.cs" />
+>>>>>>> Stashed changes
   </ItemGroup>
 
 

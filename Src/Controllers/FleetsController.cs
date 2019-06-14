@@ -80,7 +80,7 @@ namespace Imperium_Incursions_Waitlist.Controllers
                         s1.IsExitCyno,
                         s1.TakesFleetWarp,
                         joinedAt = s1.CreatedAt,
-                        s1.CurrentShipId,
+                        ship = new { id = s1.ActiveShip.Id, name = s1.ActiveShip.Name, s1.ActiveShip.Queue },
                         system = new { s1.System.Id, s1.System.Name }
                     })
                 },

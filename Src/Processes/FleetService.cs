@@ -87,7 +87,7 @@ public class FleetService : IHostedService
                         // If we know about the fleet member update their info
                         if (knownMembers.ContainsKey(fleetMember.CharacterId))
                         {
-                            knownMembers[fleetMember.CharacterId].CurrentShipId = fleetMember.ShipTypeId;
+                            knownMembers[fleetMember.CharacterId].ShipTypeId = fleetMember.ShipTypeId;
                             knownMembers[fleetMember.CharacterId].TakesFleetWarp = fleetMember.TakesFleetWarp;
                             knownMembers[fleetMember.CharacterId].UpdatedAt = DateTime.UtcNow;
                             knownMembers[fleetMember.CharacterId].SystemId = fleetMember.SolarSystemId;
@@ -101,7 +101,7 @@ public class FleetService : IHostedService
                                 WaitingPilotId = (waitlistId != null) ? waitlistId : null,
                                 FleetId = fleet.Id,
                                 IsExitCyno = false,
-                                CurrentShipId = fleetMember.ShipTypeId,
+                                ShipTypeId = fleetMember.ShipTypeId,
                                 TakesFleetWarp = fleetMember.TakesFleetWarp,
                                 SystemId = fleetMember.SolarSystemId,
                                 CreatedAt = DateTime.UtcNow,

@@ -14,7 +14,7 @@ namespace Imperium_Incursions_Waitlist.Models
 
         public int SystemId { get; set; }
 
-        public int CurrentShipId { get; set; }
+        public int? ShipTypeId { get; set; }
 
         public bool IsExitCyno { get; set; }
 
@@ -39,5 +39,7 @@ namespace Imperium_Incursions_Waitlist.Models
         public WaitingPilot WaitingPilot { get; set; }
 
         public StarSystem System { get; set; }
+
+        public ShipType ActiveShip { get; set; }
     }
 }

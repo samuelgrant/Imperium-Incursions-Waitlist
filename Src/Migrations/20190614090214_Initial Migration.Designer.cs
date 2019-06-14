@@ -4,14 +4,16 @@ using Imperium_Incursions_Waitlist.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 namespace Imperium_Incursions_Waitlist.Migrations
 {
     [DbContext(typeof(WaitlistDataContext))]
-    partial class WaitlistDataContextModelSnapshot : ModelSnapshot
+    [Migration("20190614090214_Initial Migration")]
+    partial class InitialMigration
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -72,6 +74,33 @@ namespace Imperium_Incursions_Waitlist.Migrations
                             Id = 0,
                             Name = ""
                         });
+                });
+
+            modelBuilder.Entity("Imperium_Incursions_Waitlist.Models.Announcement", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
+
+                    b.Property<DateTime>("CreatedAt");
+
+                    b.Property<int>("CreatorAdminId");
+
+                    b.Property<DateTime?>("DeletedAt");
+
+                    b.Property<string>("Message")
+                        .IsRequired();
+
+                    b.Property<string>("Type")
+                        .IsRequired()
+                        .ValueGeneratedOnAdd()
+                        .HasDefaultValue("primary");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("CreatorAdminId");
+
+                    b.ToTable("Announcements");
                 });
 
             modelBuilder.Entity("Imperium_Incursions_Waitlist.Models.Ban", b =>
@@ -491,6 +520,14 @@ namespace Imperium_Incursions_Waitlist.Migrations
                     b.HasOne("Imperium_Incursions_Waitlist.Models.Role", "Role")
                         .WithMany("AccountRoles")
                         .HasForeignKey("RoleId")
+                        .OnDelete(DeleteBehavior.Cascade);
+                });
+
+            modelBuilder.Entity("Imperium_Incursions_Waitlist.Models.Announcement", b =>
+                {
+                    b.HasOne("Imperium_Incursions_Waitlist.Models.Account", "CreatorAdmin")
+                        .WithMany()
+                        .HasForeignKey("CreatorAdminId")
                         .OnDelete(DeleteBehavior.Cascade);
                 });
 
