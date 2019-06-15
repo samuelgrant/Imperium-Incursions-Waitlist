@@ -43,38 +43,36 @@ namespace Imperium_Incursions_Waitlist.Controllers
         [Produces("application/json")]
         public async Task<IActionResult> Data(int id)
         {
-
-            var Fleet = _Db.Fleets.Include(i => i.BossPilot)
-                                  .Include(i => i.CommChannel)
-                                  .Include(i => i.BackseatAccount)
-                                    .ThenInclude(i => i.Pilots)
-                                  .Where(c => c.Id == id && c.ClosedAt == null).FirstOrDefault();
-
             var fleet1 = await _Db.Fleets.Where(c => c.Id == id && c.ClosedAt == null).Select(s => new {
                 s.Id,
                 // Custom properties
-                BackseatAccount = s.BackseatAccount == null ? null : new {
+                BackseatAccount = s.BackseatAccount == null ? null : new
+                {
                     s.BackseatAccount.Id,
                     s.BackseatAccount.Name
                 },
-                BossPilot = s.BossPilot == null ? null : new {
+                BossPilot = s.BossPilot == null ? null : new
+                {
                     id = s.BossPilot.CharacterID,
                     name = s.BossPilot.CharacterName
                 },
-                commChannel = new {
+                commChannel = new
+                {
                     s.CommChannel.Id,
                     s.CommChannel.LinkText,
                     s.CommChannel.Url
                 },
-                system = new {
+                system = s.System == null ? null : new {
                     s.System.Id,
                     s.System.Name
                 },
                 // Used for Fleet at a Glance & Exit Cynos.
-                members = new {
+                members = new
+                {
                     onGrid = s.GetOngridCount(s.FleetAssignments.ToList()),
                     max = s.GetFleetTypeMax(),
-                    pilots = s.FleetAssignments.Select( s1 => new {
+                    pilots = s.FleetAssignments.Select(s1 => new
+                    {
                         id = s1.WaitingPilot.Pilot.CharacterID,
                         name = s1.WaitingPilot.Pilot.CharacterName,
                         s1.IsExitCyno,

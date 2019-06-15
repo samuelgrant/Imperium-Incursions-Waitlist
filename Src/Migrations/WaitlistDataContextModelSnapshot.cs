@@ -74,6 +74,33 @@ namespace Imperium_Incursions_Waitlist.Migrations
                         });
                 });
 
+            modelBuilder.Entity("Imperium_Incursions_Waitlist.Models.Announcement", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
+
+                    b.Property<DateTime>("CreatedAt");
+
+                    b.Property<int>("CreatorAdminId");
+
+                    b.Property<DateTime?>("DeletedAt");
+
+                    b.Property<string>("Message")
+                        .IsRequired();
+
+                    b.Property<string>("Type")
+                        .IsRequired()
+                        .ValueGeneratedOnAdd()
+                        .HasDefaultValue("primary");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("CreatorAdminId");
+
+                    b.ToTable("Announcements");
+                });
+
             modelBuilder.Entity("Imperium_Incursions_Waitlist.Models.Ban", b =>
                 {
                     b.Property<int>("Id")
@@ -489,6 +516,14 @@ namespace Imperium_Incursions_Waitlist.Migrations
                     b.HasOne("Imperium_Incursions_Waitlist.Models.Role", "Role")
                         .WithMany("AccountRoles")
                         .HasForeignKey("RoleId")
+                        .OnDelete(DeleteBehavior.Cascade);
+                });
+
+            modelBuilder.Entity("Imperium_Incursions_Waitlist.Models.Announcement", b =>
+                {
+                    b.HasOne("Imperium_Incursions_Waitlist.Models.Account", "CreatorAdmin")
+                        .WithMany()
+                        .HasForeignKey("CreatorAdminId")
                         .OnDelete(DeleteBehavior.Cascade);
                 });
 
