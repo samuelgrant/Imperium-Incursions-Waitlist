@@ -128,7 +128,7 @@ namespace Imperium_Incursions_Waitlist.Controllers
             }
 
             //TODO: alert user that it failed
-            _Logger.LogDebug("{0} has tried to link {1} to their account, however it is linked to someone else’s account.");
+            _Logger.LogDebug("{0} has tried to link {1} to their account, however it is linked to someone else’s account.", User.AccountName(), pilot.CharacterName);
             return Redirect("/pilot-select");
         }
     }

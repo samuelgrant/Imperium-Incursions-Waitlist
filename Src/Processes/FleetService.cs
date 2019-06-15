@@ -95,10 +95,10 @@ public class FleetService : IHostedService
                         else
                         {
                             // Otherwise they're new, let's add them to our fleet assignments
-                            var waitlistId = CheckWaitlistForPilot(fleetMember.CharacterId, fleet);
+                            var waitlistId = await CheckWaitlistForPilot(fleetMember.CharacterId, fleet);
                             _Db.FleetAssignments.Add(new FleetAssignment
                             {
-                                WaitingPilotId = (waitlistId != null) ? waitlistId : null,
+                                WaitingPilotId = waitlistId ?? null,
                                 FleetId = fleet.Id,
                                 IsExitCyno = false,
                                 ShipTypeId = fleetMember.ShipTypeId,
@@ -111,10 +111,12 @@ public class FleetService : IHostedService
                     }
 
                     // Delete pilots who have not been reported through ESI for more than 1 minutes.
-                    current_members = _Db.FleetAssignments.Where(c => c.FleetId == fleet.Id).ToList();
+                    current_members = _Db.FleetAssignments.Where(c => c.FleetId == fleet.Id && c.DeletedAt == null).ToList();
                     foreach(FleetAssignment member in current_members)
                         if (member.UpdatedAt.Value.AddMinutes(1) < DateTime.UtcNow)
                             member.DeletedAt = DateTime.UtcNow;
+
+                    await _Db.SaveChangesAsync();
                 }
 
                 // NO errors, resetting counter
@@ -152,12 +154,30 @@ public class FleetService : IHostedService
         _logger.LogInformation("Background Service Completed: fleets updated.");
     }
 
-    private int? CheckWaitlistForPilot(int characterId, Fleet fleet)
+    private async Task<int?> CheckWaitlistForPilot(int characterId, Fleet fleet)
     {
         WaitingPilot x = _Db.WaitingPilots.Where(c => c.PilotId == characterId && c.RemovedByAccountId == null).FirstOrDefault();
 
         if(x == null)
         {
+            Pilot pilot = await _Db.Pilots.FindAsync(characterId);
+            if(pilot == null)
+            {
+                // We don't know who this pilot is, let's look them up with ESI and create some records for them
+                var pilotInfo = await EsiWrapper.PilotLookupAsync(characterId);
+                Corporation.EnsureInDatabase(pilotInfo.CorporationId, _Db);
+
+                _Db.Add(new Pilot
+                {
+                    Account = null,
+                    CharacterID = characterId,
+                    CharacterName = pilotInfo.Name,
+                    CorporationID = pilotInfo.CorporationId,
+                    RegisteredAt = DateTime.UtcNow,
+                    UpdatedAt = DateTime.UtcNow
+                });                
+            }
+
             // Create a waiting pilot!
             WaitingPilot waitlistPilot = new WaitingPilot
             {

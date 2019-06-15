@@ -198,6 +198,28 @@ namespace Imperium_Incursions_Waitlist.Services
             }
         }
 
+        internal static async Task<ESI.NET.Models.Character.Information> PilotLookupAsync(int characterId)
+        {
+            EnsureInit();
+
+            try
+            {
+                EsiResponse<ESI.NET.Models.Character.Information> Character_response = await s_client.Character.Information(characterId);
+                if (Character_response.StatusCode != HttpStatusCode.OK)
+                {
+                    s_Log.LogError("{0} error searching API '{1}': {2}", Character_response.StatusCode, Character_response.Endpoint, Character_response.Message);
+                    return null;
+                }
+
+                return Character_response.Data;
+            }
+            catch (Exception ex)
+            {
+                s_Log.LogError($"Error getting character information {ex.Message}");
+                return null;
+            }
+        }
+
         /// <summary>
         /// Requests a corporation's information through ESI
         /// </summary>

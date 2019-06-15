@@ -71,14 +71,14 @@ namespace Imperium_Incursions_Waitlist.Controllers
                 {
                     onGrid = s.GetOngridCount(s.FleetAssignments.ToList()),
                     max = s.GetFleetTypeMax(),
-                    pilots = s.FleetAssignments.Select(s1 => new
+                    pilots = s.FleetAssignments.Where(c => c.DeletedAt == null).Select(s1 => new
                     {
                         id = s1.WaitingPilot.Pilot.CharacterID,
                         name = s1.WaitingPilot.Pilot.CharacterName,
                         s1.IsExitCyno,
                         s1.TakesFleetWarp,
                         joinedAt = s1.CreatedAt,
-                        ship = new { id = s1.ActiveShip.Id, name = s1.ActiveShip.Name, s1.ActiveShip.Queue },
+                        ship = new { id = s1.ActiveShip.Id, name = s1.ActiveShip.Name, queue = new { id = s1.ActiveShip.Queue, name = s1.ActiveShip.Queue.ToString() } },
                         system = new { s1.System.Id, s1.System.Name }
                     })
                 },

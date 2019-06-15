@@ -123,7 +123,7 @@ class SelectShips extends Component {
         if (this.props.fits) {
             fits = this.props.fits.map((fit) => {
                 return (
-                    <div className="col-4">
+                    <div className="col-12">
                         <label className="custom-control custom-checkbox">
                             <input type="checkbox" className="custom-control-input" onChange={this.updateFits.bind(this)} name={fit.id} />
                             <span className="custom-control-indicator"></span>
