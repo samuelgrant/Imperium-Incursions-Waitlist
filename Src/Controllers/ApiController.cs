@@ -29,8 +29,8 @@ namespace Imperium_Incursions_Waitlist.Controllers.Auth
         [HttpPost("esi-ui/show-info")]
         public async Task<IActionResult> ShowInfo(IFormCollection request)
         {
-            int target_id = int.Parse(request["target_id"].ToString());
-            Pilot pilot = _Db.Pilots.Find(Request.Cookies.PreferredPilotId());
+            int target_id = request._int("target_id");
+            Pilot pilot = await _Db.Pilots.FindAsync(Request.Cookies.PreferredPilotId());
             await pilot.UpdateToken();
 
             EsiWrapper.ShowInfo((AuthorizedCharacterData)pilot, target_id);
@@ -43,8 +43,8 @@ namespace Imperium_Incursions_Waitlist.Controllers.Auth
         [HttpPost("esi-ui/destination")]
         public async Task<IActionResult> SetDestination(IFormCollection request)
         {
-            int target_id = int.Parse(request["target_id"].ToString());
-            Pilot pilot = _Db.Pilots.Find(Request.Cookies.PreferredPilotId());
+            int target_id = request._int("target_id");
+            Pilot pilot = await _Db.Pilots.FindAsync(Request.Cookies.PreferredPilotId());
             await pilot.UpdateToken();
 
             EsiWrapper.SetDestination((AuthorizedCharacterData)pilot, target_id);
@@ -101,9 +101,9 @@ namespace Imperium_Incursions_Waitlist.Controllers.Auth
                                                                            .ToList();
 
                 var bossEligible = await _Db.Pilots.Where(c => c.AccountId == User.AccountId() && c.ESIValid).Select(s => new {
-                                                        id = s.CharacterID,
-                                                        name = s.CharacterName
-                                                    }).OrderBy(o => o.name).ToListAsync();
+                    id = s.CharacterID,
+                    name = s.CharacterName
+                }).OrderBy(o => o.name).ToListAsync();
 
                 return Ok(new
                 {

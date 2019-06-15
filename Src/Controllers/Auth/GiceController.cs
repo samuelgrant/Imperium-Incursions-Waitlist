@@ -111,7 +111,6 @@ namespace Imperium_Incursions_Waitlist.Controllers
                 waitlist_account.LastLogin = DateTime.UtcNow;
                 waitlist_account.LastLoginIP = _RequestorIP.MapToIPv4().ToString();
 
-                _Db.Update(waitlist_account);
                 await _Db.SaveChangesAsync();
             }
             else
@@ -127,7 +126,7 @@ namespace Imperium_Incursions_Waitlist.Controllers
                     LastLoginIP = _RequestorIP.MapToIPv4().ToString()
                 };
 
-                _Db.Add(waitlist_account);
+                await _Db.AddAsync(waitlist_account);
                 await _Db.SaveChangesAsync();
             }
 

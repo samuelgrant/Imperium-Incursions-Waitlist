@@ -45,4 +45,16 @@ public static class LoggerExtensions
 
         return null;
     }
+
+    public static string _str(this IFormCollection request, string key)
+    {
+        return request[key].ToString();
+    }
+
+    public static int _int(this IFormCollection request, string key)
+    {
+        int.TryParse(request[key].ToString(), out int x);
+
+        return x;
+    }
 }

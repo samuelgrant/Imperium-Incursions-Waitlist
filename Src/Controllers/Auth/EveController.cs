@@ -30,10 +30,8 @@ namespace Imperium_Incursions_Waitlist.Controllers
         {
             Env.Load();
 
-            //Get Client ID
+            //Get Client ID & Callback
             string clientID = Env.GetString("eve_clientID");
-
-            //Callback
             string redirectUri = Url.Action("callback", "eve", null, protocol: "https").ToLower();
 
 
@@ -103,7 +101,7 @@ namespace Imperium_Incursions_Waitlist.Controllers
                     RegisteredAt = DateTime.UtcNow,
                 };
 
-                _Db.Add(pilot);
+                await _Db.AddAsync(pilot);
                 await _Db.SaveChangesAsync();
 
                 _Logger.LogDebug("{0} has linked the pilot {1} to their account.", User.FindFirst("name").Value, pilot.CharacterName);
@@ -121,7 +119,6 @@ namespace Imperium_Incursions_Waitlist.Controllers
                 pilot.Token = n_pilot.Token;
                 pilot.UpdatedAt = DateTime.UtcNow;
 
-                _Db.Update(pilot);
                 await _Db.SaveChangesAsync();
 
                 _Logger.LogDebug("{0} has updated the pilot {1} that is linked to their account.", User.FindFirst("name").Value, pilot.CharacterName);

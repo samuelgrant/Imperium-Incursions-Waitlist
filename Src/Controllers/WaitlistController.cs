@@ -98,16 +98,16 @@ namespace Imperium_Incursions_Waitlist.Controllers
 
         [HttpDelete("/")]
         [Produces("application/json")]
-        public IActionResult Leave(IFormCollection request)
+        public async Task<IActionResult> Leave(IFormCollection request)
         {
             List<WaitingPilot> waitingPilots;
-            if (request["pilot_id"].ToString() == "")
+            if (request._str("pilot_id") == "")
             {
-                waitingPilots = _Db.WaitingPilots.Include(c => c.Pilot).Where(c => c.Pilot.AccountId == User.AccountId() && c.RemovedByAccount == null).ToList();
+                waitingPilots = await _Db.WaitingPilots.Include(c => c.Pilot).Where(c => c.Pilot.AccountId == User.AccountId() && c.RemovedByAccount == null).ToListAsync();
             }
             else
             {
-                waitingPilots = _Db.WaitingPilots.Where(c => c.PilotId == int.Parse(request["pilot_id"].ToString()) && c.RemovedByAccount == null).ToList();
+                waitingPilots = await _Db.WaitingPilots.Where(c => c.PilotId == request._int("pilot_id") && c.RemovedByAccount == null).ToListAsync();
             }
 
             foreach (WaitingPilot pilot in waitingPilots)
@@ -115,20 +115,20 @@ namespace Imperium_Incursions_Waitlist.Controllers
                 pilot.RemovedByAccountId = User.AccountId();
             }
 
-            _Db.SaveChanges();
+            await _Db.SaveChangesAsync();
 
             return Ok();
         }
 
         [HttpPost("/")]
         [Produces("application/json")]
-        public IActionResult Join(IFormCollection request)
+        public async Task<IActionResult> Join(IFormCollection request)
         {
-            int pilotId = request["pilot_id"].ToString() == "" ? Request.Cookies.PreferredPilotId() : int.Parse(request["pilot_id"].ToString());
-            List<int> roleIds = request["role_ids"].ToString().Split(',').Select(item => int.Parse(item)).ToList();
-            List<int> fitIds = request["fit_ids"].ToString().Split(',').Select(item => int.Parse(item)).ToList();
+            int pilotId = request._str("pilot_id") == "" ? Request.Cookies.PreferredPilotId() : request._int("pilot_id");
+            List<int> roleIds = request._str("role_ids").Split(',').Select(item => int.Parse(item)).ToList();
+            List<int> fitIds = request._str("fit_ids").Split(',').Select(item => int.Parse(item)).ToList();
 
-            Pilot pilot = _Db.Pilots.Find(pilotId);
+            Pilot pilot = await _Db.Pilots.FindAsync(pilotId);
             if (pilot == null)
                 return NotFound("Pilot not found");
 
@@ -147,11 +147,11 @@ namespace Imperium_Incursions_Waitlist.Controllers
                     CreatedAt = DateTime.UtcNow,
                     UpdatedAt = DateTime.UtcNow
                 };
-                _Db.Add(waitlist);
+                await _Db.AddAsync(waitlist);
 
                 foreach (int id in fitIds)
                 {
-                    _Db.Add(new SelectedFit
+                    await _Db.AddAsync(new SelectedFit
                     {
                         FitId = id,
                         WaitingPilotId = waitlist.Id
@@ -161,16 +161,17 @@ namespace Imperium_Incursions_Waitlist.Controllers
                 // Add Roles
                 foreach (int id in roleIds)
                 {
-                    _Db.Add(new SelectedRole
+                    await _Db.AddAsync(new SelectedRole
                     {
                         FleetRoleId = id,
                         WaitingPilotId = waitlist.Id
                     });
                 }
-                _Db.SaveChanges();
+                await _Db.SaveChangesAsync();
 
                 return Ok();
-            } catch (Exception ex)
+            }
+            catch (Exception ex)
             {
                 _Logger.LogWarning("{0} could not be added to the waitlist: {1}", pilot.CharacterName, ex.Message);
                 return BadRequest($"Could not add {pilot.CharacterName} to the waitlist {ex.Message}");
@@ -180,15 +181,15 @@ namespace Imperium_Incursions_Waitlist.Controllers
         [HttpDelete("remove/{id:int}")]
         [Produces("application/json")]
         [Authorize(Roles = "Commander,Leadership,Dev")]
-        public IActionResult Remove(int id)
+        public async Task<IActionResult> Remove(int id)
         {
-            WaitingPilot pilot = _Db.WaitingPilots.Find(id);
+            WaitingPilot pilot = await _Db.WaitingPilots.FindAsync(id);
             if (pilot == null)
                 return NotFound("The pilot has already either been removed, or invited.");
 
             pilot.RemovedByAccountId = User.AccountId();
             pilot.UpdatedAt = DateTime.UtcNow;
-            _Db.SaveChanges();
+            await _Db.SaveChangesAsync();
 
             return Ok();
         }
