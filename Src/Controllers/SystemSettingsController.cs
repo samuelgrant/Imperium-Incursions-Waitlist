@@ -9,6 +9,7 @@ using Microsoft.Extensions.Logging;
 using Microsoft.AspNetCore.Authorization;
 using Imperium_Incursions_Waitlist.Models;
 using Imperium_Incursions_Waitlist.Services;
+using Microsoft.EntityFrameworkCore;
 
 namespace Imperium_Incursions_Waitlist.Controllers
 {
@@ -34,14 +35,14 @@ namespace Imperium_Incursions_Waitlist.Controllers
 
         [HttpGet("data")]
         [Produces("application/json")]
-        public IActionResult GetData()
+        public async Task<IActionResult> GetData()
         {
-            var ships = _Db.ShipTypes.Where(c => c.Queue != Queue.None).Select(s => new
+            var ships = await _Db.ShipTypes.Where(c => c.Queue != Queue.None).Select(s => new
             {
                 s.Id,
                 s.Name,
                 s.Queue
-            }).OrderBy(o => o.Name).ToList();
+            }).OrderBy(o => o.Name).ToListAsync();
 
             return Ok(new {
                 hull = ships,
@@ -54,9 +55,9 @@ namespace Imperium_Incursions_Waitlist.Controllers
         /// </summary>
         [HttpGet("ships/search")]
         [Produces("application/json")]
-        public IActionResult SearchShips(string q)
+        public async Task<IActionResult> SearchShips(string q)
         {
-            return Ok(_Db.ShipTypes.Where(c => c.Name.Contains(q)).Select(c => c.Name).ToList());
+            return Ok(await _Db.ShipTypes.Where(c => c.Name.Contains(q)).Select(c => c.Name).ToListAsync());
         }
 
         /// <summary>

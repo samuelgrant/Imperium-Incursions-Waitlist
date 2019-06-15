@@ -6,6 +6,7 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Logging;
 using Microsoft.EntityFrameworkCore;
+using System.Threading.Tasks;
 
 namespace Imperium_Incursions_Waitlist.Controllers
 {
@@ -33,9 +34,9 @@ namespace Imperium_Incursions_Waitlist.Controllers
         /// </summary>
         [HttpGet("active")]
         [Produces("application/json")]
-        public IActionResult Active()
+        public async Task<IActionResult> Active()
         {
-            var bans = _Db.Bans.Where(c => c.ExpiresAt > DateTime.UtcNow || c.ExpiresAt == null)
+            var bans = await _Db.Bans.Where(c => c.ExpiresAt > DateTime.UtcNow || c.ExpiresAt == null)
                 .Include(i => i.BannedAccount).ThenInclude(i => i.Pilots).ThenInclude(i => i.Corporation).ThenInclude(i => i.Alliance).Select(s => new
                 {
                     s.Id,
@@ -53,7 +54,7 @@ namespace Imperium_Incursions_Waitlist.Controllers
                     s.ExpiresAt,
                     s.Reason,
                     s.CreatedAt
-                }).OrderBy(o => o.bannedAccount.name).ToList();
+                }).OrderBy(o => o.bannedAccount.name).ToListAsync();
             return Ok(bans);
         }
 
@@ -63,7 +64,7 @@ namespace Imperium_Incursions_Waitlist.Controllers
         [HttpPost]
         [Produces("application/json")]
         [Authorize(Roles = "Leadership")]
-        public IActionResult Index(IFormCollection request)
+        public async Task<IActionResult> Index(IFormCollection request)
         {
             if (request["reason"] == "" || request["name"] == "")
                 return BadRequest();
@@ -94,8 +95,8 @@ namespace Imperium_Incursions_Waitlist.Controllers
 
                 _Logger.LogInformation("{0} is issuing a ban against {1}", User.FindFirst("name").Value, request["name"]);
 
-                _Db.Bans.Add(ban);
-                _Db.SaveChanges();
+                await _Db.Bans.AddAsync(ban);
+                await _Db.SaveChangesAsync();
             }
             catch (Exception ex)
             {
@@ -113,9 +114,9 @@ namespace Imperium_Incursions_Waitlist.Controllers
         [HttpPut("{id}")]
         [Produces("application/json")]
         [Authorize(Roles = "Leadership")]
-        public IActionResult Update(IFormCollection request, int id)
+        public async Task<IActionResult> Update(IFormCollection request, int id)
         {
-            var currentBan = _Db.Bans.Include(c => c.BannedAccount).FirstOrDefault(c => c.Id == id);
+            var currentBan = await _Db.Bans.Include(c => c.BannedAccount).FirstOrDefaultAsync(c => c.Id == id);
             
             // If no ban was found return 404
             if (currentBan == null)
@@ -130,7 +131,7 @@ namespace Imperium_Incursions_Waitlist.Controllers
                 currentBan.UpdatedAt = DateTime.UtcNow;
 
                 _Logger.LogInformation("{0} is updating the ban against {1}", User.FindFirst("name").Value, currentBan.BannedAccount.Name);
-                _Db.SaveChanges();
+                await _Db.SaveChangesAsync();
             }
             catch (Exception ex)
             {
@@ -148,9 +149,9 @@ namespace Imperium_Incursions_Waitlist.Controllers
         [HttpDelete("{id}")]
         [Produces("application/json")]
         [Authorize(Roles = "Leadership")]
-        public IActionResult Revoke(int id)
+        public async Task<IActionResult> Revoke(int id)
         {
-            var currentBan = _Db.Bans.Include(c => c.BannedAccount).SingleOrDefault(c => c.Id == id);
+            var currentBan = await _Db.Bans.Include(c => c.BannedAccount).SingleOrDefaultAsync(c => c.Id == id);
             string baneeName = currentBan?.BannedAccount?.Name;
 
             if (currentBan == null)
@@ -160,9 +161,9 @@ namespace Imperium_Incursions_Waitlist.Controllers
             {
                 currentBan.ExpiresAt = DateTime.UtcNow;
 
-                _Db.SaveChanges();
+                await _Db.SaveChangesAsync();
 
-                _Logger.LogInformation("{0} has revoked ban against {1}", User.FindFirst("name").Value, baneeName);
+                _Logger.LogInformation("{0} has revoked ban against {1}", User.AccountName(), baneeName);
             }
             catch (Exception ex)
             {

@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using Imperium_Incursions_Waitlist.Models;
@@ -89,14 +88,14 @@ namespace Imperium_Incursions_Waitlist.Controllers
                 };
 
                 // Save new fit
-                _Db.Add(newFit);
+                await _Db.AddAsync(newFit);
                 await _Db.SaveChangesAsync();
 
                 return Ok();
             }
             catch(Exception ex)
             {
-                _Logger.LogError("{0} submitted an invalid fit URL {1}: {2}", User.FindFirst("Name").ToString(), request["fitUrl"].ToString(), ex.Message);
+                _Logger.LogError("{0} submitted an invalid fit URL {1}: {2}", User.AccountName(), request["fitUrl"].ToString(), ex.Message);
                 return BadRequest(ex.Message);
             }
         }

@@ -6,6 +6,7 @@ using Imperium_Incursions_Waitlist.Models;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
 using static Microsoft.AspNetCore.Hosting.Internal.HostingApplication;
 
@@ -26,9 +27,9 @@ namespace Imperium_Incursions_Waitlist.Controllers
 
         [HttpGet("")]
         [Produces("application/json")]
-        public IActionResult Index()
+        public async Task<IActionResult> Index()
         {
-            var data = _Db.Announcements.Where(c => c.DeletedAt == null).Select(s => new {
+            var data = await _Db.Announcements.Where(c => c.DeletedAt == null).Select(s => new {
                     s.Id,
                     s.Message,
                     s.Type,
@@ -36,7 +37,7 @@ namespace Imperium_Incursions_Waitlist.Controllers
                     s.CreatedAt,
                     createdBy = s.CreatorAdmin.Name
                 }).OrderBy(o => o.CreatedAt)                
-                .Take(1).FirstOrDefault();
+                .Take(1).FirstOrDefaultAsync();
 
             // Allows the User to hide an alert
             if(Request.Cookies["hide_banner"] != null)
@@ -52,7 +53,7 @@ namespace Imperium_Incursions_Waitlist.Controllers
         [HttpPost("")]
         [Produces("application/json")]
         [Authorize(Roles = "Commander,Leadership,Dev")]
-        public IActionResult SaveAnnouncment(IFormCollection request)
+        public async Task<IActionResult> SaveAnnouncment(IFormCollection request)
         {
             try
             {
@@ -64,8 +65,8 @@ namespace Imperium_Incursions_Waitlist.Controllers
                     CreatedAt = DateTime.UtcNow
                 };
 
-                _Db.Add(announcement);
-                _Db.SaveChanges();
+                await _Db.AddAsync(announcement);
+                await _Db.SaveChangesAsync();
 
                 return Ok();
             }
@@ -100,11 +101,11 @@ namespace Imperium_Incursions_Waitlist.Controllers
         [HttpDelete("{id}")]
         [Produces("application/json")]
         [Authorize(Roles = "Commander,Leadership,Dev")]
-        public IActionResult DeleteAnnouncment(int id)
+        public async Task<IActionResult> DeleteAnnouncment(int id)
         {
-            Announcement announcement = _Db.Announcements.Find(id);
+            Announcement announcement = await _Db.Announcements.FindAsync(id);
             announcement.DeletedAt = DateTime.UtcNow;
-            _Db.SaveChanges();
+            await _Db.SaveChangesAsync();
 
             return Ok();
         }
