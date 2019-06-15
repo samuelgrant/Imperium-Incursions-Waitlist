@@ -50,13 +50,9 @@ export default class FleetGlance extends Component {
         if (comp == null)
             return null;
 
-        var xxx = Object.keys(comp).map(function (key) {
-            return [comp[key]];
-        });
-
-        for (let i = 0; i < xxx.length; i++) {
-            if (this.state.selectedQueue == 0 || xxx[i][0].queue.id == this.state.selectedQueue) {
-                filteredComp.push(xxx[i]);
+        for (let i = 0; i < comp.length; i++) {
+            if (this.state.selectedQueue == 0 || comp[i].queue.id == this.state.selectedQueue) {
+                filteredComp.push(comp[i]);
             }
         }
 
@@ -66,18 +62,23 @@ export default class FleetGlance extends Component {
     getFilters() {
         let fleetComp = this.getComp();
         let queues = []
+        let total = 0;
 
         if (fleetComp == null) return null;
 
         for (let i = 0; i < fleetComp.length; i++) {
+            // Global counter - Includes all ships
+            total += fleetComp[i].pilots.length;
 
             if (queues[fleetComp[i].queue.id]) {
-                let tmp = queues[fleetComp[i].queue.id];
-                tmp.count = tmp.count + fleetComp[i].pilots.length;
-                queues[fleetComp[i].queue.id] = tmp;
+                let shipType = queues[fleetComp[i].queue.id];
+                tmp.count = shipType.count += fleetComp[i].pilots.length;
+                queues[fleetComp[i].queue.id] = shipType;
             } else {
                 queues[fleetComp[i].queue.id] = { id: fleetComp[i].queue.id, name: fleetComp[i].queue.name, count: fleetComp[i].pilots.length };
             }
+
+            queues[0] = { id: 0, name: "Fleet", count: total }
         }
 
         return queues;
@@ -103,14 +104,14 @@ export class GlanceComp extends Component {
         let ships;
         if (this.props.comp) {
             ships = this.props.comp.map((ship) => {
-                let pilots = ship[0].pilots.join("<br>");
+                let pilots = ship.pilots.join("<br>");
 
 
                 return (
                     <div className="col-lg-6 p-3">
-                        <img class="rounded pr-3" src={`https://image.eveonline.com/Render/${ship[0].id}_32.png`} alt={ship[0].name} />
-                        <p className="d-inline pr-3" data-tip={pilots} data-multiline="true">{ship[0].name}</p>
-                        <span className="badge badge-warning float-right">{ship[0].pilots.length}</span>
+                        <img class="rounded pr-3" src={`https://image.eveonline.com/Render/${ship.id}_32.png`} alt={ship.name} />
+                        <p className="d-inline pr-3" data-tip={pilots} data-multiline="true">{ship.name}</p>
+                        <span className="badge badge-warning float-right">{ship.pilots.length}</span>
                         <ReactTooltip />
                     </div>
                 )
@@ -138,7 +139,7 @@ export class GlanceMenu extends Component {
                 return (
                     <li className="nav-item">
                         <a role="tab" data-toggle="tab" className={`nav-link ${active}`} href="#tab-1" onClick={this.props.updateFilter.bind(this, filter.id)}>{filter.name}</a>
-                        <span className="badge badge-warning">{filter.count}</span>
+                        <span className="badge badge-warning mt-2">{filter.count}</span>
                     </li>
                 )
             });
