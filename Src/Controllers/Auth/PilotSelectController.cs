@@ -1,11 +1,10 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
-using Imperium_Incursions_Waitlist.Models;
-using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Authorization;
+using Microsoft.EntityFrameworkCore;
 
 namespace Imperium_Incursions_Waitlist.Controllers.Auth
 {
@@ -33,16 +32,14 @@ namespace Imperium_Incursions_Waitlist.Controllers.Auth
         /// </summary>
         [HttpGet("pilots")]
         [Produces("application/json")]
-        public IActionResult Pilots()
+        public async Task<IActionResult> Pilots()
         {
-            //var pilots = _Db.Pilots.Where(p => p.AccountId == User.AccountId()).OrderBy(s => s.CharacterName);
-
-            var pilots = _Db.Pilots.Where(c => c.AccountId == User.AccountId()).Select(s => new
+            var pilots = await _Db.Pilots.Where(c => c.AccountId == User.AccountId()).Select(s => new
             {
                 id = s.CharacterID,
                 name = s.CharacterName,
                 EsiValid = s.ESIValid
-            }).OrderBy(o => o.name).ToList();
+            }).OrderBy(o => o.name).ToListAsync();
 
             if (pilots == null)
                 return NotFound();

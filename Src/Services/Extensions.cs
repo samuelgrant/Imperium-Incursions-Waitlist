@@ -13,6 +13,8 @@ public static class LoggerExtensions
 
     public static int AccountId(this ClaimsPrincipal user) => int.Parse(user.FindFirstValue("Id"));
 
+    public static string AccountName(this ClaimsPrincipal user) => user.FindFirstValue("name");
+
     public static int PreferredPilotId(this IRequestCookieCollection cookies) => int.Parse(cookies["prefPilot"].Split(':')[0]);
 
     public static string PreferredPilotName(this IRequestCookieCollection cookies) => cookies["prefPilot"].Split(':')[1];
@@ -42,5 +44,17 @@ public static class LoggerExtensions
             return FleetErrorType.InvalidBoss;
 
         return null;
+    }
+
+    public static string _str(this IFormCollection request, string key)
+    {
+        return request[key].ToString();
+    }
+
+    public static int _int(this IFormCollection request, string key)
+    {
+        int.TryParse(request[key].ToString(), out int x);
+
+        return x;
     }
 }

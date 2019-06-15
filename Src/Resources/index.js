@@ -6,6 +6,7 @@ import './js/Libraries/popper.min';
 //import './js/Bootstrap/index';
 
 /* React */
+import './js/React/Announcement';
 import './js/React/Bans';
 import './js/React/Commanders';
 import './js/React/Index';

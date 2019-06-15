@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Authorization;
@@ -34,9 +33,9 @@ namespace Imperium_Incursions_Waitlist.Controllers
         /// Returns a list of accounts that have one or more account roles. 
         /// </summary>
         [HttpGet("data")]
-        public IActionResult Data()
+        public async Task<IActionResult> Data()
         {
-            var fcs = _Db.Accounts.Include(i => i.Pilots).Include(i => i.AccountRoles).ThenInclude(i => i.Role)
+            var fcs = await _Db.Accounts.Include(i => i.Pilots).Include(i => i.AccountRoles).ThenInclude(i => i.Role)
                 .Where(c => c.AccountRoles.Count > 0).Select( s => new {
                 s.Id,
                 s.Name,
@@ -48,7 +47,7 @@ namespace Imperium_Incursions_Waitlist.Controllers
                     corporation = new { id = s2.Corporation.Id, name = s2.Corporation.Name },
                     alliance = new { id = s2.Corporation.Alliance.Id, name = s2.Corporation.Alliance.Name},
                 })
-            }).OrderBy(o => o.Name).ToList();
+            }).OrderBy(o => o.Name).ToListAsync();
 
             var roles = _Db.Roles;
             return Ok(new {
@@ -63,20 +62,20 @@ namespace Imperium_Incursions_Waitlist.Controllers
         [HttpPost]
         [Produces("application/json")]
         [Authorize(Roles = "Leadership")]
-        public IActionResult Index(IFormCollection request)
+        public async Task<IActionResult> Index(IFormCollection request)
         {
             // Parse inputs as ints
-            int.TryParse(request["account_id"], out int accountId);
-            int.TryParse(request["role_id"], out int roleId);
-            string accountName = request["account_name"];
+            int.TryParse(request._str("account_id"), out int accountId);
+            int.TryParse(request._str("role_id"), out int roleId);
+            string accountName = request._str("account_name");
 
             // Validate to ensure the required fields were returned.
             if (accountId == 0 && String.IsNullOrEmpty(accountName) || roleId == 0)
                 return BadRequest("Invalid role or account ID/Name provided");
 
-            var account = _Db.Accounts.Where(a => a.Name == accountName || a.Id == accountId).SingleOrDefault();
+            var account = await _Db.Accounts.Where(a => a.Name == accountName || a.Id == accountId).SingleOrDefaultAsync();
             
-            var role = _Db.Roles.Find(roleId);
+            var role = await _Db.Roles.FindAsync(roleId);
 
             // User account does not exist
             if (account == null)
@@ -93,15 +92,15 @@ namespace Imperium_Incursions_Waitlist.Controllers
             try
             {
 
-                _Db.AccountRoles.Add(new Models.AccountRole
+                await _Db.AccountRoles.AddAsync(new Models.AccountRole
                 {
                     AccountId = account.Id,
                     RoleId = role.Id,
                 });
 
-                _Db.SaveChanges();
+                await  _Db.SaveChangesAsync();
 
-                _Logger.LogInformation("{0} has added the {1} role to {2}", User.FindFirst("name").Value, role.Name, account.Name);
+                _Logger.LogInformation("{0} has added the {1} role to {2}", User.AccountName(), role.Name, account.Name);
                 return Ok();
             }
             catch (Exception ex)
@@ -117,11 +116,11 @@ namespace Imperium_Incursions_Waitlist.Controllers
         [HttpDelete("revoke")]
         [Produces("application/json")]
         [Authorize(Roles = "Leadership")]
-        public IActionResult Revoke(IFormCollection request)
+        public async Task<IActionResult> Revoke(IFormCollection request)
         {
             // Parse inputs as ints
-            int.TryParse(request["accountId"], out int accountId);
-            int.TryParse(request["roleId"], out int roleId);
+            int.TryParse(request._str("accountId"), out int accountId);
+            int.TryParse(request._str("roleId"), out int roleId);
             // Validate to ensure the required fields were returned.
             if (accountId == 0 || roleId == 0)
                 return BadRequest("Invalid role or account ID provided");
@@ -130,11 +129,10 @@ namespace Imperium_Incursions_Waitlist.Controllers
                 return Unauthorized("You are not allowed to remove your own groups");
             
 
-            var accountRole = _Db.AccountRoles
-                                .Where(ar => ar.AccountId == accountId && ar.RoleId == roleId)
-                                .Include(ar => ar.Account)
-                                .Include(ar => ar.Role)
-                                .SingleOrDefault();
+            var accountRole = await _Db.AccountRoles
+                .Where(ar => ar.AccountId == accountId && ar.RoleId == roleId)
+                .Include(ar => ar.Account)
+                .Include(ar => ar.Role).SingleOrDefaultAsync();
 
             if (accountRole == null)
                 return NotFound();
@@ -142,7 +140,7 @@ namespace Imperium_Incursions_Waitlist.Controllers
             try
             {
                 _Db.Remove(accountRole);
-                _Db.SaveChanges();
+                await _Db.SaveChangesAsync();
 
                 _Logger.LogInformation("{0} role revoked from {1}", accountRole.Role.Name, accountRole.Account.Name);
 

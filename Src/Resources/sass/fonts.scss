@@ -1,9 +1,14 @@
-﻿
+﻿// Imports Eve Alpha Font
 @font-face {
     font-family: 'eveAlpha';
     src: url("../fonts/eve-webfont.woff2") format("woff2"), url("../fonts/eve-webfont.woff") format("woff");
     font-weight: normal;
     font-style: normal;
+}
+
+// Body font size override
+body {
+    font-size: 16px;
 }
 
 .header {
@@ -24,7 +29,7 @@ footer.footer {
 }
 
 a:link {
-    color: #8FC1E3;
+    color: #dc7325;
 }
 
 a:link.xmpp {
@@ -39,6 +44,6 @@ i.fas, i.far, i.fal {
     padding-right: 5px;
 }
 
-a:link {
-    color: #dc7325;
+.text-warning {
+    color: #dc7325!important;
 }

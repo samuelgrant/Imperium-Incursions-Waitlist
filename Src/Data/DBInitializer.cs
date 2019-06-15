@@ -18,7 +18,7 @@ namespace Imperium_Incursions_Waitlist.Data
 
             // Check for existing account records
             if (!context.Accounts.Any())
-                context.Add(new Account { Id = 1, Name = "System", RegisteredAt = DateTime.Now });
+                context.Add(new Account { Id = 1, Name = "System", RegisteredAt = DateTime.Now, JabberNotifications = false });
 
             // Seeds comms channels -- June 2019
             if (!context.CommChannels.Any())

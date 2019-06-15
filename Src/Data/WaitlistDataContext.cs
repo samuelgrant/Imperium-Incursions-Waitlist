@@ -7,6 +7,7 @@ namespace Imperium_Incursions_Waitlist.Data
 {
     public class WaitlistDataContext : DbContext
     {
+        public DbSet<Announcement> Announcements { get; set; }
         public DbSet<Account> Accounts { get; set; }
         public DbSet<Ban> Bans { get; set; }
         public DbSet<Pilot> Pilots { get; set; }
@@ -168,9 +169,14 @@ namespace Imperium_Incursions_Waitlist.Data
                 .HasForeignKey(wp => wp.RemovedByAccountId)
                 .OnDelete(DeleteBehavior.Restrict);
 
+            // Adds default values
             modelBuilder.Entity<Account>()
                 .Property(c => c.JabberNotifications)
                 .HasDefaultValue(true);
+
+            modelBuilder.Entity<Announcement>()
+                .Property(c => c.Type)
+                .HasDefaultValue("primary");
 
             // Placeholder alliance to assign to corporations that do not belong to an alliance.
             modelBuilder.Entity<Alliance>()
