@@ -101,13 +101,13 @@ namespace Imperium_Incursions_Waitlist.Controllers
         public async Task<IActionResult> Leave(IFormCollection request)
         {
             List<WaitingPilot> waitingPilots;
-            if (request["pilot_id"].ToString() == "")
+            if (request._str("pilot_id") == "")
             {
                 waitingPilots = await _Db.WaitingPilots.Include(c => c.Pilot).Where(c => c.Pilot.AccountId == User.AccountId() && c.RemovedByAccount == null).ToListAsync();
             }
             else
             {
-                waitingPilots = await _Db.WaitingPilots.Where(c => c.PilotId == int.Parse(request["pilot_id"].ToString()) && c.RemovedByAccount == null).ToListAsync();
+                waitingPilots = await _Db.WaitingPilots.Where(c => c.PilotId == request._int("pilot_id") && c.RemovedByAccount == null).ToListAsync();
             }
 
             foreach (WaitingPilot pilot in waitingPilots)
@@ -124,9 +124,9 @@ namespace Imperium_Incursions_Waitlist.Controllers
         [Produces("application/json")]
         public async Task<IActionResult> Join(IFormCollection request)
         {
-            int pilotId = request["pilot_id"].ToString() == "" ? Request.Cookies.PreferredPilotId() : int.Parse(request["pilot_id"].ToString());
-            List<int> roleIds = request["role_ids"].ToString().Split(',').Select(item => int.Parse(item)).ToList();
-            List<int> fitIds = request["fit_ids"].ToString().Split(',').Select(item => int.Parse(item)).ToList();
+            int pilotId = request._str("pilot_id") == "" ? Request.Cookies.PreferredPilotId() : request._int("pilot_id");
+            List<int> roleIds = request._str("role_ids").Split(',').Select(item => int.Parse(item)).ToList();
+            List<int> fitIds = request._str("fit_ids").Split(',').Select(item => int.Parse(item)).ToList();
 
             Pilot pilot = await _Db.Pilots.FindAsync(pilotId);
             if (pilot == null)

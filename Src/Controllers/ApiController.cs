@@ -29,7 +29,7 @@ namespace Imperium_Incursions_Waitlist.Controllers.Auth
         [HttpPost("esi-ui/show-info")]
         public async Task<IActionResult> ShowInfo(IFormCollection request)
         {
-            int target_id = int.Parse(request["target_id"].ToString());
+            int target_id = request._int("target_id");
             Pilot pilot = await _Db.Pilots.FindAsync(Request.Cookies.PreferredPilotId());
             await pilot.UpdateToken();
 
@@ -43,7 +43,7 @@ namespace Imperium_Incursions_Waitlist.Controllers.Auth
         [HttpPost("esi-ui/destination")]
         public async Task<IActionResult> SetDestination(IFormCollection request)
         {
-            int target_id = int.Parse(request["target_id"].ToString());
+            int target_id = request._int("target_id");
             Pilot pilot = await _Db.Pilots.FindAsync(Request.Cookies.PreferredPilotId());
             await pilot.UpdateToken();
 

@@ -67,8 +67,8 @@ namespace Imperium_Incursions_Waitlist.Controllers
         [Produces("application/json")]
         public async Task<IActionResult> UpdateShip(IFormCollection request)
         {
-            ShipType ship = await _Db.ShipTypes.FindAsync(int.Parse(request["ship_id"].ToString()));
-            ship.Queue = (Queue)int.Parse(request["queue_id"].ToString());
+            ShipType ship = await _Db.ShipTypes.FindAsync(request._int("ship_id"));
+            ship.Queue = (Queue)request._int("queue_id");
 
             await _Db.SaveChangesAsync();
 
@@ -82,8 +82,8 @@ namespace Imperium_Incursions_Waitlist.Controllers
         [Produces("application/json")]
         public async Task<IActionResult> NewShip(IFormCollection request)
         {
-            string hullType = request["ship_name"].ToString();
-            int queue_id = int.Parse(request["queue_id"].ToString());
+            string hullType = request._str("ship_name");
+            int queue_id = request._int("queue_id");
 
             ShipType ship = _Db.ShipTypes.Where(c => c.Name.ToLower() == hullType.ToLower()).FirstOrDefault();
             if(ship != null)

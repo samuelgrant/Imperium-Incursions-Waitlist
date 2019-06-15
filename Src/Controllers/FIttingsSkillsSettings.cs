@@ -56,7 +56,7 @@ namespace Imperium_Incursions_Waitlist.Controllers
         public async Task<IActionResult> JabberNotificationSetting(IFormCollection request)
         {
             Account account = await _Db.Accounts.FindAsync(User.AccountId());
-            account.JabberNotifications = (request["notificationsEnabled"].ToString().ToLower() == "true")? true : false ;
+            account.JabberNotifications = (request._str("notificationsEnabled").ToLower() == "true")? true : false ;
 
             await _Db.SaveChangesAsync();
 
@@ -76,7 +76,7 @@ namespace Imperium_Incursions_Waitlist.Controllers
             FitDna fitUrlObject;
             try
             {
-                fitUrlObject = Util.ParseFitDna(request["fitUrl"].ToString());
+                fitUrlObject = Util.ParseFitDna(request._str("fitUrl"));
                 Fit newFit = new Fit
                 {
                     AccountId = User.AccountId(),
@@ -95,7 +95,7 @@ namespace Imperium_Incursions_Waitlist.Controllers
             }
             catch(Exception ex)
             {
-                _Logger.LogError("{0} submitted an invalid fit URL {1}: {2}", User.AccountName(), request["fitUrl"].ToString(), ex.Message);
+                _Logger.LogError("{0} submitted an invalid fit URL {1}: {2}", User.AccountName(), request._str("fitUrl"), ex.Message);
                 return BadRequest(ex.Message);
             }
         }

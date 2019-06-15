@@ -66,14 +66,14 @@ namespace Imperium_Incursions_Waitlist.Controllers
         [Authorize(Roles = "Leadership")]
         public async Task<IActionResult> Index(IFormCollection request)
         {
-            if (request["reason"] == "" || request["name"] == "")
+            if (request._str("reason") == "" || request._str("name") == "")
                 return BadRequest();
 
             int AdminId = User.AccountId();
-            var BannedAccount = _Db.Accounts.FirstOrDefault(c => c.Name == request["name"]);
+            var BannedAccount = _Db.Accounts.FirstOrDefault(c => c.Name == request._str("name"));
 
             if (BannedAccount == null)
-                return NotFound(string.Format("The account {0} was not found", request["name"]));
+                return NotFound(string.Format("The account {0} was not found", request._str("name")));
 
             if (AdminId == BannedAccount.Id)
                 return Forbid("You cannot ban yourself");
@@ -84,7 +84,7 @@ namespace Imperium_Incursions_Waitlist.Controllers
                 {
                     AdminId = AdminId,
                     BannedAccountId = BannedAccount.Id,
-                    Reason = request["reason"],
+                    Reason = request._str("reason"),
                     //Expires at is disabled until I can spend enough time to use a proper Jquery date picker
                     ExpiresAt = null,//Ban.BanExpiryDate(request["expires_at"]),
 
@@ -93,7 +93,7 @@ namespace Imperium_Incursions_Waitlist.Controllers
                     UpdatedAt = DateTime.UtcNow
                 };
 
-                _Logger.LogInformation("{0} is issuing a ban against {1}", User.FindFirst("name").Value, request["name"]);
+                _Logger.LogInformation("{0} is issuing a ban against {1}", User.FindFirst("name").Value, request._str("name"));
 
                 await _Db.Bans.AddAsync(ban);
                 await _Db.SaveChangesAsync();
@@ -124,13 +124,13 @@ namespace Imperium_Incursions_Waitlist.Controllers
 
             try
             {
-                currentBan.Reason = request["reason"];
+                currentBan.Reason = request._str("reason");
                 //Expires at is disabled until I can spend enough time to use a proper Jquery date picker
                 currentBan.ExpiresAt = null;//Ban.BanExpiryDate(request["expires_at"]),
                 currentBan.UpdatedByAdminId = User.AccountId();
                 currentBan.UpdatedAt = DateTime.UtcNow;
 
-                _Logger.LogInformation("{0} is updating the ban against {1}", User.FindFirst("name").Value, currentBan.BannedAccount.Name);
+                _Logger.LogInformation("{0} is updating the ban against {1}", User.AccountName(), currentBan.BannedAccount.Name);
                 await _Db.SaveChangesAsync();
             }
             catch (Exception ex)

@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using Imperium_Incursions_Waitlist.Models;
@@ -8,7 +7,6 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
-using static Microsoft.AspNetCore.Hosting.Internal.HostingApplication;
 
 namespace Imperium_Incursions_Waitlist.Controllers
 {
@@ -60,8 +58,8 @@ namespace Imperium_Incursions_Waitlist.Controllers
                 Announcement announcement = new Announcement
                 {
                     CreatorAdminId = User.AccountId(),
-                    Type = request["type"].ToString(),
-                    Message = request["message"].ToString(),
+                    Type = request._str("type"),
+                    Message = request._str("message"),
                     CreatedAt = DateTime.UtcNow
                 };
 

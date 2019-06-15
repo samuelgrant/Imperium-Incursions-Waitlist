@@ -165,8 +165,8 @@ namespace Imperium_Incursions_Waitlist.Controllers
                 // Fleet not found
                 return NotFound("Fleet not found.");
 
-            int bossId = int.Parse(request["pilotId"]);
-            var pilot = await _Db.Pilots.Where(c => c.CharacterID == bossId && c.AccountId == int.Parse(User.FindFirst("Id").Value)).FirstOrDefaultAsync();
+            int bossId = request._int("pilotId");
+            var pilot = await _Db.Pilots.Where(c => c.CharacterID == bossId && c.AccountId == User.AccountId()).FirstOrDefaultAsync();
             if (pilot == null)
                 return BadRequest("The pilot was not found, or you do not have permission to complete this request.");
 
@@ -197,7 +197,7 @@ namespace Imperium_Incursions_Waitlist.Controllers
                 // Fleet not found
                 return NotFound("Fleet not found.");
 
-            int commsId = int.Parse(request["commsId"].ToString());
+            int commsId = request._int("commsId");
 
             CommChannel comm = await _Db.CommChannels.FindAsync(commsId);
             if (comm == null)
@@ -231,7 +231,7 @@ namespace Imperium_Incursions_Waitlist.Controllers
 
             try
             {
-                fleet.IsPublic = bool.Parse(request["status"].ToString());
+                fleet.IsPublic = bool.Parse(request._str("status"));
                 await _Db.SaveChangesAsync();
 
                 return Ok();
@@ -257,7 +257,7 @@ namespace Imperium_Incursions_Waitlist.Controllers
 
             try
             {
-                fleet.Type = request["type"].ToString();
+                fleet.Type = request._str("type");
                 await _Db.SaveChangesAsync();
 
                 return Ok();
@@ -277,11 +277,12 @@ namespace Imperium_Incursions_Waitlist.Controllers
         public async Task<IActionResult> Index(IFormCollection request)
         {
 
-            string EsiUrl = request["EsiFleetUrl"].ToString();
+            string EsiUrl = request._str("EsiFleetUrl");
             long fleetId;
+
             try
             {
-                fleetId = request["EsiFleetUrl"].ToString().GetEsiId();
+                fleetId = request._str("EsiFleetUrl").GetEsiId();
             }
             catch (Exception ex)
             {
@@ -289,12 +290,12 @@ namespace Imperium_Incursions_Waitlist.Controllers
                 return BadRequest(string.Format("Cannot parse the ESI Fleet ID from the URL provided. {0}\n{1}", EsiUrl, ex.Message));
             }
 
-            int bossId = int.Parse(request["fleetBoss"].ToString());
-            Pilot pilot = await _Db.Pilots.Where(c => c.CharacterID == bossId  && c.AccountId == int.Parse(User.FindFirst("Id").Value)).FirstOrDefaultAsync();
+            int bossId = request._int("fleetBoss");
+            Pilot pilot = await _Db.Pilots.Where(c => c.CharacterID == bossId  && c.AccountId == User.AccountId()).FirstOrDefaultAsync();
             if (pilot == null)
                 return NotFound("Pilot not found, or you do not have access to it.");
 
-            string fleetType = request["FleetType"].ToString();
+            string fleetType = request._str("FleetType");
 
             //Is there an active fleet with this ID? IF yes redirect to that fleet else continue
             var fleet = await _Db.Fleets.Where(c => c.EveFleetId == fleetId && c.ClosedAt == null).FirstOrDefaultAsync();
@@ -303,7 +304,7 @@ namespace Imperium_Incursions_Waitlist.Controllers
                 // Fleet already registered let's redirect the user to that page.
                 return Ok(fleet.Id);
 
-            CommChannel comms = await _Db.CommChannels.FindAsync(int.Parse(request["FleetComms"].ToString()));
+            CommChannel comms = await _Db.CommChannels.FindAsync(request._int("FleetComms"));
             if (comms == null)
                 // Fleet comms not found
                 _Logger.LogError("Invalid Comms channel provided.");
@@ -370,8 +371,9 @@ namespace Imperium_Incursions_Waitlist.Controllers
 
             try
             {
-                long.TryParse(request["squadId"].ToString(), out long squad_id);
-                long.TryParse(request["wingId"].ToString(), out long wing_id);
+                long.TryParse(request._str("squadId"), out long squad_id);
+                long.TryParse(request._str("wingId"), out long wing_id);
+
                 DefaultSquad squadPosition;
                 if (squad_id == 0)
                 {
@@ -404,9 +406,9 @@ namespace Imperium_Incursions_Waitlist.Controllers
 
         [HttpPut("cyno/{pilotId}")]
         [Produces("application/json")]
-        public async Task<IActionResult> Cyno(int id, int pilotId)
+        public async Task<IActionResult> Cyno(int fleetId, int pilotId)
         {
-            FleetAssignment pilot = await _Db.FleetAssignments.Where(c => c.FleetId == id && c.WaitingPilot.PilotId == pilotId).FirstOrDefaultAsync();
+            FleetAssignment pilot = await _Db.FleetAssignments.Where(c => c.FleetId == fleetId && c.WaitingPilot.PilotId == pilotId).FirstOrDefaultAsync();
             if (pilot == null)
                 return NotFound("The pilot was not found.");
 

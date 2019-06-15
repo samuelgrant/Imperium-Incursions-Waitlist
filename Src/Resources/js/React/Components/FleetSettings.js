@@ -91,7 +91,8 @@ export class BtnInvFaxes extends Component {
 
 export class Backseat extends Component {
     getIcoId() {
-        if (this.props.account && this.props.pilots)
+
+        if (this.props.account && this.props.account.name && this.props.pilots)
             return AccountPilot(this.props.account.name, this.props.pilots).id
 
         return 0;

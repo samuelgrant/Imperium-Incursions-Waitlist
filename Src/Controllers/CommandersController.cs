@@ -65,9 +65,9 @@ namespace Imperium_Incursions_Waitlist.Controllers
         public async Task<IActionResult> Index(IFormCollection request)
         {
             // Parse inputs as ints
-            int.TryParse(request["account_id"], out int accountId);
-            int.TryParse(request["role_id"], out int roleId);
-            string accountName = request["account_name"];
+            int.TryParse(request._str("account_id"), out int accountId);
+            int.TryParse(request._str("role_id"), out int roleId);
+            string accountName = request._str("account_name");
 
             // Validate to ensure the required fields were returned.
             if (accountId == 0 && String.IsNullOrEmpty(accountName) || roleId == 0)
@@ -119,8 +119,8 @@ namespace Imperium_Incursions_Waitlist.Controllers
         public async Task<IActionResult> Revoke(IFormCollection request)
         {
             // Parse inputs as ints
-            int.TryParse(request["accountId"], out int accountId);
-            int.TryParse(request["roleId"], out int roleId);
+            int.TryParse(request._str("accountId"), out int accountId);
+            int.TryParse(request._str("roleId"), out int roleId);
             // Validate to ensure the required fields were returned.
             if (accountId == 0 || roleId == 0)
                 return BadRequest("Invalid role or account ID provided");
