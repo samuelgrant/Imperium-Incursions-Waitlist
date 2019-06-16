@@ -2,6 +2,7 @@
 import { render } from 'react-dom';
 import Alert from './Components/Alert';
 import Waitlist from './Components/Waitlist';
+import Glance from './Components/FleetGlance';
 import { SidePanel, SideSection, SidePanelButton } from './Components/SidePanel';
 import { BtnClose, BtnClear, BtnInvAll, BtnInvFaxes, Backseat, Boss, ExitCyno, ExitCyno_Add, Mumble, Status, Type } from './Components/FleetSettings';
 
@@ -171,11 +172,15 @@ export default class Index extends Component {
                         <Waitlist waitlist={this.getWaitlist()} wings={this.getFleetWings()} fleetId={this.state.fleetId || null} />
                     </div>
 
-                    <div className="col-lg-4 col-sm-12">        
-                        <SidePanelButton id="fleetSettings" title="Fleet Settings" />
-                        <SidePanelButton id="fleetCynos" title="Fleet Cynos" />
+                    <div className="col-lg-4 col-sm-12">
+                        <div className="text-center">
+                            <SidePanelButton id="fleetSettings" title="Fleet Settings" />
+                            <SidePanelButton id="fleetCynos" title="Fleet Cynos" />
+                        </div>
 
-                        <h4 className={`d-block text-center text-${fleetSizeClass}`}>Fleet Size: {fleetSize}</h4>
+                        <h4 className={`d-block text-center text-${fleetSizeClass} py-4`}>Fleet Size: {fleetSize}</h4>
+
+                        <Glance members={this.getMembers()} />
                     </div>
                 </div>
 

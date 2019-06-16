@@ -43,6 +43,8 @@
     <Compile Remove="Migrations\20190613060215_Database Patch.Designer.cs" />
     <Compile Remove="Migrations\20190613060442_InitialMigration.cs" />
     <Compile Remove="Migrations\20190613060442_InitialMigration.Designer.cs" />
+    <Compile Remove="Migrations\20190613130803_Initial.cs" />
+    <Compile Remove="Migrations\20190613130803_Initial.Designer.cs" />
   </ItemGroup>
 
 

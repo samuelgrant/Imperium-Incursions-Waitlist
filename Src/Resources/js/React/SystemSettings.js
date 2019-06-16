@@ -103,7 +103,7 @@ export default class SystemSettings extends Component {
                             </div>
 
                             <div class="table-responsive">
-                                <table class="table">
+                                <table class="table" id="shipQueues">
                                     <thead>
                                         <tr>
                                             <th></th>

@@ -19,7 +19,7 @@ namespace Imperium_Incursions_Waitlist.Models
         public int CharacterID { get; set; }
 
         // EF Core recognizes this as FK automatically
-        public int AccountId { get; set; }
+        public int? AccountId { get; set; }
 
         [Required]
         public string CharacterName { get; set; }
@@ -78,7 +78,7 @@ namespace Imperium_Incursions_Waitlist.Models
         /// <summary>
         /// Checks to see if the account is linked
         /// </summary>
-        public bool IsLinked() => AccountId.ToString() != null;
+        public bool IsLinked() => AccountId != null;
         
         /// <summary>
         /// Checks to see if the pilot belongs to a specific ID
