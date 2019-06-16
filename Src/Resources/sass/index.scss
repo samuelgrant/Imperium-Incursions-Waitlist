@@ -217,6 +217,7 @@ tr.tr-pending {
 
 .modal-backdrop {
     background-color: #261f1c;
+    z-index: -1;
 }
 
 .badge-warning {
