@@ -56,7 +56,7 @@ namespace Imperium_Incursions_Waitlist
             if (CurrentEnvironment.IsDevelopment())
             {
                 services.AddDbContext<WaitlistDataContext>(options =>
-                    options.UseSqlServer(Configuration.GetConnectionString("MsSqlConnection")));
+                    options.UseSqlServer(Configuration.GetConnectionString("MsSqlConnection")), ServiceLifetime.Transient);
             }
             // Use MySQL on linux based testing & Production servers
             else
