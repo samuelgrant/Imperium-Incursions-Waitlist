@@ -48,65 +48,7 @@ namespace Imperium_Incursions_Waitlist.Services
             var bytes = System.Text.Encoding.GetEncoding("ISO-8859-1").GetBytes(_string);
 
             return System.Convert.ToBase64String(bytes);
-        }
-
-        /// <summary>
-        /// Verifies a JWT token is valid a dictionary an array of claims.
-        /// </summary>
-        /// <param name="OpenIdDomain">Top level domain of the OpenID Connect provider</param>
-        /// <param name="OpenIdAudiance">fill me out later</param>
-        /// <param name="accessToken">fill me out later</param>
-        /// <returns>A key value pair dictionary of claims</returns>
-        public static async Task<Dictionary<string, string>> JwtVerify(string OpenIdDomain, string OpenIdAudiance, string accessToken)
-        {
-            // If either of the paramters were missing abort.
-            if (OpenIdDomain == null || OpenIdAudiance == null)
-                return null;
-
-            var s_Log = Services.ApplicationLogging.CreateLogger("Services.Util");
-            SecurityToken validatedToken;
-
-            try
-            {
-                IConfigurationManager<OpenIdConnectConfiguration> configurationBuilder =
-                    new ConfigurationManager<OpenIdConnectConfiguration>($"{OpenIdDomain}.well-known/openid-configuration", new OpenIdConnectConfigurationRetriever());
-
-                OpenIdConnectConfiguration openIdConfig = await configurationBuilder.GetConfigurationAsync(CancellationToken.None);
-
-                TokenValidationParameters ValidationParameters = new TokenValidationParameters
-                {
-                    ValidIssuer = openIdConfig.Issuer,
-                    ValidAudience = OpenIdAudiance, 
-                    IssuerSigningKeys = openIdConfig.SigningKeys
-                };
-
-                JwtSecurityTokenHandler handler = new JwtSecurityTokenHandler();
-                var user = handler.ValidateToken(accessToken, ValidationParameters, out validatedToken);
-            }
-            catch (Exception ex)
-            {
-                s_Log.LogWarning("Error validating JWT Token {0}", ex.Message);
-                return null;
-            };
-
-#pragma warning disable IDE0019 // Use pattern matching
-            JwtSecurityToken jwt = validatedToken as JwtSecurityToken;
-#pragma warning restore IDE0019 // Use pattern matching
-
-            if (jwt == null)
-            {
-                s_Log.LogWarning("Authentication failed a JWT was not found");
-                return null;
-            }
-
-            Dictionary<string, string> Claims = new Dictionary<string, string>();
-            foreach(var claim in jwt.Claims)
-            {
-                Claims.Add(claim.Type, claim.Value);
-            }
-
-            return Claims;
-        }
+        }      
 
         /// <summary>
         /// Parses a Fit DNA Url and returns a fit strut with a typeId, dna and description
@@ -140,6 +82,20 @@ namespace Imperium_Incursions_Waitlist.Services
                 dna = fit_dna,
                 description = fit_description
             };
+        }
+
+        /// <summary>
+        /// Creates a diffForHumans() like output that compares a historic time object against DateTime.UtcNow. Use this for pretty outputs on views.
+        /// </summary>
+        /// <param name="x">DateTime Object - Use DateTime.UtcNow</param>
+        /// <returns>__H __M</returns>
+        public static string WaitTime(DateTime x)
+        {
+            if (x == null) return "";
+
+            TimeSpan timeSpan = DateTime.UtcNow - x;
+            
+            return $"{timeSpan.Hours}H {timeSpan.Minutes}M";
         }
     }
 }

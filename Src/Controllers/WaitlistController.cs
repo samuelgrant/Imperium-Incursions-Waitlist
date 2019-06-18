@@ -11,6 +11,7 @@ using System.Net;
 using Imperium_Incursions_Waitlist.Models;
 using Microsoft.AspNetCore.Http;
 using System.Threading.Tasks;
+using Imperium_Incursions_Waitlist.Services;
 
 namespace Imperium_Incursions_Waitlist.Controllers
 {
@@ -88,11 +89,57 @@ namespace Imperium_Incursions_Waitlist.Controllers
                 }).OrderBy(o => o.name).ToListAsync()
             };
 
+            var waitingAccounts = await _Db.WaitingPilots.Where(c => c.RemovedByAccount == null).Select(s => new
+            {
+                s.Pilot.AccountId,
+                s.CreatedAt,
+                queues = s.SelectedFits.Select(s1 => s1.Fit.ShipType.Queue).ToList()
+            }).OrderBy(o => o.CreatedAt).ToListAsync();
+
+            waitingAccounts = waitingAccounts.GroupBy(g => g.AccountId).Select(g => g.First()).ToList();
+
+            Dictionary<Queue, int> Queues = new Dictionary<Queue, int>();
+            foreach(var account in waitingAccounts)
+            {
+                foreach(Queue q in account.queues)
+                {
+                    if (!Queues.ContainsKey(q))
+                    {
+                        Queues.Add(q, 1);
+                    }
+                    else
+                    {
+                        Queues[q] = Queues[q]++;
+                    }
+                }
+            }
+
+            int? index = 0;
+            string yourWaitTime = "";
+            foreach(var user in waitingAccounts)
+            {
+                index++;
+                if(user.AccountId == User.AccountId())
+                {
+                    yourWaitTime = Util.WaitTime(user.CreatedAt);
+                    break;
+                }
+            }                  
+            
+
+            var waitlist = new {
+                YourPos = index >= 0 ? index : null,
+                TotalWaiting = waitingAccounts.Count,
+                YourWaitTime = yourWaitTime,
+                Queues
+            };
+
             return Ok(new
             {
                 fleets,
                 pilots,
-                options
+                options,
+                waitlist
             });
         }
 
