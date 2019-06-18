@@ -9,6 +9,7 @@ using Imperium_Incursions_Waitlist.Data;
 using Imperium_Incursions_Waitlist.Models;
 using Microsoft.Extensions.DependencyInjection;
 using Imperium_Incursions_Waitlist.Services;
+using Microsoft.EntityFrameworkCore;
 
 public class AllianceService : IHostedService
 {
@@ -41,7 +42,7 @@ public class AllianceService : IHostedService
     private async void DoWork(object state)
     {
         _logger.LogInformation("Background Service Started: updating alliances.");
-        List<Alliance> alliances = _Db.Alliance.ToList();
+        List<Alliance> alliances = await _Db.Alliance.ToListAsync();
         foreach (Alliance alliance in alliances)
         {
             // Skip the non-membership alliance
@@ -54,7 +55,7 @@ public class AllianceService : IHostedService
                 alliance.Name = result.Name;
         }
 
-        _Db.SaveChanges();
+        await _Db.SaveChangesAsync();
         _logger.LogInformation("Background Service Completed: alliances updated.");
     }
 

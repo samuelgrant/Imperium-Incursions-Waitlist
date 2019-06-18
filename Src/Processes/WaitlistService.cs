@@ -10,6 +10,7 @@ using Imperium_Incursions_Waitlist.Models;
 using Microsoft.Extensions.DependencyInjection;
 using Imperium_Incursions_Waitlist.Services;
 using ESI.NET.Models.SSO;
+using Microsoft.EntityFrameworkCore;
 
 public class WaitlistService : IHostedService
 {
@@ -43,10 +44,10 @@ public class WaitlistService : IHostedService
     {
         _logger.LogInformation("Background Service Started: updating waitlist.");
 
-        List<WaitingPilot> waitlist = _Db.WaitingPilots.Where(c => c.RemovedByAccount == null).ToList();
+        List<WaitingPilot> waitlist = await _Db.WaitingPilots.Where(c => c.RemovedByAccount == null).ToListAsync();
         foreach (WaitingPilot waiting_pilot in waitlist)
         {
-            Pilot pilot = _Db.Pilots.Find(waiting_pilot.PilotId);
+            Pilot pilot = await _Db.Pilots.FindAsync(waiting_pilot.PilotId);
             // Update pilot system
             await pilot.UpdateToken();
             if (!pilot.ESIValid)
@@ -63,7 +64,7 @@ public class WaitlistService : IHostedService
             waiting_pilot.UpdatedAt = DateTime.UtcNow;
         }
 
-        _Db.SaveChanges();
+        await _Db.SaveChangesAsync();
         _logger.LogInformation("Background Service Completed: waitlist updated.");
     }
 

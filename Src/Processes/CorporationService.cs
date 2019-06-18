@@ -9,6 +9,7 @@ using Imperium_Incursions_Waitlist.Data;
 using Imperium_Incursions_Waitlist.Models;
 using Microsoft.Extensions.DependencyInjection;
 using Imperium_Incursions_Waitlist.Services;
+using Microsoft.EntityFrameworkCore;
 
 public class CorporationService : IHostedService
 {
@@ -41,7 +42,7 @@ public class CorporationService : IHostedService
     private async void DoWork(object state)
     {
         _logger.LogInformation("Background Service Started: updating corporations.");
-        List<Corporation> corporations = _Db.Corporation.ToList();
+        List<Corporation> corporations = await _Db.Corporation.ToListAsync();
         foreach(Corporation corporation in corporations)
         {
             var result = await EsiWrapper.GetCorporation(corporation.Id);
@@ -54,7 +55,7 @@ public class CorporationService : IHostedService
             }
         }
 
-        _Db.SaveChanges();
+        await _Db.SaveChangesAsync();
         _logger.LogInformation("Background Service Completed: corporations updated.");
     }
 

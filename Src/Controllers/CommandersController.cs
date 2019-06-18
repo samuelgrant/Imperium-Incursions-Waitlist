@@ -49,7 +49,7 @@ namespace Imperium_Incursions_Waitlist.Controllers
                 })
             }).OrderBy(o => o.Name).ToListAsync();
 
-            var roles = _Db.Roles;
+            var roles = await _Db.Roles.ToListAsync();
             return Ok(new {
                 fcs,
                 roles

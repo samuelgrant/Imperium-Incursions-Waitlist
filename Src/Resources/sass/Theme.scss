@@ -9434,7 +9434,7 @@ button, input, optgroup, select, textarea {
 }
 
 .search__helper{
-    top: 10px;
+    margin-top: 10px;
 }
 
 .header--scrolled .search__text {
@@ -9460,15 +9460,17 @@ button, input, optgroup, select, textarea {
     transition: color .3s,transform .4s,-webkit-transform .4s
 }
 
-.search--focus .search__helper {
+// Hard to get aligned correctly.
+/*.search--focus .search__helper {
     -webkit-transform: rotate(180deg);
     transform: rotate(180deg);
     line-height: 2.9rem;
 }
 
 .search--focus .search__helper:before {
-    content: '\f356'
-}
+    content: '\f356';
+    margin-left: -5px;
+}*/
 
 .app-shortcuts {
     margin: 0;

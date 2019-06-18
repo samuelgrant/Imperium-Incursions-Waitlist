@@ -70,7 +70,7 @@ namespace Imperium_Incursions_Waitlist.Controllers
                 return BadRequest();
 
             int AdminId = User.AccountId();
-            var BannedAccount = _Db.Accounts.FirstOrDefault(c => c.Name == request._str("name"));
+            var BannedAccount = await _Db.Accounts.FirstOrDefaultAsync(c => c.Name == request._str("name"));
 
             if (BannedAccount == null)
                 return NotFound(string.Format("The account {0} was not found", request._str("name")));

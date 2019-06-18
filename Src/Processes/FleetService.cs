@@ -45,7 +45,7 @@ public class FleetService : IHostedService
     private async void DoWork(object state)
     {
         _logger.LogInformation("Background Service Started: updating fleets.");
-        List<Fleet> fleets = _Db.Fleets.Include(ci => ci.BossPilot).Where(c => c.BossPilot != null && c.ClosedAt == null).ToList();
+        List<Fleet> fleets = await _Db.Fleets.Include(ci => ci.BossPilot).Where(c => c.BossPilot != null && c.ClosedAt == null).ToListAsync();
         if (fleets.Count == 0) return;
 
         foreach (Fleet fleet in fleets)
@@ -55,7 +55,7 @@ public class FleetService : IHostedService
             if (fleet.BossPilotId == null)
                 continue;
 
-            Pilot pilot = _Db.Pilots.Find(fleet.BossPilotId);
+            Pilot pilot = await _Db.Pilots.FindAsync(fleet.BossPilotId);
 
             try
             {
@@ -76,7 +76,7 @@ public class FleetService : IHostedService
                 // Update the pilots in fleet
                 await pilot.UpdateToken();
                 long fleetId = (long)fleet.EveFleetId;
-                List<FleetAssignment> current_members = _Db.FleetAssignments.Where(c => c.FleetId == fleet.Id && c.DeletedAt == null).Include( c => c.WaitingPilot).ToList();
+                List<FleetAssignment> current_members = await _Db.FleetAssignments.Where(c => c.FleetId == fleet.Id && c.DeletedAt == null).Include( c => c.WaitingPilot).ToListAsync();
                 Dictionary<int, FleetAssignment> knownMembers = current_members.ToDictionary(x => x.WaitingPilot.PilotId, x => x);
                 List<ESI.NET.Models.Fleets.Member> esiMembers = await EsiWrapper.GetFleetMembers((AuthorizedCharacterData)pilot, fleetId);
                 
@@ -96,7 +96,7 @@ public class FleetService : IHostedService
                         {
                             // Otherwise they're new, let's add them to our fleet assignments
                             var waitlistId = await CheckWaitlistForPilot(fleetMember.CharacterId, fleet);
-                            _Db.FleetAssignments.Add(new FleetAssignment
+                            await _Db.FleetAssignments.AddAsync(new FleetAssignment
                             {
                                 WaitingPilotId = waitlistId ?? null,
                                 FleetId = fleet.Id,
@@ -111,7 +111,7 @@ public class FleetService : IHostedService
                     }
 
                     // Delete pilots who have not been reported through ESI for more than 1 minutes.
-                    current_members = _Db.FleetAssignments.Where(c => c.FleetId == fleet.Id && c.DeletedAt == null).ToList();
+                    current_members = await _Db.FleetAssignments.Where(c => c.FleetId == fleet.Id && c.DeletedAt == null).ToListAsync();
                     foreach(FleetAssignment member in current_members)
                         if (member.UpdatedAt.Value.AddMinutes(1) < DateTime.UtcNow)
                             member.DeletedAt = DateTime.UtcNow;
@@ -150,13 +150,13 @@ public class FleetService : IHostedService
             fleet.UpdatedAt = DateTime.UtcNow;
         }
 
-        _Db.SaveChanges();
+        await _Db.SaveChangesAsync();
         _logger.LogInformation("Background Service Completed: fleets updated.");
     }
 
     private async Task<int?> CheckWaitlistForPilot(int characterId, Fleet fleet)
     {
-        WaitingPilot x = _Db.WaitingPilots.Where(c => c.PilotId == characterId && c.RemovedByAccountId == null).FirstOrDefault();
+        WaitingPilot x = await _Db.WaitingPilots.Where(c => c.PilotId == characterId && c.RemovedByAccountId == null).FirstOrDefaultAsync();
 
         if(x == null)
         {
@@ -167,7 +167,7 @@ public class FleetService : IHostedService
                 var pilotInfo = await EsiWrapper.PilotLookupAsync(characterId);
                 Corporation.EnsureInDatabase(pilotInfo.CorporationId, _Db);
 
-                _Db.Add(new Pilot
+                await _Db.AddAsync(new Pilot
                 {
                     Account = null,
                     CharacterID = characterId,
@@ -190,8 +190,8 @@ public class FleetService : IHostedService
                 UpdatedAt = DateTime.UtcNow
             };
 
-            _Db.Add(waitlistPilot);
-            _Db.SaveChanges();
+            await _Db.AddAsync(waitlistPilot);
+            await _Db.SaveChangesAsync();
             //Return that waiting pilot
             return waitlistPilot.Id;
         }

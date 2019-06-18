@@ -85,7 +85,7 @@ namespace Imperium_Incursions_Waitlist.Controllers
             string hullType = request._str("ship_name");
             int queue_id = request._int("queue_id");
 
-            ShipType ship = _Db.ShipTypes.Where(c => c.Name.ToLower() == hullType.ToLower()).FirstOrDefault();
+            ShipType ship = await _Db.ShipTypes.Where(c => c.Name.ToLower() == hullType.ToLower()).FirstOrDefaultAsync();
             if(ship != null)
             {
                 ship.Queue = (Queue)queue_id;
@@ -98,7 +98,7 @@ namespace Imperium_Incursions_Waitlist.Controllers
             if (x.InventoryTypes == null)
                 return NotFound($"{hullType} could not be found. Is the name spelt correctly?");
 
-            _Db.Add( new ShipType
+            await _Db.AddAsync( new ShipType
             {
                 Id = (int)x.InventoryTypes[0],
                 Name = hullType,

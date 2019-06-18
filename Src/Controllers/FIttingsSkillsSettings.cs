@@ -67,7 +67,7 @@ namespace Imperium_Incursions_Waitlist.Controllers
         [Produces("application/json")]
         public async Task<IActionResult> Fit(IFormCollection request)
         {
-            int currentFits = _Db.Fits.Where(c => c.AccountId == User.AccountId() && !c.IsShipScan && c.DeletedAt == null).Count();
+            int currentFits = await _Db.Fits.Where(c => c.AccountId == User.AccountId() && !c.IsShipScan && c.DeletedAt == null).CountAsync();
             
             // Accounts are only allowed five fits at a time
             if (currentFits >= 5)// Does not take into account fits added by an FC through the fit scanner
