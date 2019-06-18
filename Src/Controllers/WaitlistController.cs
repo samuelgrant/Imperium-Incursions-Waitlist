@@ -11,6 +11,7 @@ using System.Net;
 using Imperium_Incursions_Waitlist.Models;
 using Microsoft.AspNetCore.Http;
 using System.Threading.Tasks;
+using Imperium_Incursions_Waitlist.Services;
 
 namespace Imperium_Incursions_Waitlist.Controllers
 {
@@ -88,13 +89,83 @@ namespace Imperium_Incursions_Waitlist.Controllers
                 }).OrderBy(o => o.name).ToListAsync()
             };
 
+            List<WaitingPilot> waitingPilots = await _Db.WaitingPilots.Include(i => i.Pilot).ThenInclude(i1 => i1.Account)
+                    .Include(i2 => i2.SelectedFits)
+                        .ThenInclude(i3 => i3.Fit).ThenInclude(i4 => i4.ShipType)
+                    .OrderBy( o => o.CreatedAt)
+                        .ThenBy(o => o.Pilot.Account.Id)
+                    .Where(c => c.RemovedByAccount == null)
+                    .ToListAsync();
+
+            Dictionary<int?, WaitingAccount> waitlistQueue = new Dictionary<int?, WaitingAccount>();
+            foreach(WaitingPilot wp in waitingPilots)
+            {
+                if (waitlistQueue.ContainsKey(wp.Pilot.Account.Id))
+                {
+                    WaitingAccount x = waitlistQueue[wp.Pilot.Account.Id];
+                    
+                    // We want to know how long their first pilot has been waiting
+                    if (waitlistQueue[wp.Pilot.Account.Id].joinedAt > wp.CreatedAt)
+                    {    
+                        x.joinedAt = wp.CreatedAt;
+                        x.waitTime = Util.WaitTime(wp.CreatedAt);
+                    }
+                    
+                    // Add more queues;
+
+                    // Update the dictionary record.
+                    waitlistQueue[wp.Pilot.Account.Id] = x;
+                }
+                else
+                {
+                    if (wp.Pilot.AccountId == null) continue;
+                    // Add new
+                    waitlistQueue.Add(wp.Pilot.AccountId, new WaitingAccount
+                    {
+                        accountId = wp?.Pilot?.AccountId,
+                        joinedAt = wp.CreatedAt,
+                        waitTime = Util.WaitTime(wp.CreatedAt),
+                    //    queues = new { }
+                    });
+                }
+            }
+
+            int? indexOfMe = null;
+            int? index = 0;
+            foreach(var wa in waitlistQueue)
+            {
+                index++;
+                if(wa.Value.accountId == User.AccountId())
+                {
+                    indexOfMe = wa.Value.accountId;
+                    break;
+                }
+            }                  
+            
+
+            var waitlist = new {
+                YourPos = index >= 0 ? index : null,
+                TotalWaiting = waitlistQueue.Count,
+                YourWaitTime = index > 0 ? waitlistQueue[indexOfMe].waitTime : null,
+                //Queues = new List<>
+            };
+
             return Ok(new
             {
                 fleets,
                 pilots,
-                options
+                options,
+                waitlist
             });
         }
+
+        struct WaitingAccount
+        {
+            public int? accountId;
+            public DateTime joinedAt;
+            public string waitTime;
+            //queues go here......
+        };
 
         [HttpDelete("/")]
         [Produces("application/json")]

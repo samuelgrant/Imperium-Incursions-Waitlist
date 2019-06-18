@@ -18,7 +18,8 @@ export default class Index extends Component {
             fcOptions: null,
             fleets: null,
             pilots: null,
-            prefPilot: null
+            prefPilot: null,
+            waitlist: null
         }
     }
 
@@ -50,7 +51,8 @@ export default class Index extends Component {
             this.setState({
                 fleets: data.fleets,
                 options: data.options,
-                pilots: data.pilots
+                pilots: data.pilots,
+                waitlist: data.waitlist
             });
 
             this.getData();
