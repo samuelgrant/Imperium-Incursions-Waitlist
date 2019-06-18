@@ -1,5 +1,6 @@
 ﻿import React, { Component } from 'react';
 import { render } from 'react-dom';
+import ReactTooltip from 'react-tooltip'
 
 export default class PilotSelect extends Component {
 
@@ -99,7 +100,7 @@ export class LoginCard extends Component {
             esi.label = <p className="login-esi text-success">ESI Valid</p>;
             esi.button = <button className="btn btn-success d-block mx-auto mb-4" onClick={this.setMainPilot.bind(this, this.getId())}>Proceed</button>;
         } else {
-            esi.label = <p className="login-esi text-danger" data-toggle="tooltip" title="We require a valid ESI token before you can use this pilot. Please update your pilot ESI to continue.">ESI Invalid</p>;
+            esi.label = <p className="login-esi text-danger" data-multiline="true" data-tip="We require a valid ESI token before you can use this pilot.<br/>Please update your pilot ESI to continue.">ESI Invalid</p>;
             esi.button = <a className="btn btn-danger d-block mx-auto mb-4" href="/auth/eve">Update ESI</a>
         }
 
@@ -111,6 +112,8 @@ export class LoginCard extends Component {
 
                     {esi.label}
                     {esi.button}
+
+                    <ReactTooltip />
                 </div>
             </div>
         )
