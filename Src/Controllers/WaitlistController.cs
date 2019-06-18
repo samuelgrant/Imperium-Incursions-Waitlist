@@ -89,70 +89,39 @@ namespace Imperium_Incursions_Waitlist.Controllers
                 }).OrderBy(o => o.name).ToListAsync()
             };
 
-            List<WaitingPilot> waitingPilots = await _Db.WaitingPilots.Include(i => i.Pilot).ThenInclude(i1 => i1.Account)
-                    .Include(i2 => i2.SelectedFits)
-                        .ThenInclude(i3 => i3.Fit).ThenInclude(i4 => i4.ShipType)
-                    .OrderBy( o => o.CreatedAt)
-                        .ThenBy(o => o.Pilot.Account.Id)
-                    .Where(c => c.RemovedByAccount == null)
-                    .ToListAsync();
-
-            Dictionary<int?, WaitingAccount> waitlistQueue = new Dictionary<int?, WaitingAccount>();
-            foreach(WaitingPilot wp in waitingPilots)
+            var waitingAccounts = await _Db.WaitingPilots.Where(c => c.RemovedByAccount == null).Select(s => new
             {
-                List<int> QueueIds = new List<int>();
-                foreach(var queue in wp.SelectedFits)
-                {
-                    if (!QueueIds.Contains((int)queue.Fit.ShipType.Queue)) {
-                        QueueIds.Add((int)queue.Fit.ShipType.Queue);
-                    }
-                }
-                
-                if (waitlistQueue.ContainsKey(wp.Pilot.Account.Id))
-                {
-                    WaitingAccount x = waitlistQueue[wp.Pilot.Account.Id];
-                    
-                    // We want to know how long their first pilot has been waiting
-                    if (waitlistQueue[wp.Pilot.Account.Id].joinedAt > wp.CreatedAt)
-                    {    
-                        x.joinedAt = wp.CreatedAt;
-                        x.waitTime = Util.WaitTime(wp.CreatedAt);
-                    }
+                s.Pilot.AccountId,
+                s.CreatedAt,
+                queues = s.SelectedFits.Select(s1 => s1.Fit.ShipType.Queue).ToList()
+            }).OrderBy(o => o.CreatedAt).ToListAsync();
 
-                    List<int> knownQueueIds = x.queues;
-                    foreach(int i in QueueIds)
+            waitingAccounts = waitingAccounts.GroupBy(g => g.AccountId).Select(g => g.First()).ToList();
+
+            Dictionary<Queue, int> Queues = new Dictionary<Queue, int>();
+            foreach(var account in waitingAccounts)
+            {
+                foreach(Queue q in account.queues)
+                {
+                    if (!Queues.ContainsKey(q))
                     {
-                        if (!knownQueueIds.Contains(i))
-                            knownQueueIds.Add(i);
+                        Queues.Add(q, 1);
                     }
-
-                    x.queues = knownQueueIds;
-
-                    // Update the dictionary record.
-                    waitlistQueue[wp.Pilot.Account.Id] = x;
-                }
-                else
-                {
-                    if (wp.Pilot.AccountId == null) continue;
-                    // Add new
-                    waitlistQueue.Add(wp.Pilot.AccountId, new WaitingAccount
+                    else
                     {
-                        accountId = wp?.Pilot?.AccountId,
-                        joinedAt = wp.CreatedAt,
-                        waitTime = Util.WaitTime(wp.CreatedAt),
-                        queues = QueueIds
-                    });
+                        Queues[q] = Queues[q]++;
+                    }
                 }
             }
 
-            int? indexOfMe = null;
             int? index = 0;
-            foreach(var wa in waitlistQueue)
+            string yourWaitTime = "";
+            foreach(var user in waitingAccounts)
             {
                 index++;
-                if(wa.Value.accountId == User.AccountId())
+                if(user.AccountId == User.AccountId())
                 {
-                    indexOfMe = wa.Value.accountId;
+                    yourWaitTime = Util.WaitTime(user.CreatedAt);
                     break;
                 }
             }                  
@@ -160,9 +129,9 @@ namespace Imperium_Incursions_Waitlist.Controllers
 
             var waitlist = new {
                 YourPos = index >= 0 ? index : null,
-                TotalWaiting = waitlistQueue.Count,
-                YourWaitTime = index > 0 ? waitlistQueue[indexOfMe].waitTime : null,
-                Queues = waitlistQueue[indexOfMe].queues
+                TotalWaiting = waitingAccounts.Count,
+                YourWaitTime = yourWaitTime,
+                Queues
             };
 
             return Ok(new
@@ -173,14 +142,6 @@ namespace Imperium_Incursions_Waitlist.Controllers
                 waitlist
             });
         }
-
-        struct WaitingAccount
-        {
-            public int? accountId;
-            public DateTime joinedAt;
-            public string waitTime;
-            public List<int> queues;
-        };
 
         [HttpDelete("/")]
         [Produces("application/json")]
