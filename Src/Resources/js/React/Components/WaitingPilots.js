@@ -55,9 +55,8 @@ export default class WaitingPilot extends Component {
         }
         return (
             <div>
-                <Card heading="Your pilots on the Waitlist">
-                    {content}
-                </Card>
+                <h5 className="pb-4">Your pilots on the Waitlist</h5>
+                {content}
             </div>
         )
     }
