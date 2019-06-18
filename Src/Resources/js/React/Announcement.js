@@ -83,7 +83,7 @@ export default class AnnouncementBanner extends Component {
         return (
             <div className="container">
                 {banner}
-                <AnnouncementModal banner={this.state.banner} u={this.getAnnouncement.bind(this)}/>
+                <AnnouncementModal banner={this.state.banner} u={this.getAnnouncement.bind(this)} />
             </div>
         );
     }

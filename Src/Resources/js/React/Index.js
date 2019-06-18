@@ -114,10 +114,10 @@ export default class Index extends Component {
                 <div className="row">
                     <div className="col-12">
                         <h2>Fleet Info</h2>
+                        {noFleets}
                     </div>
 
-                    {noFleets}
-
+                    
                     {fleets}
 
                     {newFleet.btn}

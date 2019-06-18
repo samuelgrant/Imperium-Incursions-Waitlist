@@ -24,12 +24,10 @@ export default class Alert extends Component {
         }
 
         return (
-            <div className="col-12">
-                <div role="alert" className={`alert ${this.getClass()}`}>
-                    {dismiss}
+            <div role="alert" className={`alert ${this.getClass()}`}>
+                {dismiss}
 
-                    <span>{this.props.children}</span>
-                </div>
+                <span>{this.props.children}</span>
             </div>
         )        
     }
