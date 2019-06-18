@@ -223,3 +223,10 @@ tr.tr-pending {
 .badge-warning {
     background-color: #dc7325  !important;
 }
+
+.fleet-info .card-body {
+    background-color: none;
+    outline-style: solid;
+    outline-color: grey;
+    outline-width: 0.75px;
+}

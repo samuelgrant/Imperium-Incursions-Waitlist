@@ -41,7 +41,7 @@ export default class WaitlistQueue extends Component {
 
         return (
             <div>
-                <div id="waitlistQueueHead">
+                <div id="waitlistQueueHead" className="pb-4">
                     <h5 className="pr-5 d-inline">Waitlist Queue</h5>
                     <h5 className="d-inline">
                         <i className="fas fa-info-circle" data-tip="Your Position only takes into account unique users<br/>and does not display their alts." data-multiline="true"></i>
@@ -50,7 +50,7 @@ export default class WaitlistQueue extends Component {
                     <ReactTooltip />
                 </div>
 
-                <div id="queues" className="py-4">
+                <div id="queues" className="pb-4">
                     <div className="row text-center">
                         {queues}
                     </div>

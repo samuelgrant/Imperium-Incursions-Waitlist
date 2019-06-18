@@ -39,7 +39,7 @@ export class SideSection extends Component {
 
     render() {
         return (
-            <div className="col-12 pt-2 pb-3">
+            <div className="col-12 pt-2 pb-4">
                 <h4 className="pb-2">{this.getTitle()}</h4>
 
                 {this.props.children}

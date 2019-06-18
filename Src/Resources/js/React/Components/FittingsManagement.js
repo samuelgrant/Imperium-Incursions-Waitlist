@@ -49,11 +49,11 @@ export default class FittingsManagement extends Component {
                     <label htmlFor="fitDna">Add a new ship</label>
                     <div className="row">
                         <div className="col-9">
-                            <TextArea id="fitDna" required="true" placeholder="[00:25:25] Caitlin Viliana > <url=fitting:17740:26448;1:26402;1:15144;4:3186;8:14512;1:41201;1:33842;2:26322;1:14650;2:4347;2::>Vindicator</url>" key={this.state.key}/>
+                            <TextArea id="fitDna" required="true" placeholder="[00:25:25] Caitlin Viliana > <url=fitting:17740:26448;1:26402;1:15144;4:3186;8:14512;1:41201;1:33842;2:26322;1:14650;2:4347;2::>Vindicator</url>" key={this.state.key} />
+                            <a className="float-right pt-2" data-toggle="modal" data-target="#fittingsHelp"> How do I add a new fit?</a>
                         </div>
                         <div className="col-3 text-center">
-                            <button className="btn btn-success d-block mx-auto mb-2" type="submit">Save Fitting</button>
-                            <a data-toggle="modal" data-target="#fittingsHelp"> How do I add a new fit?</a>
+                            <button className="btn btn-success d-block mb-2" type="submit">Save Fitting</button>
                         </div>
                     </div>
                 </form>

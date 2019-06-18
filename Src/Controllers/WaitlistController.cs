@@ -172,7 +172,7 @@ namespace Imperium_Incursions_Waitlist.Controllers
         public async Task<IActionResult> Join(IFormCollection request)
         {
             int pilotId = request._str("pilot_id") == "" ? Request.Cookies.PreferredPilotId() : request._int("pilot_id");
-            List<int> roleIds = request._str("role_ids").Split(',').Select(item => int.Parse(item)).ToList();
+            List<int> roleIds = request._str("role_ids") != "" ? request._str("role_ids").Split(',').Select(item => int.Parse(item)).ToList() : new List<int>();
             List<int> fitIds = request._str("fit_ids").Split(',').Select(item => int.Parse(item)).ToList();
 
             Pilot pilot = await _Db.Pilots.FindAsync(pilotId);

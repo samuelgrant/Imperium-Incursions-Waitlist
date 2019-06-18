@@ -89,26 +89,24 @@ export default class WaitlistUp extends Component {
     render() {
         return (
             <div>
-                <Card heading="Join the Waitlist">
-                    <div className="row pb-4">
-                        <div className="col-md-5 col-sm-12">
-                            <WaitlistWith pilots={this.getPilots()} prefPilot={this.getPrefPilot()} selectedPilot={this.updateSelectedPilot.bind(this)} key={this.state.key} />
-                        </div>
-
-                        <div className="col-md-7 col-sm-12">
-                            <SelectRoles roles={this.getRoles()} selectedRole={this.updateSelectedRoles.bind(this)} key={this.state.key} />
-                        </div>
+                <h5 className="pb-4">Join the Waitlist</h5>
+                <div className="row pb-4">
+                    <div className="col-md-10 col-sm-12">
+                        <WaitlistWith pilots={this.getPilots()} prefPilot={this.getPrefPilot()} selectedPilot={this.updateSelectedPilot.bind(this)} key={this.state.key} />
                     </div>
+                </div>
 
-                    <div className="row">
-                        <div className="col-12">
-                            <SelectShips fits={this.getShips()} selectedFit={this.updateSelectedFits.bind(this)} key={this.state.key} />
-                            <div class="clearfix"></div>
-                            <button className="btn btn-success" onClick={this.AddPilotToWaitlist.bind(this)}>Join the Waitlist <i className="fas fa-user-plus"></i></button>
-                        </div>
+                <div className="row">
+                    <div className="col-6">
+                        <SelectShips fits={this.getShips()} selectedFit={this.updateSelectedFits.bind(this)} key={this.state.key} />
                     </div>
-                </Card>
-            </div>
+                    <div className="col-6">
+                        <SelectRoles roles={this.getRoles()} selectedRole={this.updateSelectedRoles.bind(this)} key={this.state.key} />
+                    </div>
+                </div>
+
+                <button className="btn btn-success" onClick={this.AddPilotToWaitlist.bind(this)}>Join the Waitlist <i className="fas fa-user-plus"></i></button>
+            </div>    
         )
     }
 }
@@ -123,7 +121,7 @@ class SelectShips extends Component {
         if (this.props.fits) {
             fits = this.props.fits.map((fit) => {
                 return (
-                    <div className="col-12">
+                    <div className="col-12 pb-3">
                         <label className="custom-control custom-checkbox">
                             <input type="checkbox" className="custom-control-input" onChange={this.updateFits.bind(this)} name={fit.id} />
                             <span className="custom-control-indicator"></span>
@@ -136,7 +134,7 @@ class SelectShips extends Component {
         return (
             <div className="row  pb-4">
                 <div className="col-12">
-                    <h6>What ships do you wish to fly?</h6>
+                    <h6 className="pb-3">What ships do you wish to fly?</h6>
                 </div>
                 {fits}
             </div>
@@ -154,11 +152,13 @@ class SelectRoles extends Component {
         if (this.props.roles) {
             roles = this.props.roles.map((role) => {
                 return (
-                    <label className="custom-control custom-checkbox">
-                        <input type="checkbox" className="custom-control-input" onChange={this.updateRoles.bind(this)} name={role.id}/>
-                        <span className="custom-control-indicator"></span>
-                        <span className="custom-control-description">{role.name}</span>
-                    </label>
+                    <li className="pb-3">
+                        <label className="custom-control custom-checkbox">
+                            <input type="checkbox" className="custom-control-input" onChange={this.updateRoles.bind(this)} name={role.id}/>
+                            <span className="custom-control-indicator"></span>
+                            <span className="custom-control-description">{role.name}</span>
+                        </label>
+                    </li>
                 );
             });
         }
@@ -166,7 +166,9 @@ class SelectRoles extends Component {
         return (
             <div>
                 <h6>What roles can you help us with?</h6>
-                {roles}
+                <ul className="list-unstyled">
+                    {roles}
+                </ul>
             </div>
         )
     }
