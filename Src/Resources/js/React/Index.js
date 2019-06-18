@@ -6,6 +6,7 @@ import FleetInfo from './Components/FleetInfo';
 import { setInterval } from 'timers';
 import WaitlistUp from './Components/WaitlistUp';
 import WaitingPilot from './Components/WaitingPilots';
+import WaitlistQueue from './Components/WaitlistQueue';
 
 
 const baseUri = "/";
@@ -105,7 +106,7 @@ export default class Index extends Component {
                     </div>
 
                     <div className="col-lg-4 col-sm-12">
-                        Queue
+                        <WaitlistQueue payload={this.state.waitlist} baseUri={baseUri} u={this.getFleets.bind(this)}/>
                     </div>
                 </div>
             )

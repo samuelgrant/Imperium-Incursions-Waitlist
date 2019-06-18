@@ -100,6 +100,14 @@ namespace Imperium_Incursions_Waitlist.Controllers
             Dictionary<int?, WaitingAccount> waitlistQueue = new Dictionary<int?, WaitingAccount>();
             foreach(WaitingPilot wp in waitingPilots)
             {
+                List<int> QueueIds = new List<int>();
+                foreach(var queue in wp.SelectedFits)
+                {
+                    if (!QueueIds.Contains((int)queue.Fit.ShipType.Queue)) {
+                        QueueIds.Add((int)queue.Fit.ShipType.Queue);
+                    }
+                }
+                
                 if (waitlistQueue.ContainsKey(wp.Pilot.Account.Id))
                 {
                     WaitingAccount x = waitlistQueue[wp.Pilot.Account.Id];
@@ -110,8 +118,15 @@ namespace Imperium_Incursions_Waitlist.Controllers
                         x.joinedAt = wp.CreatedAt;
                         x.waitTime = Util.WaitTime(wp.CreatedAt);
                     }
-                    
-                    // Add more queues;
+
+                    List<int> knownQueueIds = x.queues;
+                    foreach(int i in QueueIds)
+                    {
+                        if (!knownQueueIds.Contains(i))
+                            knownQueueIds.Add(i);
+                    }
+
+                    x.queues = knownQueueIds;
 
                     // Update the dictionary record.
                     waitlistQueue[wp.Pilot.Account.Id] = x;
@@ -125,7 +140,7 @@ namespace Imperium_Incursions_Waitlist.Controllers
                         accountId = wp?.Pilot?.AccountId,
                         joinedAt = wp.CreatedAt,
                         waitTime = Util.WaitTime(wp.CreatedAt),
-                    //    queues = new { }
+                        queues = QueueIds
                     });
                 }
             }
@@ -147,7 +162,7 @@ namespace Imperium_Incursions_Waitlist.Controllers
                 YourPos = index >= 0 ? index : null,
                 TotalWaiting = waitlistQueue.Count,
                 YourWaitTime = index > 0 ? waitlistQueue[indexOfMe].waitTime : null,
-                //Queues = new List<>
+                Queues = waitlistQueue[indexOfMe].queues
             };
 
             return Ok(new
@@ -164,7 +179,7 @@ namespace Imperium_Incursions_Waitlist.Controllers
             public int? accountId;
             public DateTime joinedAt;
             public string waitTime;
-            //queues go here......
+            public List<int> queues;
         };
 
         [HttpDelete("/")]
