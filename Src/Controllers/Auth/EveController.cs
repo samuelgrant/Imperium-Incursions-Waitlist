@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Threading.Tasks;
 using DotNetEnv;
 using ESI.NET.Enumerations;
 using ESI.NET.Models.SSO;
@@ -51,10 +52,10 @@ namespace Imperium_Incursions_Waitlist.Controllers
         }
 
         /// <summary>
-        /// Handles the GICE SSO callback.
+        /// Handles the Eve SSO callback.
         /// </summary>
         [ActionName("callback")]
-        public async System.Threading.Tasks.Task<IActionResult> Callback(string code, string state)
+        public async Task<IActionResult> Callback(string code, string state)
         {
             // Verify a code and state query parameter was returned.
             if (code == null || state == null)
