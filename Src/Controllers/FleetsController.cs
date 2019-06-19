@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Net;
 using System.Net.Http;
@@ -345,6 +346,10 @@ namespace Imperium_Incursions_Waitlist.Controllers
                 return NotFound("Fleet not found.");
 
             fleet.ClosedAt = DateTime.UtcNow;
+
+            List<FleetAssignment> pilots = await _Db.FleetAssignments.Where(c => c.FleetId == fleet.Id && c.DeletedAt == null).ToListAsync();
+            foreach (FleetAssignment pilot in pilots)
+                pilot.DeletedAt = DateTime.UtcNow;
 
             await _Db.SaveChangesAsync();
 

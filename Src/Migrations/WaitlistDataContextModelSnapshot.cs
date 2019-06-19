@@ -412,8 +412,6 @@ namespace Imperium_Incursions_Waitlist.Migrations
 
                     b.Property<int>("FleetRoleId");
 
-                    b.Property<bool>("ToFleet");
-
                     b.HasKey("WaitingPilotId", "FleetRoleId");
 
                     b.HasIndex("FleetRoleId");
@@ -442,10 +440,18 @@ namespace Imperium_Incursions_Waitlist.Migrations
                 {
                     b.Property<int>("Id");
 
+                    b.Property<int?>("HighSlots");
+
+                    b.Property<int?>("LowSlots");
+
+                    b.Property<int?>("MidSlots");
+
                     b.Property<string>("Name")
                         .IsRequired();
 
                     b.Property<int>("Queue");
+
+                    b.Property<int?>("RigSlots");
 
                     b.HasKey("Id");
 

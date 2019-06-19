@@ -13,8 +13,6 @@ namespace Imperium_Incursions_Waitlist.Models
 
         public bool ToFleet { get; set; }
 
-        // Navigation properties
-
         public WaitingPilot WaitingPilot { get; set; }
 
         public Fit Fit { get; set; }

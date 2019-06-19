@@ -10,7 +10,7 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace Imperium_Incursions_Waitlist.Migrations
 {
     [DbContext(typeof(WaitlistDataContext))]
-    [Migration("20190614090214_Initial Migration")]
+    [Migration("20190619071303_Initial Migration")]
     partial class InitialMigration
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -340,7 +340,7 @@ namespace Imperium_Incursions_Waitlist.Migrations
                 {
                     b.Property<int>("CharacterID");
 
-                    b.Property<int>("AccountId");
+                    b.Property<int?>("AccountId");
 
                     b.Property<string>("CharacterName")
                         .IsRequired();
@@ -414,8 +414,6 @@ namespace Imperium_Incursions_Waitlist.Migrations
 
                     b.Property<int>("FleetRoleId");
 
-                    b.Property<bool>("ToFleet");
-
                     b.HasKey("WaitingPilotId", "FleetRoleId");
 
                     b.HasIndex("FleetRoleId");
@@ -444,10 +442,18 @@ namespace Imperium_Incursions_Waitlist.Migrations
                 {
                     b.Property<int>("Id");
 
+                    b.Property<int?>("HighSlots");
+
+                    b.Property<int?>("LowSlots");
+
+                    b.Property<int?>("MidSlots");
+
                     b.Property<string>("Name")
                         .IsRequired();
 
                     b.Property<int>("Queue");
+
+                    b.Property<int?>("RigSlots");
 
                     b.HasKey("Id");
 
@@ -633,8 +639,7 @@ namespace Imperium_Incursions_Waitlist.Migrations
                 {
                     b.HasOne("Imperium_Incursions_Waitlist.Models.Account", "Account")
                         .WithMany("Pilots")
-                        .HasForeignKey("AccountId")
-                        .OnDelete(DeleteBehavior.Cascade);
+                        .HasForeignKey("AccountId");
 
                     b.HasOne("Imperium_Incursions_Waitlist.Models.Corporation", "Corporation")
                         .WithMany("Pilots")
