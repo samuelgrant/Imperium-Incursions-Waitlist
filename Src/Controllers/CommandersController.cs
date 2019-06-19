@@ -73,7 +73,7 @@ namespace Imperium_Incursions_Waitlist.Controllers
             if (accountId == 0 && String.IsNullOrEmpty(accountName) || roleId == 0)
                 return BadRequest("Invalid role or account ID/Name provided");
 
-            var account = await _Db.Accounts.Where(a => a.Name == accountName || a.Id == accountId).SingleOrDefaultAsync();
+            var account = await _Db.Accounts.Where(a => a.Name == accountName || a.Id == accountId).Include(i => i.AccountRoles).SingleOrDefaultAsync();
             
             var role = await _Db.Roles.FindAsync(roleId);
 
@@ -84,6 +84,10 @@ namespace Imperium_Incursions_Waitlist.Controllers
             // Stops a user from changing their own role
             if (account.Id == User.AccountId())
                 return Unauthorized("You are not allowed to add your own groups");
+
+            // Stop the target account from being added to the same role twice (Would cause a fatal crash)
+            if (account.AccountRoles.Where(c => c.Role == role).FirstOrDefault() != null)
+                return Conflict($"{account.Name} has already been assigned to {role.Name}");
 
             // Role doesn't exist
             if (role == null)
