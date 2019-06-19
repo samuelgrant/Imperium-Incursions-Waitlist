@@ -98,7 +98,11 @@ namespace Imperium_Incursions_Waitlist.Migrations
                 {
                     Id = table.Column<int>(nullable: false),
                     Name = table.Column<string>(nullable: false),
-                    Queue = table.Column<int>(nullable: false)
+                    Queue = table.Column<int>(nullable: false),
+                    HighSlots = table.Column<int>(nullable: true),
+                    MidSlots = table.Column<int>(nullable: true),
+                    LowSlots = table.Column<int>(nullable: true),
+                    RigSlots = table.Column<int>(nullable: true)
                 },
                 constraints: table =>
                 {
@@ -331,7 +335,7 @@ namespace Imperium_Incursions_Waitlist.Migrations
                 columns: table => new
                 {
                     CharacterID = table.Column<int>(nullable: false),
-                    AccountId = table.Column<int>(nullable: false),
+                    AccountId = table.Column<int>(nullable: true),
                     CharacterName = table.Column<string>(nullable: false),
                     CorporationID = table.Column<long>(nullable: false),
                     RefreshToken = table.Column<string>(nullable: true),
@@ -347,7 +351,7 @@ namespace Imperium_Incursions_Waitlist.Migrations
                         column: x => x.AccountId,
                         principalTable: "Accounts",
                         principalColumn: "Id",
-                        onDelete: ReferentialAction.Cascade);
+                        onDelete: ReferentialAction.Restrict);
                     table.ForeignKey(
                         name: "FK_Pilots_Corporation_CorporationID",
                         column: x => x.CorporationID,
@@ -539,8 +543,7 @@ namespace Imperium_Incursions_Waitlist.Migrations
                 columns: table => new
                 {
                     WaitingPilotId = table.Column<int>(nullable: false),
-                    FleetRoleId = table.Column<int>(nullable: false),
-                    ToFleet = table.Column<bool>(nullable: false)
+                    FleetRoleId = table.Column<int>(nullable: false)
                 },
                 constraints: table =>
                 {

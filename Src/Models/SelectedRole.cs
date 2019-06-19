@@ -11,10 +11,7 @@ namespace Imperium_Incursions_Waitlist.Models
 
         public int FleetRoleId { get; set; }
 
-        public bool ToFleet { get; set; }
-
         // Navigation properties
-
         public WaitingPilot WaitingPilot { get; set; }
 
         public FleetRole FleetRole { get; set; }
