@@ -253,13 +253,13 @@ export class ExitCyno extends Component {
         if (this.props.cynos) {
             cynos = this.props.cynos.map((pilot) => {
                 return (
-                    <div className="row sidepanel-content">
+                    <div className="row sidepanel-content pb-2">
                         <div className="col-3">
                             <img className="ml-3 pr-2" src={`https://image.eveonline.com/Character/${pilot.id}_64.jpg`} />
                         </div>
                         <div className="col-9 pl-4">
                             <Pilot pilot={pilot} />
-                            <i className="fas fa-times-circle float-right mr-3" onClick={this.unsetCyno.bind(this, this.props.fleetId, pilot.id)}></i>
+                            <i className="fas fa-times-circle float-right mr-3 i-btn" onClick={this.unsetCyno.bind(this, this.props.fleetId, pilot.id)}></i>
 
                             <div class="clearfix" />
 

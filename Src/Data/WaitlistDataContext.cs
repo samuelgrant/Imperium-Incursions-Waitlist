@@ -174,10 +174,6 @@ namespace Imperium_Incursions_Waitlist.Data
                 .Property(c => c.JabberNotifications)
                 .HasDefaultValue(true);
 
-            modelBuilder.Entity<Announcement>()
-                .Property(c => c.Type)
-                .HasDefaultValue("primary");
-
             // Placeholder alliance to assign to corporations that do not belong to an alliance.
             modelBuilder.Entity<Alliance>()
                         .HasData(new { Id = 0, Name = "" });

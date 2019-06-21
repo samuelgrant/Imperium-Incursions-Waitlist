@@ -77,6 +77,8 @@ namespace Imperium_Incursions_Waitlist.Controllers
             try
             {
                 fitUrlObject = Util.ParseFitDna(request._str("fitUrl"));
+
+                await ShipType.EnsureInDatabase(fitUrlObject.ship_typeId, _Db);
                 Fit newFit = new Fit
                 {
                     AccountId = User.AccountId(),

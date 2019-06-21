@@ -49,6 +49,8 @@
     <Compile Remove="Migrations\20190614090214_Initial Migration.Designer.cs" />
     <Compile Remove="Migrations\20190615092930_TEST.cs" />
     <Compile Remove="Migrations\20190615092930_TEST.Designer.cs" />
+    <Compile Remove="Migrations\20190619071303_Initial Migration.cs" />
+    <Compile Remove="Migrations\20190619071303_Initial Migration.Designer.cs" />
   </ItemGroup>
 
 
@@ -73,10 +75,10 @@
 
   <ItemGroup>
     <Reference Include="ESI.NET">
-      <HintPath>..\..\ESINET\ESI.NET\bin\Debug\netcoreapp2.0\ESI.NET.dll</HintPath>
+      <HintPath>.\ESI.NET.dll</HintPath>
     </Reference>
     <Reference Include="GiceSso">
-      <HintPath>..\..\GiceSSO DLL\GiceSSO DLL\bin\Debug\netcoreapp2.2\GiceSso.dll</HintPath>
+      <HintPath>.\GiceSso.dll</HintPath>
     </Reference>
   </ItemGroup>
 

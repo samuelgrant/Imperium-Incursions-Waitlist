@@ -58,7 +58,7 @@ namespace Imperium_Incursions_Waitlist.Controllers
                 Announcement announcement = new Announcement
                 {
                     CreatorAdminId = User.AccountId(),
-                    Type = request._str("type"),
+                    Type = request._str("type") != "" ? request._str("type") : "primary",
                     Message = request._str("message"),
                     CreatedAt = DateTime.UtcNow
                 };

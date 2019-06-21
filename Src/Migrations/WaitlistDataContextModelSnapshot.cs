@@ -90,9 +90,7 @@ namespace Imperium_Incursions_Waitlist.Migrations
                         .IsRequired();
 
                     b.Property<string>("Type")
-                        .IsRequired()
-                        .ValueGeneratedOnAdd()
-                        .HasDefaultValue("primary");
+                        .IsRequired();
 
                     b.HasKey("Id");
 

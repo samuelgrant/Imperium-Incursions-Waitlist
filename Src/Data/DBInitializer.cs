@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using System.Text.RegularExpressions;
 using Imperium_Incursions_Waitlist.Models;
 
 namespace Imperium_Incursions_Waitlist.Data
@@ -32,6 +33,11 @@ namespace Imperium_Incursions_Waitlist.Data
             if (!context.Roles.Any())
             {
                 var roles = Newtonsoft.Json.JsonConvert.DeserializeObject<List<Role>>(File.ReadAllText($"Data{separator}Seeds" + Path.DirectorySeparatorChar + "Roles.json"));
+                foreach(var role in roles)
+                {
+                    role.Name = Regex.Replace(role.Name, @"[\u0000-\u001F]", string.Empty);
+                }
+
                 context.Roles.AddRange(roles);
                 context.SaveChanges();
             }
@@ -40,6 +46,12 @@ namespace Imperium_Incursions_Waitlist.Data
             if (!context.FleetRoles.Any())
             {
                 var fleetRoles = Newtonsoft.Json.JsonConvert.DeserializeObject<List<FleetRole>>(File.ReadAllText($"Data{separator}Seeds" + Path.DirectorySeparatorChar + "FleetRoles.json"));
+                foreach(var role in fleetRoles)
+                {
+                    role.Name = Regex.Replace(role.Name, @"[\u0000-\u001F]", string.Empty);
+                    role.Acronym = Regex.Replace(role.Acronym, @"[\u0000-\u001F]", string.Empty);
+                }
+
                 context.FleetRoles.AddRange(fleetRoles);
                 context.SaveChanges();
             }
@@ -48,6 +60,11 @@ namespace Imperium_Incursions_Waitlist.Data
             if (!context.Systems.Any())
             {
                 var systems = Newtonsoft.Json.JsonConvert.DeserializeObject<List<StarSystem>>(File.ReadAllText($"Data{separator}Seeds" + Path.DirectorySeparatorChar + "Systems.json"));
+                foreach(var system in systems)
+                {
+                    system.Name = Regex.Replace(system.Name, @"[\u0000-\u001F]", string.Empty);
+                }
+
                 context.Systems.AddRange(systems);
                 context.SaveChanges();
             }
@@ -56,6 +73,11 @@ namespace Imperium_Incursions_Waitlist.Data
             if (!context.ShipTypes.Any())
             {
                 var shipTypes = Newtonsoft.Json.JsonConvert.DeserializeObject<List<ShipType>>(File.ReadAllText($"Data{separator}Seeds" + Path.DirectorySeparatorChar + "ShipTypes.json"));
+                foreach(var ship in shipTypes)
+                {
+                    ship.Name = Regex.Replace(ship.Name, @"[\u0000-\u001F]", string.Empty);
+                }
+
                 context.ShipTypes.AddRange(shipTypes);
                 context.SaveChanges();
             }
@@ -64,6 +86,12 @@ namespace Imperium_Incursions_Waitlist.Data
             if (!context.Modules.Any())
             {
                 var modules = Newtonsoft.Json.JsonConvert.DeserializeObject<List<ModuleItem>>(File.ReadAllText($"Data{separator}Seeds" + Path.DirectorySeparatorChar + "Modules.json"));
+                foreach(var module in modules)
+                {
+                    module.Name = Regex.Replace(module.Name, @"[\u0000-\u001F]", string.Empty);
+                    module.Slot = Regex.Replace(module.Slot, @"[\u0000-\u001F]", string.Empty);
+                }
+
                 context.AddRange(modules);
             }
 
