@@ -26,7 +26,7 @@ export default class Fittings extends Component {
             this.setState({ key: this.state.key + 1 });
             this.props.forceUpdate();
         }).fail((err) => {
-            console.error(`React/Components/FittingsManagement {FittingsManagement@submitNewFit} - Error saving a new fit`, err.responseText);
+            console.error(`[React/Fittings] @saveFit - Error saving your new fit`, err.responseText);
         })
     }
 
@@ -37,7 +37,7 @@ export default class Fittings extends Component {
         }).done(() => {
             this.props.forceUpdate();
         }).fail((err) => {
-            console.error(`React/Components/FittingsManagement {FittingsManagement@deleteFit} - Error deleting fit (Fit Id: ${id})`, err.responseText);
+            console.error(`[React/Fittings] @deleteFit - Error deleting your fit`, err.responseText);
         })
     }
 

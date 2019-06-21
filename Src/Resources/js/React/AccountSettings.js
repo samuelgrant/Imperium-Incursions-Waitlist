@@ -29,7 +29,7 @@ export default class AccountSettings extends Component {
                 settings: data
             });
         }).fail((err) => {
-            console.error(`React/FittingsAndSkills {FittingsSkills@getData} - Error getting the account settings`, err.responseText);
+            console.error(`[React/AccountSettings] @getData - Error retrieving account information`, err.responseText);
         })
     }
 
