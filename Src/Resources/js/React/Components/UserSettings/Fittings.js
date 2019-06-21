@@ -1,8 +1,8 @@
 ﻿import React, { Component } from 'react';
-import { TextArea } from './FormControls';
-import Modal from './Modal';
+import { TextArea } from '../FormControls';
+import Modal from '../Modal';
 
-export default class FittingsManagement extends Component {
+export default class Fittings extends Component {
     constructor(props) {
         super(props);
 
@@ -15,7 +15,7 @@ export default class FittingsManagement extends Component {
         return this.props.fits || null;
     }
 
-    submitNewFit(e) {
+    saveFit(e) {
         e.preventDefault();
 
         $.ajax({
@@ -42,35 +42,15 @@ export default class FittingsManagement extends Component {
     }
 
     render() {
-        let addFitting;
+        let newFit;
         if (this.getFits() && this.getFits().length < 5) {
-            addFitting = (
-                <form id="newFittingForm" className="form-group" onSubmit={this.submitNewFit.bind(this)}>
-                    <label htmlFor="fitDna">Add a new ship</label>
-                    <div className="row">
-                        <div className="col-9">
-                            <TextArea id="fitDna" required="true" placeholder="[00:25:25] Caitlin Viliana > <url=fitting:17740:26448;1:26402;1:15144;4:3186;8:14512;1:41201;1:33842;2:26322;1:14650;2:4347;2::>Vindicator</url>" key={this.state.key} />
-                            <a className="float-right pt-2" data-toggle="modal" data-target="#fittingsHelp"> How do I add a new fit?</a>
-                        </div>
-                        <div className="col-3 text-center">
-                            <button className="btn btn-success d-block mb-2" type="submit">Save Fitting</button>
-                        </div>
-                    </div>
-                </form>
-            )
+            newFit = <SubmitFit saveFit={this.saveFit.bind(this)} key={this.state.key}/>
         }
 
-        let activeFit_rows;
+        let activeFits;
         if (this.getFits()) {
-            activeFit_rows = this.getFits().map((fit) => {
-                return (
-                    <tr>
-                        <td><img src={`https://image.eveonline.com/Render/${fit.shipTypeId}_32.png`} /></td>
-                        <td>{fit.name}</td>
-                        <td>{fit.description}</td>
-                        <td><button class="btn btn-danger btn-sm" type="button" onClick={this.deleteFit.bind(this, fit.id)}>Delete Fit <i class="fas fa-trash"></i></button></td>
-                    </tr>
-                )
+            activeFits = this.getFits().map((fit) => {
+                return <FitRow fit={fit} deleteFit={this.deleteFit.bind(this, fit.id)} />
             });
         }
 
@@ -91,15 +71,28 @@ export default class FittingsManagement extends Component {
                             </tr>
                         </thead>
                         <tbody>
-                            {activeFit_rows}
+                            {activeFits}
                         </tbody>
                     </table>
 
-                    {addFitting}
+                    {newFit}
                 </div>
 
                 <FittingsHelpModal />
             </div>
+        )
+    }
+}
+
+export class FitRow extends Component {
+    render() {
+        return (
+            <tr>
+                <td><img src={`https://image.eveonline.com/Render/${this.props.fit.shipTypeId}_32.png`} /></td>
+                <td>{this.props.fit.name}</td>
+                <td>{this.props.fit.description}</td>
+                <td><button class="btn btn-danger btn-sm" type="button" onClick={this.props.deleteFit}>Delete Fit <i class="fas fa-trash"></i></button></td>
+            </tr>
         )
     }
 }
@@ -122,5 +115,24 @@ export class FittingsHelpModal extends Component {
                 </div>
             </Modal>
         );
+    }
+}
+
+export class SubmitFit extends Component {
+    render() {
+        return (
+            <form id="newFittingForm" className="form-group" onSubmit={this.props.saveFit}>
+                <label htmlFor="fitDna">Add a new ship</label>
+                <div className="row">
+                    <div className="col-9">
+                        <TextArea id="fitDna" required="true" placeholder="[00:25:25] Caitlin Viliana > <url=fitting:17740:26448;1:26402;1:15144;4:3186;8:14512;1:41201;1:33842;2:26322;1:14650;2:4347;2::>Vindicator</url>" key={this.props.key} />
+                        <a className="float-right pt-2" data-toggle="modal" data-target="#fittingsHelp"> How do I add a new fit?</a>
+                    </div>
+                    <div className="col-3 text-center">
+                        <button className="btn btn-success d-block mb-2" type="submit">Save Fitting</button>
+                    </div>
+                </div>
+            </form>
+        )
     }
 }

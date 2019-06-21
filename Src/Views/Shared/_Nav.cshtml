@@ -42,7 +42,7 @@
                 </div>
                 <ul class="navigation">
                     <li><a href="/pilot-select"><i class="fas fa-user-friends"></i> Manage Pilots</a></li>
-                    <li><a href="/account-settings"><i class="fas fa-clipboard-list"></i> Fittings &amp; Skills</a></li>
+                    <li><a href="/account-settings"><i class="fas fa-clipboard-list"></i> Your Settings</a></li>
 
                     @if (User.Identity.IsAuthenticated && User.IsInRole("Commander") || User.IsInRole("Leadership"))
                     {

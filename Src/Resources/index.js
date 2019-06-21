@@ -11,7 +11,7 @@ import './js/React/Bans';
 import './js/React/Commanders';
 import './js/React/Index';
 import './js/React/FleetManagement';
-import './js/React/FittingsAndSkills';
+import './js/React/UserSettings';
 import './js/React/SystemSettings';
 
 /* REACT -> Pilot Select Page */
