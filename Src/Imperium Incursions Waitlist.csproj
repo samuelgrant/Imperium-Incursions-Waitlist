@@ -72,7 +72,6 @@
     <Folder Include="Resources\js\React\Components\Index\" />
     <Folder Include="Resources\js\React\Components\FleetManagement\" />
     <Folder Include="Resources\js\React\Components\SystemSettings\" />
-    <Folder Include="Resources\js\React\Components\UserManagement\" />
     <Folder Include="wwwroot\dist\" />
   </ItemGroup>
 

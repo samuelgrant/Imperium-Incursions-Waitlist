@@ -18,7 +18,7 @@ export default class ActiveBans extends Component {
         let bans;
         if (!!this.props.bans) {
             bans = this.props.bans.map((ban, index) => {
-                return <BanRow ban={ban} viewDetails={0} revokeBan={this.revoke.bind(this, ban.id)} setIndex={this.props.setIndex.bind(this, index)} admin={this.props.admin} />
+                return <BanRow ban={ban} revokeBan={this.revoke.bind(this, ban.id)} setIndex={this.props.setIndex.bind(this, index)} admin={this.props.admin} />
             });
         }
 
