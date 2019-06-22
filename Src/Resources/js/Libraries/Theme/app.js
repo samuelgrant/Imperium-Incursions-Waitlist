@@ -39,21 +39,6 @@ $(document).ready(function () {
         minLength: 3,
         delay: 500
     });
-
-    // Admin settings ship search
-    $("#ship_search").autocomplete({
-        source: (request, response) => {
-            $.ajax({
-                url: `/admin/settings/ships/search?q=${request.term}`,
-                dataType: "json",
-                success: function (data) {
-                    response(data);
-                }
-            });
-        },
-        minLength: 3,
-        delay: 500
-    });
     
     /*------------------------------------------------
         Sidebar toggle menu
@@ -113,7 +98,7 @@ $(document).ready(function () {
     /*-------------------------------------------------
      Auto complete for react text inputs
      --------------------------------------------------*/
-    $(".account-lookup").autocomplete({
+    $("#lookup_account").autocomplete({
         source: (request, response) => {
             $.ajax({
                 url: `/search?q=${request.term}&filter=account`,
@@ -125,26 +110,42 @@ $(document).ready(function () {
         },
         minLength: 3,
         delay: 500
-    });
+    })
 
-    $(".pilot-lookup").autocomplete({
+    //$(".pilot-lookup").autocomplete({
+    //    source: (request, response) => {
+    //        $.ajax({
+    //            url: `/search?q=${request.term}&filter=pilot`,
+    //            dataType: "json",
+    //            success: function (data) {
+    //                response(data);
+    //            }
+    //        });
+    //    },
+    //    minLength: 3,
+    //    delay: 500
+    //});
+
+    //$(".lookup").autocomplete({
+    //    source: (request, response) => {
+    //        $.ajax({
+    //            url: `/search?q=${request.term}`,
+    //            dataType: "json",
+    //            success: function (data) {
+    //                response(data);
+    //            }
+    //        });
+    //    },
+    //    minLength: 3,
+    //    delay: 500
+    //});
+
+
+    // Admin settings ship search
+    $("#ship_search").autocomplete({
         source: (request, response) => {
             $.ajax({
-                url: `/search?q=${request.term}&filter=pilot`,
-                dataType: "json",
-                success: function (data) {
-                    response(data);
-                }
-            });
-        },
-        minLength: 3,
-        delay: 500
-    });
-
-    $(".lookup").autocomplete({
-        source: (request, response) => {
-            $.ajax({
-                url: `/search?q=${request.term}`,
+                url: `/admin/settings/ships/search?q=${request.term}`,
                 dataType: "json",
                 success: function (data) {
                     response(data);
