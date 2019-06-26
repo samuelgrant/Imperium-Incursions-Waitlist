@@ -5,13 +5,13 @@ using System.Net;
 using System.Net.Http;
 using System.Threading.Tasks;
 using ESI.NET.Models.SSO;
+using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Authorization;
 using Imperium_Incursions_Waitlist.Models;
 using Imperium_Incursions_Waitlist.Services;
-using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Http;
-using Microsoft.AspNetCore.Mvc;
-using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
+using Microsoft.EntityFrameworkCore;
 
 namespace Imperium_Incursions_Waitlist.Controllers
 {

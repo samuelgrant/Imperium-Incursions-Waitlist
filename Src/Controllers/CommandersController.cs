@@ -52,7 +52,7 @@ namespace Imperium_Incursions_Waitlist.Controllers
             var roles = await _Db.Roles.ToListAsync();
             return Ok(new {
                 fcs,
-                roles
+                roles = User.IsInRole("Leadership") ? roles : null
             });
         }
 

@@ -1,6 +1,7 @@
 ﻿import React, { Component } from 'react';
 import { render } from 'react-dom';
-import { BanRow, ManageInfo } from './Components/BansChildren';
+import ActiveBans from './Components/BanManagement/ActiveBans';
+import BanInfo from './Components/BanManagement/BanInfo';
 
 const baseUri = "/admin/bans";
 
@@ -10,7 +11,9 @@ export default class BanManagement extends Component {
 
         this.state = {
             bans: null,
+            admin: false,
             banIndex: null,
+            key: 0
         }
     }
 
@@ -22,102 +25,49 @@ export default class BanManagement extends Component {
         $.ajax({
             type: 'get',
             url: `${baseUri}/active`,
-        }).done((activeBans) => {
+        }).done((data) => {
             this.setState({
-                bans: activeBans,
-                banIndex: null
+                bans: data.bans,
+                admin: data.admin,
+                banIndex: null,
+                key: this.state.key + 1
             });
         }).fail((err) => {
-            console.error(`React/Bans {Bans@getData} - Error getting active bans`, err.responseText);
+            console.error(`[React/Bans] @getData - Error retrieving active bans`, err.responseText);
         })
     }
 
-    getBans() {
-        if(!!this.state.bans)
-            return this.state.bans;
+    selectedBan() {
+        if (this.state.bans && this.state.bans[this.state.banIndex])
+            return this.state.bans[this.state.banIndex];
 
         return null;
     }
-
+    
     setBanIndex(index) {
         this.setState({ banIndex: index});
     }
 
-    submitForm(e) {
-        e.preventDefault();
-
-        let uri = `${baseUri}`;
-        let method = "post";
-
-        if (this.state.banIndex != null) {
-            uri = `${baseUri}/${this.state.bans[this.state.banIndex].id}`;
-            method = "put";
-        }
-
-        $.ajax({
-            type: method,
-            url: uri,
-            data: {
-                name: $("input#lookup_account").val(),
-                expires_at: $("input#banExpires").val(),
-                reason: $("textarea#banReason").val()
-            }
-        }).done(() => {
-            this.getData();
-            this.setBanIndex(null);
-        }).fail((err) => {
-            console.error(`React/Bans {Bans@submitForm} - Error saving or updating ban`, err.responseText);
-        });
-
-    }
-
-    revokeBan(banId) {
-        $.ajax({
-            type: 'delete',
-            url: `${baseUri}/${banId}`
-        }).done(() => {
-            this.getData();
-        }).fail((err) => {
-            console.error(`React/Bans {Bans@revokeBan} - Error revoking ban id: ${banId}`, err.responseText);
-        });
-    }
-
     render() {
-        let bans;
-        if (!!this.getBans()) {
-            bans = this.getBans().map((ban, index) => {
-                return <BanRow ban={ban} viewDetails={this.setBanIndex.bind(this)} revokeBan={this.revokeBan.bind(this)} index={index} key={index} />
-            });
-        }
-
-        let banDetails = <ManageInfo onSubmit={this.submitForm.bind(this)} reset={this.setBanIndex.bind(this)}/>;
-        if (this.state.bans != null && this.state.banIndex != null) {
-            banDetails = <ManageInfo details={this.state.bans[this.state.banIndex]} onSubmit={this.submitForm.bind(this)} reset={this.setBanIndex.bind(this)}/>
-        }
-
         return (
             <div className="container">
                 <div className="row">
                     <div className="col-lg-8 col-md-12">
-                        <table className="table table-responsive">
-                            <thead>
-                                <tr className="font-alpha">
-                                    <th></th>
-                                    <th>Name</th>
-                                    <th>Admin</th>
-                                    <th></th>
-                                    <th></th>
-                                    <th></th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                {bans} 
-                            </tbody>
-                        </table>
+                        <ActiveBans bans={this.state.bans}
+                            u={this.getData.bind(this)}
+                            setIndex={this.setBanIndex.bind(this)}
+                            admin={this.state.admin}
+                            baseUri={baseUri} />
                     </div>
 
                     <div className="col-lg-4 col-md-12">
-                        {banDetails}
+                        <BanInfo
+                            u={this.getData.bind(this)}
+                            selectedBan={this.selectedBan()}
+                            setIndex={this.setBanIndex.bind(this)}
+                            admin={this.state.admin}
+                            baseUri={baseUri}
+                            key={this.state.key} />
                     </div>
                 </div>
             </div>

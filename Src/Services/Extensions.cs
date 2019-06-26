@@ -15,6 +15,20 @@ public static class LoggerExtensions
 
     public static string AccountName(this ClaimsPrincipal user) => user.FindFirstValue("name");
 
+    /// <summary>
+    /// Same as User.IsInRole("role") but checks multiple roles separated by a comma
+    /// </summary>
+    /// <returns></returns>
+    public static bool IsInRoles(this ClaimsPrincipal user, string roles)
+    {
+        string[] _roles = roles.Split(',');
+        foreach (string r in _roles)
+            if (user.IsInRole(r))
+                return true;
+
+        return false;
+    }
+
     public static int PreferredPilotId(this IRequestCookieCollection cookies) => int.Parse(cookies["prefPilot"].Split(':')[0]);
 
     public static string PreferredPilotName(this IRequestCookieCollection cookies) => cookies["prefPilot"].Split(':')[1];

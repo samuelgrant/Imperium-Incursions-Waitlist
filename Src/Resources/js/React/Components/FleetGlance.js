@@ -72,7 +72,7 @@ export default class FleetGlance extends Component {
 
             if (queues[fleetComp[i].queue.id]) {
                 let shipType = queues[fleetComp[i].queue.id];
-                tmp.count = shipType.count += fleetComp[i].pilots.length;
+                queues[fleetComp[i].queue.id].count = shipType.count += fleetComp[i].pilots.length;
                 queues[fleetComp[i].queue.id] = shipType;
             } else {
                 queues[fleetComp[i].queue.id] = { id: fleetComp[i].queue.id, name: fleetComp[i].queue.name, count: fleetComp[i].pilots.length };

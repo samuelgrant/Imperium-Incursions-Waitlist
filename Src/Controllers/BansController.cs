@@ -55,7 +55,11 @@ namespace Imperium_Incursions_Waitlist.Controllers
                     s.Reason,
                     s.CreatedAt
                 }).OrderBy(o => o.bannedAccount.name).ToListAsync();
-            return Ok(bans);
+
+            return Ok(new {
+                bans,
+                admin = User.IsInRole("Leadership")
+            });
         }
 
         /// <summary>
@@ -66,14 +70,14 @@ namespace Imperium_Incursions_Waitlist.Controllers
         [Authorize(Roles = "Leadership")]
         public async Task<IActionResult> Index(IFormCollection request)
         {
-            if (request._str("reason") == "" || request._str("name") == "")
+            if (request._str("banReason") == "" || request._str("accountName") == "")
                 return BadRequest();
 
             int AdminId = User.AccountId();
-            var BannedAccount = await _Db.Accounts.FirstOrDefaultAsync(c => c.Name == request._str("name"));
+            var BannedAccount = await _Db.Accounts.FirstOrDefaultAsync(c => c.Name == request._str("accountName"));
 
             if (BannedAccount == null)
-                return NotFound(string.Format("The account {0} was not found", request._str("name")));
+                return NotFound(string.Format("The account {0} was not found", request._str("accountName")));
 
             if (AdminId == BannedAccount.Id)
                 return Forbid("You cannot ban yourself");
@@ -84,7 +88,7 @@ namespace Imperium_Incursions_Waitlist.Controllers
                 {
                     AdminId = AdminId,
                     BannedAccountId = BannedAccount.Id,
-                    Reason = request._str("reason"),
+                    Reason = request._str("banReason"),
                     //Expires at is disabled until I can spend enough time to use a proper Jquery date picker
                     ExpiresAt = null,//Ban.BanExpiryDate(request["expires_at"]),
 
@@ -93,7 +97,7 @@ namespace Imperium_Incursions_Waitlist.Controllers
                     UpdatedAt = DateTime.UtcNow
                 };
 
-                _Logger.LogInformation("{0} is issuing a ban against {1}", User.FindFirst("name").Value, request._str("name"));
+                _Logger.LogInformation("{0} is issuing a ban against {1}", User.AccountName(), request._str("accountName"));
 
                 await _Db.Bans.AddAsync(ban);
                 await _Db.SaveChangesAsync();
@@ -124,7 +128,7 @@ namespace Imperium_Incursions_Waitlist.Controllers
 
             try
             {
-                currentBan.Reason = request._str("reason");
+                currentBan.Reason = request._str("banReason");
                 //Expires at is disabled until I can spend enough time to use a proper Jquery date picker
                 currentBan.ExpiresAt = null;//Ban.BanExpiryDate(request["expires_at"]),
                 currentBan.UpdatedByAdminId = User.AccountId();

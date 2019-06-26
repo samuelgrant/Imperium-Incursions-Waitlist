@@ -1,12 +1,12 @@
 ﻿import React, { Component } from 'react';
 import { render } from 'react-dom';
-import { NewFleetModal, NewFleetLink } from './components/newfleets';
+import { NewFleetModal, NewFleetLink } from './Components/Index/NewFleets';
 import Alert from './Components/alert';
-import FleetInfo from './Components/FleetInfo';
+import FleetInfo from './Components/Index/FleetInfo';
 import { setInterval } from 'timers';
-import WaitlistUp from './Components/WaitlistUp';
-import WaitingPilot from './Components/WaitingPilots';
-import WaitlistQueue from './Components/WaitlistQueue';
+import WaitlistUp from './Components/Index/WaitlistUp';
+import WaitingPilot from './Components/Index/WaitingPilots';
+import WaitlistQueue from './Components/Index/WaitlistQueue';
 
 
 const baseUri = "/";
@@ -78,7 +78,7 @@ export default class Index extends Component {
         let fleets;
         if (this.state.fleets) {
             fleets = this.state.fleets.map((fleet, index) => {
-                return <FleetInfo fleet={fleet} key={index} showFcOptions={this.state.fcOptions ? true : false } myPilots={(this.state.fcOptions) ? this.state.fcOptions.pilots : null} />
+                return <FleetInfo fleet={fleet} key={index} showFcOptions={this.state.fcOptions && this.state.fcOptions.fleetTypes ? true : false } myPilots={(this.state.fcOptions) ? this.state.fcOptions.pilots : null} />
             })
         }
 
@@ -98,7 +98,12 @@ export default class Index extends Component {
             waitlistUi = (
                 <div className="row">
                     <div className="col-lg-4 col-md-6 col-sm-12">
-                        <WaitlistUp options={this.state.options} pilots={this.availablePilots()} prefPilot={this.state.prefPilot} baseUri={baseUri} u={this.getFleets.bind(this)} />
+                        <WaitlistUp options={this.state.options}
+                            pilots={this.availablePilots()}
+                            isOnWl={this.state.pilots && this.state.pilots.waiting.length > 0 ? true : false}
+                            prefPilot={this.state.prefPilot}
+                            baseUri={baseUri}
+                            u={this.getFleets.bind(this)} />
                     </div>
 
                     <div className="col-lg-4 col-md-6 col-sm-12">

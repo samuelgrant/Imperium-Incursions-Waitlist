@@ -1,17 +1,17 @@
-﻿
+﻿using System;
+using System.Net;
+using System.Linq;
+using System.Collections.Generic;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
-using System;
-using System.Collections.Generic;
-using System.Linq;
 using Imperium_Incursions_Waitlist.Data;
-using System.Net;
 using Imperium_Incursions_Waitlist.Models;
 using Microsoft.AspNetCore.Http;
 using System.Threading.Tasks;
 using Imperium_Incursions_Waitlist.Services;
+using System.Linq.Expressions;
 
 namespace Imperium_Incursions_Waitlist.Controllers
 {
@@ -38,7 +38,7 @@ namespace Imperium_Incursions_Waitlist.Controllers
         [NonAction]
         public bool ValidFleets(Fleet x)
         {
-            if(User.IsInRole("Commander") || User.IsInRole("Leadership") || User.IsInRole("Dev"))
+            if (User.IsInRole("Commander") || User.IsInRole("Leadership") || User.IsInRole("Dev"))
                 return x.ClosedAt == null;
 
             return x.ClosedAt == null && x.IsPublic;
@@ -48,8 +48,10 @@ namespace Imperium_Incursions_Waitlist.Controllers
         [Produces("application/json")]
         public async Task<IActionResult> Data()
         {
+            Expression<Func<Fleet, bool>> ValidFleet = f => User.IsInRoles("Commander,Leadership,Dev") ? f.ClosedAt == null : f.ClosedAt == null && f.IsPublic;
+            
             // Fleets avaliable to the user -> FCs, Leadership & Devs get all open fleets. Pilots get all visible open fleets
-            var fleets = await _Db.Fleets.Where(c => ValidFleets(c)).Select(s => new {
+            var fleets = await _Db.Fleets.Where(ValidFleet).Select(s => new {// ValidFleets(c)
                 s.Id,
                 s.Type,
                 Members = new { onGrid = s.GetOngridCount(s.FleetAssignments.ToList()), max = s.GetFleetTypeMax() },
@@ -114,7 +116,8 @@ namespace Imperium_Incursions_Waitlist.Controllers
                 }
             }
 
-            int? index = 0;
+            int index = 0;
+            int? yourPos = null;
             string yourWaitTime = "";
             foreach(var user in waitingAccounts)
             {
@@ -122,13 +125,14 @@ namespace Imperium_Incursions_Waitlist.Controllers
                 if(user.AccountId == User.AccountId())
                 {
                     yourWaitTime = Util.WaitTime(user.CreatedAt);
+                    yourPos = index;
                     break;
                 }
             }                  
             
 
             var waitlist = new {
-                YourPos = index >= 0 ? index : null,
+                YourPos = yourPos,
                 TotalWaiting = waitingAccounts.Count,
                 YourWaitTime = yourWaitTime,
                 Queues

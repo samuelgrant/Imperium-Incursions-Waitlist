@@ -1,12 +1,12 @@
 ﻿import React, { Component } from 'react';
 import { render } from 'react-dom';
 import Alert from './Components/Alert';
-import ApplicationSettings from './Components/ApplicationSettings';
-import FittingsManagements from './Components/FittingsManagement';
+import UserSettings from './Components/UserSettings/UserSettings';
+import Fittings from './Components/UserSettings/Fittings';
 
 const baseUri = "/account-settings";
 
-export default class FittingsSkills extends Component {
+export default class AccountSettings extends Component {
     constructor(props) {
         super(props);
 
@@ -29,7 +29,7 @@ export default class FittingsSkills extends Component {
                 settings: data
             });
         }).fail((err) => {
-            console.error(`React/FittingsAndSkills {FittingsSkills@getData} - Error getting the account settings`, err.responseText);
+            console.error(`[React/AccountSettings] @getData - Error retrieving account information`, err.responseText);
         })
     }
 
@@ -38,11 +38,11 @@ export default class FittingsSkills extends Component {
             <div className="container">
                 <div className="row">
                     <div className="col-lg-6 col-md-12">
-                        <ApplicationSettings settings={this.state.settings} forceUpdate={this.getData.bind(this)} baseUri={baseUri} />
+                        <UserSettings settings={this.state.settings} forceUpdate={this.getData.bind(this)} baseUri={baseUri} />
 
                         <div className="clearfix"></div>
 
-                        <FittingsManagements fits={this.state.settings ? this.state.settings.fits : null} forceUpdate={this.getData.bind(this)} baseUri={baseUri} />
+                        <Fittings fits={this.state.settings ? this.state.settings.fits : null} forceUpdate={this.getData.bind(this)} baseUri={baseUri} />
                     </div>
 
                     <div className="col-lg-6 col-md-12">
@@ -54,5 +54,5 @@ export default class FittingsSkills extends Component {
     }
 }
 
-if (document.getElementById('fittingsSkills'))
-    render(<FittingsSkills />, document.getElementById('fittingsSkills'));
+if (document.getElementById('accountSettings'))
+    render(<AccountSettings />, document.getElementById('accountSettings'));

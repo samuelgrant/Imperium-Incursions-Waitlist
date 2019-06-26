@@ -10,7 +10,7 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace Imperium_Incursions_Waitlist.Migrations
 {
     [DbContext(typeof(WaitlistDataContext))]
-    [Migration("20190619071303_Initial Migration")]
+    [Migration("20190621013931_Initial Migration")]
     partial class InitialMigration
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -92,9 +92,7 @@ namespace Imperium_Incursions_Waitlist.Migrations
                         .IsRequired();
 
                     b.Property<string>("Type")
-                        .IsRequired()
-                        .ValueGeneratedOnAdd()
-                        .HasDefaultValue("primary");
+                        .IsRequired();
 
                     b.HasKey("Id");
 

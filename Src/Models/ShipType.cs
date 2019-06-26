@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Imperium_Incursions_Waitlist.Services;
+using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
@@ -34,5 +35,31 @@ namespace Imperium_Incursions_Waitlist.Models
 
         public ICollection<ShipSkill> ShipSkills { get; set; }
         public ICollection<Fit> Fits { get; set; }
+
+
+        public static async 
+
+        Task
+EnsureInDatabase(int typeId, Data.WaitlistDataContext _Db)
+        {
+            ShipType ship = await _Db.ShipTypes.FindAsync(typeId);
+            if (ship != null)
+                return;
+
+            var esiResponse = await EsiWrapper.GetShipTypeAsync(typeId);
+            if (esiResponse.FirstOrDefault() == null)
+                return;
+
+            ship = new ShipType
+            {
+                Id = typeId,
+                Name =  esiResponse[0].Name
+            };
+
+            await _Db.AddAsync(ship);
+            await _Db.SaveChangesAsync();
+
+            return;
+        }
     }
 }

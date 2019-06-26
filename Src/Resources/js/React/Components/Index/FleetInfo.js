@@ -1,6 +1,6 @@
 ﻿import React, { Component } from 'react';
-import { Pilot, Destination } from './EsiUi';
-import { MumbleLink } from './CommLinks';
+import { Pilot, Destination } from '../EsiUi';
+import { MumbleLink } from '../CommLinks';
 
 export default class FleetInfo extends Component {
 
@@ -36,36 +36,65 @@ export default class FleetInfo extends Component {
                 </div>
             )
         }
+
         return (
             <div className="col-lg-4 col-md-6 col-sm-12">
-                <div className="card fleet-info">
-                    <div className="card-body">
-                        <div className="row">
-                            <div className="col-lg-6 col-md-12">
-                                FC: <Pilot pilot={this.props.fleet.fc}/>
-                            </div>
-
-                            <div className="col-lg-6 col-md-12">
-                                <i className="fas fa-map-marker-alt"></i>
-                                <Destination system={this.props.fleet.system} />
-                            </div>
-                        </div>
-                        
-                        <div className="row">
-                            <div className="col-lg-6 col-md-12">
-                                <i className="fas fa-users"></i> 
-                                {`${this.props.fleet.members.onGrid} / ${this.props.fleet.members.max}`}
-                            </div>
-
-                            <div className="col-lg-6 col-md-12">
-                                <MumbleLink commChannel={this.props.fleet.comms} />
-                            </div>
+                <div className="fleet-info">
+                    <div className="row">
+                        <div className="col-lg-6 col-md-12">
+                            <FleetFC fc={this.props.fleet.fc} />
                         </div>
 
-                        {fcButtons}
+                        <div className="col-lg-6 col-md-12">
+                            <FleetLocation system={this.props.fleet.system} />
+                        </div>
                     </div>
+                        
+                    <div className="row">
+                        <div className="col-lg-6 col-md-12">
+                            <FleetCount members={this.props.fleet.members} />
+                        </div>
+
+                        <div className="col-lg-6 col-md-12">
+                            <MumbleLink commChannel={this.props.fleet.comms} />
+                        </div>
+                    </div>
+
+                    {fcButtons}
                 </div>
             </div>
+        )
+    }
+}
+
+class FleetFC extends Component {
+    render() {
+        return (
+            <span>
+                FC: <Pilot pilot={this.props.fc} />
+            </span>
+        )
+    }
+}
+
+class FleetLocation extends Component {
+    render() {
+        return (
+            <span>
+                <i className="fas fa-map-marker-alt"></i>
+                <Destination system={this.props.system} />
+            </span>
+        )
+    }
+}
+
+class FleetCount extends Component {
+    render() {
+        return (
+            <span>
+                <i className="fas fa-users"></i>
+                {`${this.props.members.onGrid} / ${this.props.members.max}`}
+            </span>
         )
     }
 }

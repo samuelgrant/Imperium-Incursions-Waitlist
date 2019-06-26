@@ -47,6 +47,29 @@ namespace Imperium_Incursions_Waitlist.Services
         }
 
         /// <summary>
+        /// Resolves a Type ID to a ship using ESI
+        /// </summary>
+        /// <param name="typeId"></param>
+        /// <returns></returns>
+        public static async Task<List<ESI.NET.Models.Universe.ResolvedInfo>> GetShipTypeAsync(int typeId)
+        {
+            EnsureInit();
+            List<long> ids = new List<long>
+            {
+                typeId
+            };
+            EsiResponse<List<ESI.NET.Models.Universe.ResolvedInfo>> resolvedInfo_response =await s_client.Universe.Names(ids);
+
+            if(resolvedInfo_response.StatusCode != HttpStatusCode.OK)
+            {
+                s_Log.LogError("{0} error resolving IDs to names'{1}': {2}", resolvedInfo_response.StatusCode, resolvedInfo_response.Endpoint, resolvedInfo_response.Message);
+                return null;
+            }
+
+            return resolvedInfo_response.Data;
+        }
+
+        /// <summary>
         /// Returns an ESI Client
         /// </summary>
         /// <returns></returns>

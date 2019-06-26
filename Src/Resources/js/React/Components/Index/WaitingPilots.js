@@ -1,6 +1,5 @@
 ﻿import React, { Component } from 'react';
-import Card from './Card';
-import { Pilot } from './EsiUi';
+import { Pilot } from '../EsiUi';
 
 export default class WaitingPilot extends Component {
 
@@ -14,7 +13,7 @@ export default class WaitingPilot extends Component {
         }).done(() => {
             this.props.u();
         }).fail((err) => {
-            console.error(`React/Components/WaitingPilots {WaitingPilot@removePilot} - Error leaving the waitlist`, err.responseText);
+            console.error(`[React/WaitingPilot] @removePilot - Error removing pilot from the waitlist`, err.responseText);
         })  
     }
 
@@ -26,7 +25,11 @@ export default class WaitingPilot extends Component {
                     <tr>
                         <td><img width="32px" src={`https://image.eveonline.com/Character/${waiting.id}_32.jpg`} /></td>
                         <td><Pilot pilot={waiting} /></td>
-                        <td><buton className="btn btn-danger" onClick={this.removePilot.bind(this, waiting.id)}>Remove <i className="fas fa-user-times"></i></buton></td>
+                        <td>
+                            <buton className="btn btn-danger" onClick={this.removePilot.bind(this, waiting.id)}>
+                                Remove <i className="fas fa-user-times"></i>
+                            </buton>
+                        </td>
                     </tr>
                 )
             });

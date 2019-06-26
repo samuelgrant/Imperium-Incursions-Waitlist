@@ -84,6 +84,8 @@ public class FleetService : IHostedService
                 {
                     foreach(var fleetMember in esiMembers)
                     {
+                        await ShipType.EnsureInDatabase(fleetMember.ShipTypeId, _Db);
+
                         // If we know about the fleet member update their info
                         if (knownMembers.ContainsKey(fleetMember.CharacterId))
                         {

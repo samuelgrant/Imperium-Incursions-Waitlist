@@ -1,7 +1,8 @@
 ﻿import React, { Component } from 'react';
 import { render } from 'react-dom';
-import { UserRow, ManageInfo } from './Components/CommandersChildren';
 
+import SpecialUsers from './Components/UserManagement/ElevatedUsers';
+import UserInfo from './Components/UserManagement/UserInfo';
 
 const baseUri = "/admin/commanders";
 
@@ -12,7 +13,8 @@ export default class UserManagement extends Component {
         this.state = {
             users: null,
             roles: null,
-            userIndex: null
+            userIndex: null,
+            key: 0
         }
     }
 
@@ -32,6 +34,13 @@ export default class UserManagement extends Component {
         });
 
         this.setUserIndex(null);
+    }
+
+    selectedUser() {
+        if (this.state.users && this.state.users[this.state.userIndex])
+            return this.state.users[this.state.userIndex];
+
+        return null;
     }
 
     addGroup(role_id) {
@@ -54,23 +63,6 @@ export default class UserManagement extends Component {
         });
     }
 
-    removeGroup(i) {    
-        $.ajax({
-            type: 'delete',
-            url: `${baseUri}/revoke`,
-            data: {
-                roleId: i,
-                accountId: this.state.users[this.state.userIndex].id || null
-            }
-        }).done((result) => {
-            let x = this.state.userIndex;
-            this.getData();
-            this.setUserIndex(x);
-        }).fail((err) => {
-            console.error(`React/Commanders {Commanders@removeGroup} - Error revoking group`, err.responseText);
-        });
-    }
-
     setUserIndex(i) {
         this.setState({ userIndex: i });
     }
@@ -85,41 +77,26 @@ export default class UserManagement extends Component {
 
 
     render() {
-        let users;
-        if (!!this.getUsers()) {
-            users = this.getUsers().map((user, index) => {
-                return <UserRow user={user} viewDetails={this.setUserIndex.bind(this)} index={index} key={index} />
-            });
-        }
-
-        let userDetails;
-        if (!!this.getUsers()) {
-            userDetails = <ManageInfo details={this.state.users[this.state.userIndex]} roles={this.state.roles} onSubmit={this.addGroup.bind(this)} removeGroup={this.removeGroup.bind(this)} handleChange={this.setStateFromInput.bind(this)} reset={this.setUserIndex.bind(this)} />
-        }
-
         return (
             <div className="container">
                 <div className="row">
                     <div className="col-lg-8 col-md-12">
-                        <table className="table table-responsive">
-                            <thead>
-                                <tr className="font-alpha">
-                                    <th></th>
-                                    <th>Name</th>
-                                    <th>Corporation</th>
-                                    <th>Alliance</th>
-                                    <th>Roles</th>
-                                    <th></th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                {users}
-                            </tbody>
-                        </table>
+                        <SpecialUsers users={this.state.users}
+                            u={this.getData.bind(this)}
+                            setIndex={this.setUserIndex.bind(this)}
+                            baseUri={baseUri} />
+                        
                     </div>
 
                     <div className="col-lg-4 col-md-12">
-                        {userDetails}
+                        <UserInfo
+                            u={this.getData.bind(this)}
+                            selectedUser={this.selectedUser()}
+                            setIndex={this.setUserIndex.bind(this)}
+                            userIndex={this.state.userIndex}
+                            availableRoles={this.state.roles}
+                            baseUri={baseUri}
+                            key={this.state.key}  />
                     </div>
                 </div>
             </div>

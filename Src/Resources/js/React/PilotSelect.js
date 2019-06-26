@@ -2,6 +2,8 @@
 import { render } from 'react-dom';
 import ReactTooltip from 'react-tooltip'
 
+const baseUri = '/pilot-select'
+
 export default class PilotSelect extends Component {
 
     constructor(props) {
@@ -19,11 +21,11 @@ export default class PilotSelect extends Component {
     getData() {
         $.ajax({
             type: 'get',
-            url: '/pilot-select/pilots',
+            url: `${baseUri}/pilots`,
         }).done((pilots) => {
             this.setState({ pilots: pilots });
         }).fail((err) => {
-            console.error(`React/PilotSelect {PilotSelect@getData} - Error getting your main pilots`, err);
+            console.error(`[React/PilotSelect] @getData - Error retrieving account information`, err.responseText);
         })
     }
 
@@ -49,21 +51,27 @@ export default class PilotSelect extends Component {
 
                     {loginCards}
 
-                    {/* Special login card here */}
-                    <div className="col-lg-3 col-md-6 col-sm-12">
-                        <div className="card login-card">
-                            <img className="login-avatar" src={`https://image.eveonline.com/Character/0_256.jpg`} alt={"No avatar found."} />
-                            <div className="login-name mb-4">Need another pilot?</div>
-
-                            <a className="btn btn-primary d-block mx-auto my-4" href="/auth/eve">Login with Eve SSO</a>
-                        </div>
-                    </div>
+                    <AddAccountCard />
                 </div>
             </div>
         );
     }
 }
 
+export class AddAccountCard extends Component {
+    render() {
+        return (
+            <div className="col-lg-3 col-md-6 col-sm-12">
+                <div className="card login-card">
+                    <img className="login-avatar" src={`https://image.eveonline.com/Character/0_256.jpg`} alt="No avatar found." />
+                    <div className="login-name mb-4">Need another pilot?</div>
+
+                    <a className="btn btn-primary d-block mx-auto my-4" href="/auth/eve">Login with Eve SSO</a>
+                </div>
+            </div>
+        )
+    }
+}
 
 export class LoginCard extends Component {
 
@@ -82,14 +90,14 @@ export class LoginCard extends Component {
     setMainPilot(id) {
         $.ajax({
             type: `post`,
-            url: `/pilot-select/pilots/${id}`,
+            url: `${baseUri}/pilots/${id}`,
             statusCode: {
                 200: () => {
                     location.href = '/';
                 }
             }
         }).fail((err) => {
-            console.error(`React/PilotSelect {LoginCard@setMainPilot} - Error setting your main pilot`, err);
+            console.error(`[React/PilotSelect] @setMainPilot - Error setting your main pilot`, err.responseText);
         });
     }
 
