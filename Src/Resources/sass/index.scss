@@ -39,6 +39,7 @@ body {
     -o-background-size: cover;
     background-size: cover;
     overflow-y: auto;
+    font-size: medium;
 }
 
 
@@ -133,21 +134,8 @@ i {
     padding-right: 5px;
 }
 
-.fleet-info  .card-body {
-    padding: 0px;
-}
-
-.fleet-info .card-body .xmpp {
-    margin-left: -15px;
-}
-
 .card-body {
     background-color: rgba(0, 0, 0, 0.3);
-}
-
-.fleet-info .card-body .row, .fleet-info .card-body .row .xmpp{
-    padding: 1.25rem;
-    font-size: x-large;
 }
 
 .btn-group.special {
@@ -224,9 +212,15 @@ tr.tr-pending {
     background-color: #dc7325  !important;
 }
 
-.fleet-info .card-body {
-    background-color: none;
-    outline-style: solid;
-    outline-color: grey;
-    outline-width: 0.75px;
+.fleet-info {
+    outline: 0.75px solid grey;
+    background-color: rgba(0, 0, 0, 0.3);
+    padding: 0px;
+    margin-left: -15px;
+    margin-bottom: 2.3rem;
+}
+
+.fleet-info .row {
+    padding: 1.25rem;
+    font-size: x-large;
 }

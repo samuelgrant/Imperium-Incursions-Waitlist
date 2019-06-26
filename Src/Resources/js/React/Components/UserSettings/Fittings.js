@@ -57,7 +57,7 @@ export default class Fittings extends Component {
         return (
             <div>
                 <h3>My Fits</h3>
-                <p className="ml-4 mb-0">You will be asked to select up to four ships from the list below, when you join the waitlist.</p>
+                <p className="ml-4 mb-0">You will be asked to select up to five ships from the list below, when you join the waitlist.</p>
                 <p className="ml-4">You can have up to 5 ships stored below at any given time.</p>
 
                 <div className="table-responsive table-hover">

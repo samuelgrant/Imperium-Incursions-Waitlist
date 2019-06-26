@@ -1,6 +1,6 @@
 ﻿import React, { Component } from 'react';
-import Modal from './modal';
-import { Input } from './FormControls';
+import Modal from '../modal';
+import { Input } from '../FormControls';
 
 export class NewFleetLink extends Component {
     render() {

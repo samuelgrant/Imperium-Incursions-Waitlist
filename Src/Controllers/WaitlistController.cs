@@ -116,7 +116,8 @@ namespace Imperium_Incursions_Waitlist.Controllers
                 }
             }
 
-            int? index = 0;
+            int index = 0;
+            int? yourPos = null;
             string yourWaitTime = "";
             foreach(var user in waitingAccounts)
             {
@@ -124,13 +125,14 @@ namespace Imperium_Incursions_Waitlist.Controllers
                 if(user.AccountId == User.AccountId())
                 {
                     yourWaitTime = Util.WaitTime(user.CreatedAt);
+                    yourPos = index;
                     break;
                 }
             }                  
             
 
             var waitlist = new {
-                YourPos = index >= 0 ? index : null,
+                YourPos = yourPos,
                 TotalWaiting = waitingAccounts.Count,
                 YourWaitTime = yourWaitTime,
                 Queues
