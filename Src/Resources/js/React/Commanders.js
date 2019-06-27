@@ -1,6 +1,5 @@
 ﻿import React, { Component } from 'react';
 import { render } from 'react-dom';
-
 import SpecialUsers from './Components/UserManagement/ElevatedUsers';
 import UserInfo from './Components/UserManagement/UserInfo';
 
@@ -103,8 +102,6 @@ export default class UserManagement extends Component {
         )
     }
 }
-
-
 
 if (document.getElementById('user_management'))
     render(<UserManagement />, document.getElementById('user_management'));

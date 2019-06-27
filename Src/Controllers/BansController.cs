@@ -143,7 +143,6 @@ namespace Imperium_Incursions_Waitlist.Controllers
                 return BadRequest("Failed to update ban.");
             }
             
-
             return Ok();
         }
 
@@ -166,16 +165,14 @@ namespace Imperium_Incursions_Waitlist.Controllers
                 currentBan.ExpiresAt = DateTime.UtcNow;
 
                 await _Db.SaveChangesAsync();
-
                 _Logger.LogInformation("{0} has revoked ban against {1}", User.AccountName(), baneeName);
+                return Ok();
             }
             catch (Exception ex)
             {
                 _Logger.LogInformation("Error revoking ban against {0}: {1}", baneeName, ex.Message);
                 return BadRequest("Failed to revoke ban.");
             }
-
-            return Ok();
         }
     }
 }

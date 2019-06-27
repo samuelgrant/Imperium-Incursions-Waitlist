@@ -132,7 +132,6 @@ namespace Imperium_Incursions_Waitlist.Controllers
             if (accountId == User.AccountId())
                 return Unauthorized("You are not allowed to remove your own groups");
             
-
             var accountRole = await _Db.AccountRoles
                 .Where(ar => ar.AccountId == accountId && ar.RoleId == roleId)
                 .Include(ar => ar.Account)
@@ -147,7 +146,6 @@ namespace Imperium_Incursions_Waitlist.Controllers
                 await _Db.SaveChangesAsync();
 
                 _Logger.LogInformation("{0} role revoked from {1}", accountRole.Role.Name, accountRole.Account.Name);
-
                 return Ok();
             }
             catch (Exception ex)

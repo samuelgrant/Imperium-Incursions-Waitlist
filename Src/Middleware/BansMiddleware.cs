@@ -39,7 +39,8 @@ public class BansMiddleware
                 await _next.Invoke(context);
             }
             else
-            {//context.Request.Headers["X-Requested-With"] >>> {XMLHttpRequest}
+            {
+                //context.Request.Headers["X-Requested-With"] >>> {XMLHttpRequest}
                 if(context.Request.Headers["X-Requested-With"].ToString() == "XMLHttpRequest")
                 {
                     context.Response.StatusCode = 404;

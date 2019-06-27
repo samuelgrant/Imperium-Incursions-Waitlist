@@ -57,9 +57,6 @@ namespace Imperium_Incursions_Waitlist.Models
         {
             return Fits?.Where(f => f.DeletedAt == null && !f.IsShipScan).ToList();
         }
-
-        // Need a property to return owned fleets (via pilots)
-
         // End of Navigation Properties
 
 

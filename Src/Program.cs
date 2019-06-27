@@ -38,7 +38,6 @@ namespace Imperium_Incursions_Waitlist
                 }
             }
 
-
             host.Run();
         }
 
