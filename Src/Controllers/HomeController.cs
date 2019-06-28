@@ -15,11 +15,6 @@ namespace Imperium_Incursions_Waitlist.Controllers
 
         public HomeController(Data.WaitlistDataContext db) => _Db = db;
 
-        public IActionResult Index()
-        {
-            return View();
-        }
-
         [Route("/search")]
         [Produces("application/json")]
         public IActionResult Search(string q, string filter = "")
@@ -31,11 +26,12 @@ namespace Imperium_Incursions_Waitlist.Controllers
                 var pilots = from p in _Db.Pilots select p;
                 if (!String.IsNullOrEmpty(q))
                 {
-                    pilots = pilots.Where(s => s.Name.Contains(q));
+                    pilots = pilots.Where(s => s.CharacterName.Contains(q));
                 }
 
                 foreach (var p in pilots)
-                    results.Add(p.Name);
+                    if (p.CharacterName.ToLower() != "system")
+                        results.Add(p.CharacterName);
             }
 
             if(filter.ToLower() != "pilot")
@@ -46,7 +42,8 @@ namespace Imperium_Incursions_Waitlist.Controllers
                     accounts = accounts.Where(s => s.Name.Contains(q));
 
                     foreach (var a in accounts)
-                        results.Add(a.Name);
+                        if(a.Name.ToLower() != "system")
+                            results.Add(a.Name);
                 }
             }
 

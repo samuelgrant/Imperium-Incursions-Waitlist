@@ -1,32 +1,74 @@
-﻿using Microsoft.Extensions.Logging;
+﻿using Imperium_Incursions_Waitlist;
+using Microsoft.AspNetCore.Http;
+using Microsoft.Extensions.Logging;
+using System.Collections.Generic;
+using System.Security.Claims;
 
 /// <summary>
 /// ILogger Extensions that allow us to make use of string.format syntax in our logs.
 /// </summary>
 public static class LoggerExtensions
 {
-    public static void LogDebugFormat(this ILogger log, string entry, params object[] args)
+    public static long GetEsiId(this string x) => long.Parse(x.Split('/')[5]);
+
+    public static int AccountId(this ClaimsPrincipal user) => int.Parse(user.FindFirstValue("Id"));
+
+    public static string AccountName(this ClaimsPrincipal user) => user.FindFirstValue("name");
+
+    /// <summary>
+    /// Same as User.IsInRole("role") but checks multiple roles separated by a comma
+    /// </summary>
+    /// <returns></returns>
+    public static bool IsInRoles(this ClaimsPrincipal user, string roles)
     {
-        log.LogDebug(string.Format(entry, args));
+        string[] _roles = roles.Split(',');
+        foreach (string r in _roles)
+            if (user.IsInRole(r))
+                return true;
+
+        return false;
     }
 
-    public static void LogInformationFormat(this ILogger log, string entry, params object[] args)
+    public static int PreferredPilotId(this IRequestCookieCollection cookies) => int.Parse(cookies["prefPilot"].Split(':')[0]);
+
+    public static string PreferredPilotName(this IRequestCookieCollection cookies) => cookies["prefPilot"].Split(':')[1];
+
+    // Two loggers cannot access LogWarning for some reason so I've put this here.
+    public static void LogWarning(this ILogger log, string entry, params object[] args) => log.LogWarning(string.Format(entry, args));
+
+    // Returns an enum representation of why the fleet members api errored
+    public static FleetErrorType? ErrorType(this ESI.NET.EsiResponse<List<ESI.NET.Models.Fleets.Member>> x)
     {
-        log.LogInformation(string.Format(entry, args));
+        if (x.Message.Contains("The specified proxy or server node") && x.Message.Contains("is dead"))
+            return FleetErrorType.FleetDead;
+
+        if (x.Message.Contains("The fleet does not exist or you don't have access to it"))
+            return FleetErrorType.InvalidBoss;
+
+        return null;
     }
 
-    public static void LogWarningFormat(this ILogger log, string entry, params object[] args)
+    // Returns an enum representation of why the fleet members api errored
+    public static FleetErrorType? ErrorType(this ESI.NET.EsiResponse<List<ESI.NET.Models.Fleets.Wing>> x)
     {
-        log.LogWarning(string.Format(entry, args));
+        if (x.Message.Contains("The specified proxy or server node") && x.Message.Contains("is dead"))
+            return FleetErrorType.FleetDead;
+
+        if (x.Message.Contains("The fleet does not exist or you don't have access to it"))
+            return FleetErrorType.InvalidBoss;
+
+        return null;
     }
 
-    public static void LogCriticalFormat(this ILogger log, string entry, params object[] args)
+    public static string _str(this IFormCollection request, string key)
     {
-        log.LogCritical(string.Format(entry, args));
+        return request[key].ToString();
     }
 
-    public static void LogErrorFormat(this ILogger log, string entry, params object[] args)
+    public static int _int(this IFormCollection request, string key)
     {
-        log.LogError(string.Format(entry, args));
+        int.TryParse(request[key].ToString(), out int x);
+
+        return x;
     }
 }

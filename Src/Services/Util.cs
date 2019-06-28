@@ -1,10 +1,12 @@
-﻿using Microsoft.IdentityModel.Protocols;
+﻿using Microsoft.AspNetCore.Http;
+using Microsoft.IdentityModel.Protocols;
 using Microsoft.IdentityModel.Protocols.OpenIdConnect;
 using Microsoft.IdentityModel.Tokens;
 using System;
 using System.Collections.Generic;
 using System.IdentityModel.Tokens.Jwt;
 using System.Linq;
+using System.Security.Claims;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
@@ -14,7 +16,6 @@ namespace Imperium_Incursions_Waitlist.Services
     public static class Util
     {
         static readonly char[] padding = { '=' };
-
         /// <summary>
         /// Generates a random string.
         /// </summary>
@@ -47,64 +48,54 @@ namespace Imperium_Incursions_Waitlist.Services
             var bytes = System.Text.Encoding.GetEncoding("ISO-8859-1").GetBytes(_string);
 
             return System.Convert.ToBase64String(bytes);
+        }      
+
+        /// <summary>
+        /// Parses a Fit DNA Url and returns a fit strut with a typeId, dna and description
+        /// </summary>
+        /// <param name="fitUrl">Fit URL from in game chat. **USE A TRYCATCH around this call**</param>
+        /// <returns>
+        /// <see cref="Models.FitDna"/>
+        /// </returns>
+        public static Models.FitDna ParseFitDna(string fitUrl)
+        {
+
+            // If > comes before < then the user also submitted their name
+            // Let's remove their name as we don't care about it.
+            if(fitUrl.IndexOf('>') < fitUrl.IndexOf('<'))
+                fitUrl = fitUrl.Substring(fitUrl.IndexOf('>') + 1);
+
+            // Index 0 is the start of the URL
+            int ship_typeId = int.Parse(fitUrl.Split(':')[1]);
+
+            // Get the Fit DNA
+            string fit_dna = ":";
+            for (int i = 2; i < fitUrl.Split(':').Length - 2; i++)
+                fit_dna = $"{fit_dna}{fitUrl.Split(':')[i]}:";
+
+            // Get the fit Descrption
+            int descriptionStartIndex = fitUrl.IndexOf("::") + 3;
+            string fit_description = fitUrl.Substring(descriptionStartIndex, (fitUrl.IndexOf("</")) - descriptionStartIndex);
+            return new Models.FitDna
+            {
+                ship_typeId = ship_typeId,
+                dna = fit_dna,
+                description = fit_description
+            };
         }
 
         /// <summary>
-        /// Verifies a JWT token is valid a dictionary an array of claims.
+        /// Creates a diffForHumans() like output that compares a historic time object against DateTime.UtcNow. Use this for pretty outputs on views.
         /// </summary>
-        /// <param name="OpenIdDomain">Top level domain of the OpenID Connect provider</param>
-        /// <param name="OpenIdAudiance">fill me out later</param>
-        /// <param name="accessToken">fill me out later</param>
-        /// <returns>A key value pair dictionary of claims</returns>
-        public static async Task<Dictionary<string, string>> JwtVerify(string OpenIdDomain, string OpenIdAudiance, string accessToken)
+        /// <param name="x">DateTime Object - Use DateTime.UtcNow</param>
+        /// <returns>__H __M</returns>
+        public static string WaitTime(DateTime x)
         {
-            // If either of the paramters were missing abort.
-            if (OpenIdDomain == null || OpenIdAudiance == null)
-                return null;
+            if (x == null) return "";
 
-            var s_Log = Services.ApplicationLogging.CreateLogger("Services.Util");
-            SecurityToken validatedToken;
-
-            try
-            {
-                IConfigurationManager<OpenIdConnectConfiguration> configurationBuilder =
-                    new ConfigurationManager<OpenIdConnectConfiguration>($"{OpenIdDomain}.well-known/openid-configuration", new OpenIdConnectConfigurationRetriever());
-
-                OpenIdConnectConfiguration openIdConfig = await configurationBuilder.GetConfigurationAsync(CancellationToken.None);
-
-                TokenValidationParameters ValidationParameters = new TokenValidationParameters
-                {
-                    ValidIssuer = openIdConfig.Issuer,
-                    ValidAudience = OpenIdAudiance, 
-                    IssuerSigningKeys = openIdConfig.SigningKeys
-                };
-
-                JwtSecurityTokenHandler handler = new JwtSecurityTokenHandler();
-                var user = handler.ValidateToken(accessToken, ValidationParameters, out validatedToken);
-            }
-            catch (Exception ex)
-            {
-                s_Log.LogWarningFormat("Error validating JWT Token {0}", ex.Message);
-                return null;
-            };
-
-#pragma warning disable IDE0019 // Use pattern matching
-            JwtSecurityToken jwt = validatedToken as JwtSecurityToken;
-#pragma warning restore IDE0019 // Use pattern matching
-
-            if (jwt == null)
-            {
-                s_Log.LogWarningFormat("Authentication failed a JWT was not found");
-                return null;
-            }
-
-            Dictionary<string, string> Claims = new Dictionary<string, string>();
-            foreach(var claim in jwt.Claims)
-            {
-                Claims.Add(claim.Type, claim.Value);
-            }
-
-            return Claims;
-        } 
+            TimeSpan timeSpan = DateTime.UtcNow - x;
+            
+            return $"{timeSpan.Hours}H {timeSpan.Minutes}M";
+        }
     }
 }

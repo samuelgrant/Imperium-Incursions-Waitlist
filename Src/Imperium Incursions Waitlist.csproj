@@ -7,34 +7,61 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <Compile Remove="Migrations\20190327072413_InitialCommit.cs" />
-    <Compile Remove="Migrations\20190327072413_InitialCommit.Designer.cs" />
-    <Compile Remove="Migrations\20190411050700_AccountRoles.cs" />
-    <Compile Remove="Migrations\20190411050700_AccountRoles.Designer.cs" />
-    <Compile Remove="Migrations\20190411052055_AccountRoles.cs" />
-    <Compile Remove="Migrations\20190411052055_AccountRoles.Designer.cs" />
-    <Compile Remove="Migrations\20190414001454_UpdatedBansModel.cs" />
-    <Compile Remove="Migrations\20190414001454_UpdatedBansModel.Designer.cs" />
-    <Compile Remove="Migrations\20190414033827_InitialMigration.cs" />
-    <Compile Remove="Migrations\20190414033827_InitialMigration.Designer.cs" />
-  </ItemGroup>
-
-  <ItemGroup>
-    <Content Include="Resources\js\Libraries\Theme\app.js" />
-    <Content Include="Resources\js\Libraries\Theme\vendors.js" />
+    <Compile Remove="Migrations\20190528104052_Initial Migration.cs" />
+    <Compile Remove="Migrations\20190528104052_Initial Migration.Designer.cs" />
+    <Compile Remove="Migrations\20190531030121_RequireNonNullStringFields.cs" />
+    <Compile Remove="Migrations\20190531030121_RequireNonNullStringFields.Designer.cs" />
+    <Compile Remove="Migrations\20190531031131_RequireNonNullStringFields.cs" />
+    <Compile Remove="Migrations\20190531031131_RequireNonNullStringFields.Designer.cs" />
+    <Compile Remove="Migrations\20190601233221_AddsJabberBool.cs" />
+    <Compile Remove="Migrations\20190601233221_AddsJabberBool.Designer.cs" />
+    <Compile Remove="Migrations\20190602022152_Adds fit description field.cs" />
+    <Compile Remove="Migrations\20190602022152_Adds fit description field.Designer.cs" />
+    <Compile Remove="Migrations\20190602041323_ShipType IDs.cs" />
+    <Compile Remove="Migrations\20190602041323_ShipType IDs.Designer.cs" />
+    <Compile Remove="Migrations\20190602041545_Initial Migration.cs" />
+    <Compile Remove="Migrations\20190602041545_Initial Migration.Designer.cs" />
+    <Compile Remove="Migrations\20190602120730_Modules table.cs" />
+    <Compile Remove="Migrations\20190602120730_Modules table.Designer.cs" />
+    <Compile Remove="Migrations\20190603013541_EnumConversionTest.cs" />
+    <Compile Remove="Migrations\20190603013541_EnumConversionTest.Designer.cs" />
+    <Compile Remove="Migrations\20190603234350_Initial Migration.cs" />
+    <Compile Remove="Migrations\20190603234350_Initial Migration.Designer.cs" />
+    <Compile Remove="Migrations\20190604052450_AccountFits.cs" />
+    <Compile Remove="Migrations\20190604052450_AccountFits.Designer.cs" />
+    <Compile Remove="Migrations\20190604054026_Accounts to Fits.cs" />
+    <Compile Remove="Migrations\20190604054026_Accounts to Fits.Designer.cs" />
+    <Compile Remove="Migrations\20190608103007_FleetPositions Fields.cs" />
+    <Compile Remove="Migrations\20190608103007_FleetPositions Fields.Designer.cs" />
+    <Compile Remove="Migrations\20190608213532_Test.cs" />
+    <Compile Remove="Migrations\20190608213532_Test.Designer.cs" />
+    <Compile Remove="Migrations\20190611040249_Added System Information to FleetAssignments.cs" />
+    <Compile Remove="Migrations\20190611040249_Added System Information to FleetAssignments.Designer.cs" />
+    <Compile Remove="Migrations\20190613052425_Adds Announcments.cs" />
+    <Compile Remove="Migrations\20190613052425_Adds Announcments.Designer.cs" />
+    <Compile Remove="Migrations\20190613060215_Database Patch.cs" />
+    <Compile Remove="Migrations\20190613060215_Database Patch.Designer.cs" />
+    <Compile Remove="Migrations\20190613060442_InitialMigration.cs" />
+    <Compile Remove="Migrations\20190613060442_InitialMigration.Designer.cs" />
+    <Compile Remove="Migrations\20190613130803_Initial.cs" />
+    <Compile Remove="Migrations\20190613130803_Initial.Designer.cs" />
+    <Compile Remove="Migrations\20190614090214_Initial Migration.cs" />
+    <Compile Remove="Migrations\20190614090214_Initial Migration.Designer.cs" />
+    <Compile Remove="Migrations\20190615092930_TEST.cs" />
+    <Compile Remove="Migrations\20190615092930_TEST.Designer.cs" />
+    <Compile Remove="Migrations\20190619071303_Initial Migration.cs" />
+    <Compile Remove="Migrations\20190619071303_Initial Migration.Designer.cs" />
   </ItemGroup>
 
 
   <ItemGroup>
     <PackageReference Include="DotNetEnv" Version="1.2.0" />
-    <PackageReference Include="ESI.NET" Version="2.13.13" />
     <PackageReference Include="Microsoft.AspNetCore.App" />
-    <PackageReference Include="Microsoft.AspNetCore.Authentication.OpenIdConnect" Version="2.2.0" />
     <PackageReference Include="Microsoft.AspNetCore.Razor.Design" Version="2.2.0" PrivateAssets="All" />
     <PackageReference Include="Microsoft.AspNetCore.Session" Version="2.2.0" />
     <PackageReference Include="Microsoft.Extensions.Caching.Memory" Version="2.2.0" />
     <PackageReference Include="Microsoft.VisualStudio.Web.CodeGeneration.Design" Version="2.2.3" />
-    <PackageReference Include="Newtonsoft.Json" Version="12.0.1" />
+    <PackageReference Include="Newtonsoft.Json" Version="12.0.2" />
     <PackageReference Include="Pomelo.EntityFrameworkCore.MySql" Version="2.2.0" />
     <PackageReference Include="System.Configuration.ConfigurationManager" Version="4.5.0" />
     <PackageReference Include="Webpack" Version="4.0.0" />
@@ -42,9 +69,20 @@
 
 
   <ItemGroup>
-    <Folder Include="Data\" />
-    <Folder Include="Logs\" />
+    <Folder Include="Migrations\" />
+    <Folder Include="Resources\js\React\Components\FleetManagement\" />
+    <Folder Include="Resources\js\React\Components\SystemSettings\" />
     <Folder Include="wwwroot\dist\" />
+  </ItemGroup>
+
+
+  <ItemGroup>
+    <Reference Include="ESI.NET">
+      <HintPath>.\ESI.NET.dll</HintPath>
+    </Reference>
+    <Reference Include="GiceSso">
+      <HintPath>.\GiceSso.dll</HintPath>
+    </Reference>
   </ItemGroup>
 
 </Project>

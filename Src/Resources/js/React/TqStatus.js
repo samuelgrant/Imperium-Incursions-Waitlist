@@ -27,11 +27,15 @@ export class TqStatus extends Component {
 
     tick() {
         $.getJSON('https://esi.evetech.net/latest/status/?datasource=tranquility', (data) => {
-            this.setState({
-                tq_status: (!!data.players) ? data.players : 0
-            });
+            // If VIP Mode
+            if (!!data.players && data.vip == true) {
+                this.setState({ tq_status: -1 });
+                return;
+            }
 
-            return;
+            this.setState({
+                tq_status: (!!data.players) ? data.players : 0                    
+            });
         }).fail(() => {
             this.setState({ tq_status: 0 });
         });
@@ -42,6 +46,9 @@ export class TqStatus extends Component {
         if (!!this.state.tq_status && this.state.tq_status > 0) {
             status.val = this.state.tq_status.toLocaleString();
             status.class = "text-success";
+        } else if (!!this.state.tq_status && this.state.tq_status == -1) {
+            status.val = "VIP Mode";
+            status.class = "text-warning";
         } else {
             status.val = "Offline";
             status.class = "text-danger";

@@ -246,8 +246,8 @@ table {
 }
 
 caption {
-    padding-top: 1rem 1.5rem;
-    padding-bottom: 1rem 1.5rem;
+    padding-top: 1.5rem; //1rem 1.5rem
+    padding-bottom: 1.5rem; //1rem 1.5rem
     color: rgba(255,255,255,.7);
     caption-side: bottom
 }
@@ -2935,7 +2935,8 @@ tbody.collapse.show {
 }
 
 .nav-link:focus, .nav-link:hover {
-    text-decoration: none
+    text-decoration: none;
+    background: none;
 }
 
 .nav-link.disabled {
@@ -8023,8 +8024,6 @@ a.text-danger:focus, a.text-danger:hover {
     padding-left: 1px;
     padding-right: 1px;
     resize: none;
-    -webkit-appearance: none;
-    -moz-appearance: none;
     appearance: none;
     -ms-overflow-style: none
 }
@@ -9435,7 +9434,7 @@ button, input, optgroup, select, textarea {
 }
 
 .search__helper{
-    top: 10px;
+    margin-top: 10px;
 }
 
 .header--scrolled .search__text {
@@ -9461,15 +9460,17 @@ button, input, optgroup, select, textarea {
     transition: color .3s,transform .4s,-webkit-transform .4s
 }
 
-.search--focus .search__helper {
+// Hard to get aligned correctly.
+/*.search--focus .search__helper {
     -webkit-transform: rotate(180deg);
     transform: rotate(180deg);
     line-height: 2.9rem;
 }
 
 .search--focus .search__helper:before {
-    content: '\f356'
-}
+    content: '\f356';
+    margin-left: -5px;
+}*/
 
 .app-shortcuts {
     margin: 0;

@@ -1,15 +1,15 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
-using Imperium_Incursions_Waitlist.Models;
-using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Authorization;
+using Microsoft.EntityFrameworkCore;
 
 namespace Imperium_Incursions_Waitlist.Controllers.Auth
 {
     [Authorize]
+    [Route("/pilot-select")]
     public class PilotSelectController : Controller
     {
         private Data.WaitlistDataContext _Db;
@@ -30,12 +30,16 @@ namespace Imperium_Incursions_Waitlist.Controllers.Auth
         /// <summary>
         /// Returns a list of all pilots linked to the account.
         /// </summary>
-        [HttpGet]
+        [HttpGet("pilots")]
         [Produces("application/json")]
-        public IActionResult Pilots()
+        public async Task<IActionResult> Pilots()
         {
-            var userID = User.FindFirst("id").Value;
-            var pilots = _Db.Pilots.Where(p => p.AccountId == int.Parse(userID)).OrderBy(s => s.Name);
+            var pilots = await _Db.Pilots.Where(c => c.AccountId == User.AccountId()).Select(s => new
+            {
+                id = s.CharacterID,
+                name = s.CharacterName,
+                EsiValid = s.ESIValid
+            }).OrderBy(o => o.name).ToListAsync();
 
             if (pilots == null)
                 return NotFound();
@@ -46,7 +50,7 @@ namespace Imperium_Incursions_Waitlist.Controllers.Auth
         /// <summary>
         /// Sets a prefPilot cookie indicating the users preferred pilot
         /// </summary>
-        [HttpPost]
+        [HttpPost("pilots/{id}")]
         public async Task<IActionResult> Pilots(int id = 0)
         {
             var pilot = await _Db.Pilots.FindAsync(id);
@@ -54,7 +58,7 @@ namespace Imperium_Incursions_Waitlist.Controllers.Auth
             if (pilot == null)
                 return BadRequest();
 
-            if (!pilot.BelongsToAccount(int.Parse(User.FindFirst("id").Value)))
+            if (!pilot.BelongsToAccount(User.AccountId()))
                 return Unauthorized();
             
             CookieOptions options = new CookieOptions
@@ -62,7 +66,7 @@ namespace Imperium_Incursions_Waitlist.Controllers.Auth
                 IsEssential = true   
             };
 
-            Response.Cookies.Append("prefPilot", pilot.Id + ":" + pilot.Name, options);
+            Response.Cookies.Append("prefPilot", pilot.CharacterID + ":" + pilot.CharacterName, options);
 
             return Ok();
         }

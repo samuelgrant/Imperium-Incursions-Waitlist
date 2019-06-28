@@ -3,6 +3,7 @@ using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
+using System.Linq;
 
 namespace Imperium_Incursions_Waitlist.Models
 {
@@ -14,6 +15,13 @@ namespace Imperium_Incursions_Waitlist.Models
         [Required]
         public string Name { get; set; }
 
+        public bool JabberNotifications { get; set; }
+
+        [JsonIgnore]
+        [Display(Name = "Login From IP")]
+        [MaxLength(15)]
+        public string LastLoginIP { get; set; }
+
         [Display(Name ="Registered At"), DataType(DataType.Date)]
         [DisplayFormat(DataFormatString = "{0:dd-MM-yyyy}")]
         public DateTime RegisteredAt { get; set; }
@@ -21,10 +29,6 @@ namespace Imperium_Incursions_Waitlist.Models
         [Display(Name = "Last Login"), DataType(DataType.Date)]
         [DisplayFormat(DataFormatString = "{0:dd-MM-yyyy}")]
         public DateTime? LastLogin { get; set; }
-
-        [JsonIgnore]
-        [Display(Name = "Login From IP")]
-        public string LastLoginIP { get; set; }
 
         // Navigation Properties
         public ICollection<Pilot> Pilots { get; set; }
@@ -34,9 +38,25 @@ namespace Imperium_Incursions_Waitlist.Models
         public ICollection<Ban> CreatedBans { get; set; }
         [JsonIgnore]
         public ICollection<Ban> UpdatedBans { get; set; }
-        
-        public ICollection<AccountRole> AccountRoles { get; set; }
+        [JsonIgnore]
+        public ICollection<Note> AccountNotes { get; set; }
+        [JsonIgnore]
+        public ICollection<Note> CreatedNotes { get; set; }
+        [JsonIgnore]
+        public ICollection<Note> UpdatedNotes { get; set; }
 
+        public ICollection<AccountRole> AccountRoles { get; set; }
+        [JsonIgnore]
+        public ICollection<Fleet> BackseatedFleets { get; set; }
+        [JsonIgnore]
+        public ICollection<WaitingPilot> RemovedPilots { get; set; }
+        [JsonIgnore]
+        public ICollection<Fit> Fits { get; set; }
+
+        public List<Fit> ActiveFits()
+        {
+            return Fits?.Where(f => f.DeletedAt == null && !f.IsShipScan).ToList();
+        }
         // End of Navigation Properties
 
 

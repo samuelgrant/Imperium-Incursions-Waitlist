@@ -6,9 +6,11 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Logging;
 using Microsoft.EntityFrameworkCore;
+using System.Threading.Tasks;
 
 namespace Imperium_Incursions_Waitlist.Controllers
 {
+    [Route("/admin/bans")]
     [Authorize(Roles = "Leadership, Commander")]
     public class BansController : Controller
     {
@@ -28,40 +30,54 @@ namespace Imperium_Incursions_Waitlist.Controllers
         }
 
         /// <summary>
-        /// Returns a list of active bans. 
-        /// Active bans are any ban that has not expired, or has no expiry date.
+        /// Returns a list of active bans. Active bans are bans that have not expired, or have no expiry date.
         /// </summary>
-        [HttpGet]
+        [HttpGet("active")]
         [Produces("application/json")]
-        public IActionResult Active()
+        public async Task<IActionResult> Active()
         {
-            var bans = _Db.Bans.Where(b => b.ExpiresAt > DateTime.UtcNow || b.ExpiresAt == null)
-                .OrderBy(c => c.BannedAccount.Name)
-                .Include(c => c.BannedAccount)
-                    .ThenInclude(ba => ba.Pilots)
-                .Include(c => c.CreatorAdmin);
-            return Ok(bans);
+            var bans = await _Db.Bans.Where(c => c.ExpiresAt > DateTime.UtcNow || c.ExpiresAt == null)
+                .Include(i => i.BannedAccount).ThenInclude(i => i.Pilots).ThenInclude(i => i.Corporation).ThenInclude(i => i.Alliance).Select(s => new
+                {
+                    s.Id,
+                    banAdmin = new {
+                        id = s.UpdatingAdmin == null ? s.CreatorAdmin.Id : s.UpdatingAdmin.Id,
+                        name = s.UpdatingAdmin == null ? s.CreatorAdmin.Name : s.UpdatingAdmin.Name },
+                    bannedAccount = new {
+                        id = s.BannedAccount.Id,
+                        name = s.BannedAccount.Name,
+                        pilots = s.BannedAccount.Pilots.Select(s1 => new {
+                            id = s1.CharacterID,
+                            name = s1.CharacterName
+                        })
+                    },
+                    s.ExpiresAt,
+                    s.Reason,
+                    s.CreatedAt
+                }).OrderBy(o => o.bannedAccount.name).ToListAsync();
+
+            return Ok(new {
+                bans,
+                admin = User.IsInRole("Leadership")
+            });
         }
 
         /// <summary>
         /// Issues a ban against a user account
         /// </summary>
-        /// <returns>HttpStatusCode</returns>
-        /// <see cref="StatusCodes"/>
         [HttpPost]
         [Produces("application/json")]
         [Authorize(Roles = "Leadership")]
-        [ActionName("Index")]
-        public IActionResult Bans(IFormCollection request)
+        public async Task<IActionResult> Index(IFormCollection request)
         {
-            if (request["reason"] == "" || request["name"] == "")
+            if (request._str("banReason") == "" || request._str("accountName") == "")
                 return BadRequest();
 
-            int AdminId = int.Parse(User.FindFirst("id").Value);
-            var BannedAccount = _Db.Accounts.FirstOrDefault(c => c.Name == request["name"]);
+            int AdminId = User.AccountId();
+            var BannedAccount = await _Db.Accounts.FirstOrDefaultAsync(c => c.Name == request._str("accountName"));
 
             if (BannedAccount == null)
-                return NotFound(string.Format("The account {0} was not found", request["name"]));
+                return NotFound(string.Format("The account {0} was not found", request._str("accountName")));
 
             if (AdminId == BannedAccount.Id)
                 return Forbid("You cannot ban yourself");
@@ -72,7 +88,7 @@ namespace Imperium_Incursions_Waitlist.Controllers
                 {
                     AdminId = AdminId,
                     BannedAccountId = BannedAccount.Id,
-                    Reason = request["reason"],
+                    Reason = request._str("banReason"),
                     //Expires at is disabled until I can spend enough time to use a proper Jquery date picker
                     ExpiresAt = null,//Ban.BanExpiryDate(request["expires_at"]),
 
@@ -81,10 +97,10 @@ namespace Imperium_Incursions_Waitlist.Controllers
                     UpdatedAt = DateTime.UtcNow
                 };
 
-                _Logger.LogInformation("{0} is issuing a ban against {1}", User.FindFirst("name").Value, request["name"]);
+                _Logger.LogInformation("{0} is issuing a ban against {1}", User.AccountName(), request._str("accountName"));
 
-                _Db.Bans.Add(ban);
-                _Db.SaveChanges();
+                await _Db.Bans.AddAsync(ban);
+                await _Db.SaveChangesAsync();
             }
             catch (Exception ex)
             {
@@ -99,19 +115,12 @@ namespace Imperium_Incursions_Waitlist.Controllers
         /// <summary>
         /// Updates a ban against a user account. Enables leadership to update the reason or expiry
         /// </summary>
-        /// <param name="id">URL Paramater: ID of ban to be updated</param>
-        /// <returns>HttpStatusCode</returns>
-        /// <see cref="StatusCodes"/>
-        [HttpPut]
+        [HttpPut("{id}")]
         [Produces("application/json")]
         [Authorize(Roles = "Leadership")]
-        public IActionResult Update(IFormCollection request, int id = 0)
+        public async Task<IActionResult> Update(IFormCollection request, int id)
         {
-            // If no ban ID was supplied return 400
-            if (id == 0)
-                return BadRequest();
-
-            var currentBan = _Db.Bans.Include(c => c.BannedAccount).FirstOrDefault(c => c.Id == id);
+            var currentBan = await _Db.Bans.Include(c => c.BannedAccount).FirstOrDefaultAsync(c => c.Id == id);
             
             // If no ban was found return 404
             if (currentBan == null)
@@ -119,14 +128,14 @@ namespace Imperium_Incursions_Waitlist.Controllers
 
             try
             {
-                currentBan.Reason = request["reason"];
+                currentBan.Reason = request._str("banReason");
                 //Expires at is disabled until I can spend enough time to use a proper Jquery date picker
                 currentBan.ExpiresAt = null;//Ban.BanExpiryDate(request["expires_at"]),
-                currentBan.UpdatedByAdminId = int.Parse(User.FindFirst("id").Value);
+                currentBan.UpdatedByAdminId = User.AccountId();
                 currentBan.UpdatedAt = DateTime.UtcNow;
 
-                _Logger.LogInformation("{0} is updating the ban against {1}", User.FindFirst("name").Value, currentBan.BannedAccount.Name);
-                _Db.SaveChanges();
+                _Logger.LogInformation("{0} is updating the ban against {1}", User.AccountName(), currentBan.BannedAccount.Name);
+                await _Db.SaveChangesAsync();
             }
             catch (Exception ex)
             {
@@ -134,27 +143,18 @@ namespace Imperium_Incursions_Waitlist.Controllers
                 return BadRequest("Failed to update ban.");
             }
             
-
             return Ok();
         }
 
         /// <summary>
         /// Soft deletes a ban against a specific user account.
         /// </summary>
-        /// <param name="id">URL Paramater: ID of ban to be revoked</param>
-        /// <returns>HttpStatusCode</returns>
-        /// <see cref="StatusCodes"/>
-        [HttpDelete]
+        [HttpDelete("{id}")]
         [Produces("application/json")]
         [Authorize(Roles = "Leadership")]
-        public IActionResult Revoke(int id = 0)
+        public async Task<IActionResult> Revoke(int id)
         {
-            // Fail if no ban id is provided
-            if (id == 0)
-                return BadRequest();
-
-
-            var currentBan = _Db.Bans.Include(c => c.BannedAccount).SingleOrDefault(c => c.Id == id);
+            var currentBan = await _Db.Bans.Include(c => c.BannedAccount).SingleOrDefaultAsync(c => c.Id == id);
             string baneeName = currentBan?.BannedAccount?.Name;
 
             if (currentBan == null)
@@ -164,17 +164,15 @@ namespace Imperium_Incursions_Waitlist.Controllers
             {
                 currentBan.ExpiresAt = DateTime.UtcNow;
 
-                _Db.SaveChanges();
-
-                _Logger.LogInformation("{0} has revoked ban against {1}", User.FindFirst("name").Value, baneeName);
+                await _Db.SaveChangesAsync();
+                _Logger.LogInformation("{0} has revoked ban against {1}", User.AccountName(), baneeName);
+                return Ok();
             }
             catch (Exception ex)
             {
                 _Logger.LogInformation("Error revoking ban against {0}: {1}", baneeName, ex.Message);
                 return BadRequest("Failed to revoke ban.");
             }
-
-            return Ok();
         }
     }
 }

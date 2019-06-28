@@ -1,0 +1,22 @@
+[
+  {
+    "Acronym": "AAA",
+    "Name": "Anchor",
+    "Avaliable": true
+  },
+  {
+    "Acronym": "DDD",
+    "Name": "Drone Bunny",
+    "Avaliable": true
+  },
+  {
+    "Acronym": "MTAC",
+    "Name": "MTAC",
+    "Avaliable": true
+  },
+  {
+    "Acronym": "TTT",
+    "Name": "Tagger",
+    "Avaliable": true
+  }
+]

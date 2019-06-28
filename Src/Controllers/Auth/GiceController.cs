@@ -1,10 +1,8 @@
 ﻿using System;
 using System.Net;
-using System.Text;
 using System.Threading.Tasks;
 using System.Security.Claims;
 using System.Collections.Generic;
-using System.Collections.Specialized;
 
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Http;
@@ -14,11 +12,12 @@ using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authentication.Cookies;
 
 using DotNetEnv;
-using Newtonsoft.Json;
 using Imperium_Incursions_Waitlist.Models;
 using Imperium_Incursions_Waitlist.Services;
 using Microsoft.EntityFrameworkCore;
 using System.Linq;
+
+using GiceSSO;
 
 namespace Imperium_Incursions_Waitlist.Controllers
 {
@@ -28,12 +27,22 @@ namespace Imperium_Incursions_Waitlist.Controllers
         private Data.WaitlistDataContext _Db;
         private IPAddress _RequestorIP;
         private ILogger _Logger;
+        private ClientConfig _GiceConfig;
 
         public GiceController(Data.WaitlistDataContext db, IHttpContextAccessor clientAccessor, ILogger<GiceController> logger)
         {
             _Db = db;
             _RequestorIP = clientAccessor.HttpContext.Connection.RemoteIpAddress;
             _Logger = logger;
+
+            // Setup a Gice SSO Client
+            Env.Load();
+            _GiceConfig = new ClientConfig
+            {
+                ClientId = Env.GetString("gice_clientID"),
+                SecretKey = Env.GetString("gice_clientSecret"),
+                UserAgent = "Imperium Incursions. Contact: samuel_the_terrible"
+            };
         }
 
         /// <summary>
@@ -42,28 +51,16 @@ namespace Imperium_Incursions_Waitlist.Controllers
         [AllowAnonymous]
         public ActionResult Go()
         {
-            Env.Load();
-
-            //Get Client ID
-            string clientID = Env.GetString("gice_clientID");
-
-
-            //Callback
-            string redirectUri = Url.Action("callback", "gice", null, protocol: "https").ToLower();
-
+            _GiceConfig.CallbackUrl = Url.Action("callback", "gice", null, protocol: "https").ToLower();
 
             //Create a state and save to session
             string newState = Util.RandomString(6);
             HttpContext.Session.SetString("state", newState);
+
+            GiceClientv2 gice = new GiceClientv2(_GiceConfig);
             
             // Request Authentication from GICE.
-            return Redirect(string.Format(
-                "https://esi.goonfleet.com/oauth/authorize?client_id={0}&redirect_uri={1}&response_type={2}&state={3}",
-                clientID,
-                redirectUri,
-                "code",
-                newState
-            ));
+            return Redirect(gice.GenerateRequestUrl(newState));
         }
 
         /// <summary>
@@ -76,7 +73,7 @@ namespace Imperium_Incursions_Waitlist.Controllers
             // Verify a code and state query parameter was returned.
             if (code == null || state == null)
             {
-                _Logger.LogWarningFormat("GICE Callback Error: One or more of the query parameters are missing. State: {0}. Code: {1}", state, code);
+                _Logger.LogWarning("GICE Callback Error: One or more of the query parameters are missing. State: {0}. Code: {1}", state, code);
                 return StatusCode(452);
             }
 
@@ -91,41 +88,29 @@ namespace Imperium_Incursions_Waitlist.Controllers
             // Clear the state session
             HttpContext.Session.Remove("state");
 
-            // Get the authorization code
-            var postData = new NameValueCollection();
-            var client = new WebClient();
+            // Set the callback URL
+            _GiceConfig.CallbackUrl = Url.Action("Callback", "Gice", null, "https").ToLower();
 
-            postData["grant_type"] = "authorization_code";
-            postData["code"] = code;
-            postData["redirect_uri"] = Url.Action("Callback", "Gice", null, "https").ToLower();
-            postData["client_id"] = Env.GetString("gice_clientID");
-            postData["client_secret"] = Env.GetString("gice_clientSecret");
+            GiceClientv2 gice = new GiceClientv2(_GiceConfig);
+            Dictionary<string, string> ClaimsDict = gice.VerifyCode(code);
+            
 
-            var response = client.UploadValues("https://esi.goonfleet.com/oauth/token", postData);
-            // Convert a JSON String into a usable object
-            var data = Encoding.Default.GetString(response);
-            var model = JsonConvert.DeserializeObject<dynamic>(data);
-            string access_token = model["access_token"].Value;
-
-            // Vlidate and Decode the JWT token
-            Dictionary<string, string> user = await Util.JwtVerify("https://esi.goonfleet.com/", "https://esi.goonfleet.com/", access_token);
-            if(user.Count == 0)
+            if(ClaimsDict.Count == 0)
             {
-                _Logger.LogWarningFormat("GICE Callback Error: The JwtVerify method failed.");
+                _Logger.LogWarning("GICE Callback Error: The JwtVerify method failed.");
                 return StatusCode(452);
             }
 
             // Do we have an account for this GSF User?
-            int gice_id = int.Parse(user["sub"]);
+            int gice_id = int.Parse(ClaimsDict["sub"]);
             var waitlist_account = await _Db.Accounts.FindAsync(gice_id);
             if(waitlist_account != null)
             {
                 // Update and save user account
-                waitlist_account.Name = user["name"];
+                waitlist_account.Name = ClaimsDict["name"];
                 waitlist_account.LastLogin = DateTime.UtcNow;
                 waitlist_account.LastLoginIP = _RequestorIP.MapToIPv4().ToString();
 
-                _Db.Update(waitlist_account);
                 await _Db.SaveChangesAsync();
             }
             else
@@ -134,19 +119,21 @@ namespace Imperium_Incursions_Waitlist.Controllers
                 waitlist_account = new Account()
                 {
                     Id = gice_id,
-                    Name = user["name"],
+                    Name = ClaimsDict["name"],
                     RegisteredAt = DateTime.UtcNow,
+                    JabberNotifications = true,
                     LastLogin = DateTime.UtcNow,
                     LastLoginIP = _RequestorIP.MapToIPv4().ToString()
                 };
 
-                _Db.Add(waitlist_account);
+                await _Db.AddAsync(waitlist_account);
                 await _Db.SaveChangesAsync();
             }
 
             // Attempt to log the user in
             await LoginUserUsingId(waitlist_account.Id);
-            _Logger.LogDebugFormat("{0} has logged in.", user["name"]);
+
+            _Logger.LogDebug("{0} has logged in.", ClaimsDict["name"]);
 
             return Redirect("~/pilot-select");            
         }
@@ -154,7 +141,7 @@ namespace Imperium_Incursions_Waitlist.Controllers
         [Authorize]
         public async Task<string> Logout()
         {
-            _Logger.LogDebugFormat("{0} has logged out.", User.FindFirst("name").Value);
+            _Logger.LogDebug("{0} has logged out.", User.FindFirst("name").Value);
 
             // Log the user out of our application
             await HttpContext.SignOutAsync();
@@ -166,18 +153,6 @@ namespace Imperium_Incursions_Waitlist.Controllers
             //return Redirect("https://esi.goonfleet.com/oauth/revoke");
 
             return "You were logged out!";
-        }
-
-        // DO NOT KEEP THIS METHOD IN PRODUCTION!!!!!!!!!!!!!!!	
-        [AllowAnonymous]
-        public async Task<IActionResult> LoginWithId(int id)
-        {
-            if (Environment.GetEnvironmentVariable("ASPNETCORE_ENVIRONMENT") == "Development")
-            {
-                await LoginUserUsingId(id);
-            } 
-
-            return Redirect("~/");
         }
 
         /// <summary>

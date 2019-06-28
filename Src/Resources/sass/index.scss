@@ -9,9 +9,11 @@
 /* Theme */
 @import 'Theme.scss';
 @import 'fonts.scss';
+@import 'FormControl.scss';
 
 /* Custom Styles */
 @import 'PilotSelect.scss';
+@import 'SideBar.scss';
 
 .bg-defuse, .side-panel {
     background-color: #111315;
@@ -30,26 +32,14 @@
     padding: 1px 10px 10px 10px;
 }
 
-.form-control {
-    background-color: hsla(0,0%,100%,.14);
-    border-radius: 3px;
-    border-color: white;
-}
-
-/* For Firefox */
-input[type='number'] {
-    -moz-appearance: textfield;
-}
-/* Webkit browsers like Safari and Chrome */
-input[type=number]::-webkit-inner-spin-button,
-input[type=number]::-webkit-outer-spin-button {
-    -webkit-appearance: none;
-    margin: 0;
-}
-
 body {
-    background-image: linear-gradient( #1113157d, #1113157d ), 
-        url(/images/main_dark.png);
+    background: linear-gradient( #1113157d, #1113157d ), url(/images/main_dark.png) no-repeat center center fixed;
+    -webkit-background-size: cover;
+    -moz-background-size: cover;
+    -o-background-size: cover;
+    background-size: cover;
+    overflow-y: auto;
+    font-size: medium;
 }
 
 
@@ -74,4 +64,163 @@ body {
     display: inline-block;
     margin-bottom: .5rem;
     padding: 0px .25rem 0px .25rem;
+}
+
+// Buttons
+button.close{
+    color: whitesmoke;
+}
+
+button.close:hover, button.close:active {
+    color: white;
+}
+
+.btn {
+    color: white;
+    border-radius: 0;
+    font-family: "Arial Unicode MS";
+}
+
+.btn-success {
+    background-color: #38C63D;
+}
+
+.btn-danger {
+    background-color: #C92E2E;
+}
+
+.btn-dark {
+    background-color: #090A0A;
+}
+
+.btn-dark:hover{
+    background-color: #000000;
+}
+
+.btn-warning {
+    background-color: #DC7325;
+}
+
+.btn-warning:hover, .btn-warning:active {
+    background-color: #ab5a1e;
+    color: white;
+}
+
+.btn-warning.disabled, .btn-warning:disabled {
+    background-color: #dc7325
+}
+
+.sidepanel-content {
+    font-size: large;
+}
+
+.side-panel span i {
+    padding-right: 1.5rem;
+}
+
+i.clear {
+    font-size: medium;
+}
+
+i {
+    padding-right: 15px;
+}
+
+.btn i {
+    padding-right: 5px;
+}
+
+.btn-sm i {
+    padding-right: 5px;
+}
+
+.card-body {
+    background-color: rgba(0, 0, 0, 0.3);
+}
+
+.btn-group.special {
+    display: flex;
+}
+
+.special .btn {
+    flex: 1
+}
+
+@media(min-width: 1200px){
+    .container {
+        min-width: 1640px;
+    }
+}
+
+.alert-primary {
+    background-color: #1164A2;
+}
+
+tr.tr-danger {
+    background: rgba(125, 0, 0, 0.5);
+    -webkit-transition: background-color 200ms linear;
+    -ms-transition: background-color 200ms linear;
+    transition: background-color 200ms linear;
+}
+
+tr.tr-success {
+    background: rgba(0, 80, 3, 0.5);
+    -webkit-transition: background-color 200ms linear;
+    -ms-transition: background-color 200ms linear;
+    transition: background-color 200ms linear;
+}
+
+tr.tr-pending {
+    background-color: rgba(16, 82, 82, 0.5);
+    -webkit-transition: background-color 200ms linear;
+    -ms-transition: background-color 200ms linear;
+    transition: background-color 200ms linear;
+}
+
+.blink {
+    animation: blink-animation 1s steps(5, start) infinite;
+    -webkit-animation: blink-animation 1s steps(5, start) infinite;
+}
+
+@keyframes blink-animation {
+    to {
+        visibility: hidden;
+    }
+}
+
+@-webkit-keyframes blink-animation {
+    to {
+        visibility: hidden;
+    }
+}
+
+.mainlogo { 
+    height: 70px;
+}
+
+.alert a:link.xmpp {
+    color: white;
+    border-bottom: 1px dotted #fff;
+}
+
+.modal-backdrop {
+    background-color: #261f1c;
+    z-index: -1;
+}
+
+.badge-warning {
+    background-color: #dc7325  !important;
+}
+
+.fleet-info {
+    outline: 0.75px solid grey;
+    background-color: rgba(0, 0, 0, 0.3);
+    padding: 0px;
+    margin-left: -15px;
+    margin-bottom: 2.3rem;
+}
+
+.fleet-info .row {
+    padding: 1.25rem;
+    font-size: x-large;
 }

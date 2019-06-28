@@ -5,16 +5,29 @@ const baseUri = "/api/v1/ui/"
 export class Pilot extends Component {
 
     apiCall(id) {
-        console.error(`(501) Open pilot window in game: ${id}`);
+        $.ajax({
+            type: 'post',
+            url: `/api/esi-ui/show-info`,
+            data: { target_id: id }
+        }).fail((err) => {
+            console.error(`React/EsiUi {Pilot@apiCall} - Error requesting ESI UI Showinfo`, err.responseText);
+        })  
     }
 
     getId() {
-        return this.props.pilot.id || -1;
+        if (this.props.pilot)
+            return this.props.pilot.characterID || this.props.pilot.id;
+
+        return 0;
     }
 
     getName() {
-        return this.props.pilot.name || "";
+        if (this.props.pilot)
+            return this.props.pilot.characterName || this.props.pilot.name;
+
+        return "";
     }
+    target_id
 
     render() {
         return (<a onClick={this.apiCall.bind(this, this.getId())}>{this.getName()}</a>)
@@ -24,7 +37,13 @@ export class Pilot extends Component {
 export class Corporation extends Component {
 
     apiCall(id) {
-        console.error(`(501) Open corp window in game: ${id}`);
+        $.ajax({
+            type: 'post',
+            url: `/api/esi-ui/show-info`,
+            data: { target_id: id }
+        }).fail((err) => {
+            console.error(`React/EsiUi {Corporation@apiCall} - Error requesting ESI UI Showinfo`, err.responseText);
+        })  
     }
 
     getId() {
@@ -49,7 +68,13 @@ export class Corporation extends Component {
 export class Alliance extends Component {
 
     apiCall(id) {
-        console.error(`(501) Open alliance window in game: ${id}`);
+        $.ajax({
+            type: 'post',
+            url: `/api/esi-ui/show-info`,
+            data: { target_id: id }
+        }).fail((err) => {
+            console.error(`React/EsiUi {Alliance@apiCall} - Error requesting ESI UI Showinfo`, err.responseText);
+        })  
     }
 
     getId() {
@@ -74,15 +99,21 @@ export class Alliance extends Component {
 export class Destination extends Component {
 
     apiCall(id) {
-        console.error(`(501) Set destination to system: ${id}`);
+        $.ajax({
+            type: 'post',
+            url: `/api/esi-ui/destination`,
+            data: { target_id: id }
+        }).fail((err) => {
+            console.error(`React/EsiUi {Destination@apiCall} - Error requesting ESI UI Set Destination`, err.responseText);
+        }) 
     }
 
     getId() {
-        return this.props.system.id || -1;
+        return (this.props.system) ? this.props.system.id : "";
     }
 
     getName() {
-        return this.props.system.name || "";
+        return (this.props.system) ? this.props.system.name : "";
     }
 
     render() {

@@ -56,7 +56,7 @@ namespace Imperium_Incursions_Waitlist
             if (CurrentEnvironment.IsDevelopment())
             {
                 services.AddDbContext<WaitlistDataContext>(options =>
-                    options.UseSqlServer(Configuration.GetConnectionString("MsSqlConnection")));
+                    options.UseSqlServer(Configuration.GetConnectionString("MsSqlConnection")), ServiceLifetime.Scoped);
             }
             // Use MySQL on linux based testing & Production servers
             else
@@ -72,6 +72,11 @@ namespace Imperium_Incursions_Waitlist
                     options.LoginPath = "/auth/gice";
                     options.AccessDeniedPath = "/";
                 });
+
+            services.AddSingleton<Microsoft.Extensions.Hosting.IHostedService, CorporationService>();
+            services.AddSingleton<Microsoft.Extensions.Hosting.IHostedService, AllianceService>();
+            services.AddSingleton<Microsoft.Extensions.Hosting.IHostedService, WaitlistService>();
+            services.AddSingleton<Microsoft.Extensions.Hosting.IHostedService, FleetService>();
 
             services.AddSingleton<IHttpContextAccessor, HttpContextAccessor>();
         }
@@ -113,22 +118,17 @@ namespace Imperium_Incursions_Waitlist
             {
                 routes.MapRoute(
                     name: "auth",
-                    template: "/auth/{controller}/{action=Go}/{id?}");
+                    template: "/auth/{controller}/{action=Go}");
                 routes.MapRoute(
                     name: "admin",
                     template: "/admin/{controller}/{action=Index}/{id?}");
                 routes.MapRoute(
                     name: "default",
-                    template: "/{controller=Home}/{action=Index}/{id?}");
+                    template: "/{controller=Waitlist}/{action=Index}/{id?}");
                 routes.MapRoute(
                     name: "error",
                     template: "/error",
                     defaults: new {controller = "Error", action = "Render"}
-                );
-                routes.MapRoute(
-                    name: "pilotSelect",
-                    template: "/pilot-select/{action=Index}/{id?}",
-                    defaults: new {controller = "PilotSelect"}
                 );
             });
         }
