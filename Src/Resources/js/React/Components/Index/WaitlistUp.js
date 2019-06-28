@@ -110,7 +110,7 @@ export default class WaitlistUp extends Component {
                 </div>
 
                 <button className="btn btn-success" onClick={this.AddPilotToWaitlist.bind(this)} disabled={disabled}>Join the Waitlist <i className="fas fa-user-plus"></i></button>
-                <LeaveWlBtn isOnWl={!this.props.isOnWl} />
+                <LeaveWlBtn isOnWl={!this.props.isOnWl} u={this.props.u}/>
             </div>    
         )
     }

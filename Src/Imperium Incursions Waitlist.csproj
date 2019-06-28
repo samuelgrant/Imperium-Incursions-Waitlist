@@ -69,6 +69,7 @@
 
 
   <ItemGroup>
+    <Folder Include="Migrations\" />
     <Folder Include="Resources\js\React\Components\FleetManagement\" />
     <Folder Include="Resources\js\React\Components\SystemSettings\" />
     <Folder Include="wwwroot\dist\" />

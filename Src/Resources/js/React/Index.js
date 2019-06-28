@@ -90,7 +90,7 @@ export default class Index extends Component {
 
         let noFleets;
         if (!this.availableFleets()) {
-            noFleets = <Alert type="danger" ><span className="font-weight-bold">Waitlist Inactive:</span> There is either no fleet, or the waitlist is inactive. Check our in game channel for more information.</Alert>
+            noFleets = <Alert type="danger"><span className="font-weight-bold">Waitlist Inactive:</span> There is either no fleet, or the waitlist is inactive. Check our in game channel for more information.</Alert>
         }
 
         let waitlistUi;

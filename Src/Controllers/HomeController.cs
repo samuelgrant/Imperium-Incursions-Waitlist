@@ -30,7 +30,8 @@ namespace Imperium_Incursions_Waitlist.Controllers
                 }
 
                 foreach (var p in pilots)
-                    results.Add(p.CharacterName);
+                    if (p.CharacterName.ToLower() != "system")
+                        results.Add(p.CharacterName);
             }
 
             if(filter.ToLower() != "pilot")
@@ -41,40 +42,8 @@ namespace Imperium_Incursions_Waitlist.Controllers
                     accounts = accounts.Where(s => s.Name.Contains(q));
 
                     foreach (var a in accounts)
-                        results.Add(a.Name);
-                }
-            }
-
-            return Ok(results);
-        }
-
-        [Route("/search")]
-        [Produces("application/json")]
-        public IActionResult Search(string q, string filter = "")
-        {
-            List<string> results = new List<string>();
-
-            if(filter.ToLower() != "account")
-            {
-                var pilots = from p in _Db.Pilots select p;
-                if (!String.IsNullOrEmpty(q))
-                {
-                    pilots = pilots.Where(s => s.Name.Contains(q));
-                }
-
-                foreach (var p in pilots)
-                    results.Add(p.Name);
-            }
-
-            if(filter.ToLower() != "pilot")
-            {
-                var accounts = from a in _Db.Accounts select a;
-                if (!String.IsNullOrEmpty(q))
-                {
-                    accounts = accounts.Where(s => s.Name.Contains(q));
-
-                    foreach (var a in accounts)
-                        results.Add(a.Name);
+                        if(a.Name.ToLower() != "system")
+                            results.Add(a.Name);
                 }
             }
 

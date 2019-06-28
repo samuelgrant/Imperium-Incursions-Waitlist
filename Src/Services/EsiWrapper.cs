@@ -354,48 +354,5 @@ namespace Imperium_Incursions_Waitlist.Services
 
             return FleetLayout_response.Data;
         }
-
-        /// <summary>
-        /// Requests a corporation's information through ESI
-        /// </summary>
-        /// <param name="id">Target corporation's ID</param>
-        /// <see cref="ESI.NET.Models.Corporation.Corporation"/>
-        /// <returns>ESI Corporation Model</returns>
-        public static async Task<ESI.NET.Models.Corporation.Corporation> GetCorporation(long id)
-        {
-            EnsureInit();
-            
-            EsiResponse<ESI.NET.Models.Corporation.Corporation> Corporation_response = await s_client.Corporation.Information((int)id);
-
-            if(Corporation_response.StatusCode != HttpStatusCode.OK)
-            {
-                s_Log.LogError("{0} error searching API '{1}': {2}", Corporation_response.StatusCode, Corporation_response.Endpoint, Corporation_response.Message);
-                return null;
-            }
-
-            return Corporation_response.Data;
-
-        }
-
-        /// <summary>
-        /// Request an alliance's information through ESI
-        /// </summary>
-        /// <param name="id">Target alliance Id</param>
-        /// <see cref="ESI.NET.Models.Alliance.Alliance"/>
-        /// <returns>ESI Aliance Model</returns>
-        public static async Task<ESI.NET.Models.Alliance.Alliance> GetAlliance(int id)
-        {
-            EnsureInit();
-
-            EsiResponse<ESI.NET.Models.Alliance.Alliance> Alliance_response = await s_client.Alliance.Information(id);
-
-            if(Alliance_response.StatusCode != HttpStatusCode.OK)
-            {
-                s_Log.LogError("{0} error search API '{1}': {2}", Alliance_response.StatusCode, Alliance_response.Endpoint, Alliance_response.Message);
-                return null;
-            }
-
-            return Alliance_response.Data;
-        }
     }
 }
